@@ -13,15 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.tiogars.starter.models.Route;
 import fr.tiogars.starter.repository.RouteRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
+/**
+ * use tag for rtkquery
+ */
 @RestController
+@Tag(name = "route", description = "CRUD operations for Route entities")
 public class RouteDefinitionController {
 
     @Autowired
     private RouteRepository routeRepository;
 
     @GetMapping("/routes")
-    public List<Route> getAllRoutes() {
+    public List<Route> getAllRoute() {
         return routeRepository.findAll();
     }
 
