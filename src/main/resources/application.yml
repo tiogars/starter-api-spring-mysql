@@ -10,5 +10,14 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: false
+# http://localhost:8080/
 server:
   port: 8080
+# http://localhost:8080/actuator/health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+springdoc:
+  show-actuator: true

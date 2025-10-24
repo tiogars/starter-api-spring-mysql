@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+  Configuration Maven pour accéder aux GitHub Packages
+  
+  UTILISATION LOCALE :
+  1. Copiez ce fichier vers ~/.m2/settings.xml (Linux/Mac) ou %USERPROFILE%\.m2\settings.xml (Windows)
+  2. Remplacez VOTRE_USERNAME_GITHUB par votre nom d'utilisateur GitHub
+  3. Remplacez VOTRE_PERSONAL_ACCESS_TOKEN par votre token d'accès personnel
+  
+  CRÉER UN PERSONAL ACCESS TOKEN :
+  1. Allez sur https://github.com/settings/tokens
+  2. Cliquez sur "Generate new token (classic)"
+  3. Donnez un nom au token (ex: "Maven GitHub Packages")
+  4. Cochez la permission "read:packages"
+  5. Générez et copiez le token
+  
+  NOTE : Ce fichier contient des informations sensibles et ne doit JAMAIS être commité dans Git
+-->
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
+  
+  <servers>
+    <!-- GitHub Packages Authentication -->
+    <server>
+      <id>github</id>
+      <username>VOTRE_USERNAME_GITHUB</username>
+      <password>VOTRE_PERSONAL_ACCESS_TOKEN</password>
+    </server>
+  </servers>
+
+  <profiles>
+    <profile>
+      <id>github</id>
+      <repositories>
+        <repository>
+          <id>github</id>
+          <name>GitHub Packages</name>
+          <url>https://maven.pkg.github.com/tiogars/*</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+
+  <activeProfiles>
+    <activeProfile>github</activeProfile>
+  </activeProfiles>
+
+</settings>
