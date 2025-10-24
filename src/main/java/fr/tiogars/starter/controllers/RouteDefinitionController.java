@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.tiogars.starter.forms.RouteCreateForm;
+import fr.tiogars.starter.forms.RouteUpdateForm;
 import fr.tiogars.starter.models.Route;
-import fr.tiogars.starter.repository.RouteRepository;
+import fr.tiogars.starter.service.RouteService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**
@@ -23,31 +25,31 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class RouteDefinitionController {
 
     @Autowired
-    private RouteRepository routeRepository;
+    private RouteService routeService;
 
     @GetMapping("/routes")
     public List<Route> getAllRoute() {
-        return routeRepository.findAll();
+        return routeService.findAll();
     }
 
     @PostMapping("/routes")
-    public Route createRoute(@RequestBody Route route) {
-        return routeRepository.save(route);
+    public Route createRoute(@RequestBody RouteCreateForm route) {
+        return routeService.save(route);
     }
 
     @GetMapping("/routes/{id}")
     public Route getRouteById(@PathVariable Long id) {
-        return routeRepository.findById(id).orElse(null);
+        return routeService.findById(id);
     }
 
     @PutMapping("/routes/{id}")
-    public Route updateRoute(@PathVariable Long id, @RequestBody Route route) {
-        route.setId(id);
-        return routeRepository.save(route);
+    public Route updateRoute(@PathVariable Long id, @RequestBody RouteUpdateForm form) {
+        return routeService.update(form);
     }
 
     @DeleteMapping("/routes/{id}")
     public void deleteRoute(@PathVariable Long id) {
-        routeRepository.deleteById(id);
+        routeService.deleteById(id);
     }
+
 }
