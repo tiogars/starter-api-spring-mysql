@@ -1,0 +1,146 @@
+name: Dependency Update Check
+
+# Ce workflow vérifie les mises à jour de dépendances disponibles
+# et crée une issue si des mises à jour sont détectées
+
+on:
+  schedule:
+    # Exécute tous les lundis à 9h00 UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  check-updates:
+    name: Check for Dependency Updates
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      packages: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+      
+      - name: Configure Maven settings for GitHub Packages
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                        https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <servers>
+              <server>
+                <id>github</id>
+                <username>${{ github.actor }}</username>
+                <password>${{ secrets.GITHUB_TOKEN }}</password>
+              </server>
+            </servers>
+          </settings>
+          EOF
+      
+      - name: Check for dependency updates
+        id: check_updates
+        run: |
+          echo "## 📦 Vérification des mises à jour de dépendances" > updates.md
+          echo "" >> updates.md
+          
+          # Vérifier les mises à jour de dépendances
+          ./mvnw versions:display-dependency-updates -B > dependency_updates.txt
+          
+          # Vérifier les mises à jour de plugins
+          ./mvnw versions:display-plugin-updates -B > plugin_updates.txt
+          
+          # Parser et formater les résultats
+          if grep -q "The following dependencies in Dependencies have newer versions:" dependency_updates.txt; then
+            echo "### 🔄 Mises à jour de dépendances disponibles" >> updates.md
+            echo "" >> updates.md
+            echo "\`\`\`" >> updates.md
+            sed -n '/The following dependencies in Dependencies have newer versions:/,/^$/p' dependency_updates.txt >> updates.md
+            echo "\`\`\`" >> updates.md
+            echo "" >> updates.md
+            echo "HAS_UPDATES=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Toutes les dépendances sont à jour" >> updates.md
+            echo "" >> updates.md
+          fi
+          
+          if grep -q "The following plugin updates are available:" plugin_updates.txt; then
+            echo "### 🔌 Mises à jour de plugins disponibles" >> updates.md
+            echo "" >> updates.md
+            echo "\`\`\`" >> updates.md
+            sed -n '/The following plugin updates are available:/,/^$/p' plugin_updates.txt >> updates.md
+            echo "\`\`\`" >> updates.md
+            echo "" >> updates.md
+            echo "HAS_UPDATES=true" >> $GITHUB_OUTPUT
+          else
+            echo "✅ Tous les plugins sont à jour" >> updates.md
+            echo "" >> updates.md
+          fi
+          
+          echo "---" >> updates.md
+          echo "" >> updates.md
+          echo "### 📝 Actions recommandées" >> updates.md
+          echo "" >> updates.md
+          echo "1. Examinez les mises à jour proposées" >> updates.md
+          echo "2. Testez localement avec : \`./mvnw versions:use-latest-releases\`" >> updates.md
+          echo "3. Vérifiez la compatibilité avec \`./mvnw verify\`" >> updates.md
+          echo "4. Créez une branche et une PR avec les mises à jour" >> updates.md
+          echo "" >> updates.md
+          echo "### 🔗 Liens utiles" >> updates.md
+          echo "" >> updates.md
+          echo "- [Maven Versions Plugin](https://www.mojohaus.org/versions-maven-plugin/)" >> updates.md
+          echo "- [Spring Boot Releases](https://github.com/spring-projects/spring-boot/releases)" >> updates.md
+          echo "- [Dépendances du projet](pom.xml)" >> updates.md
+          
+          cat updates.md
+      
+      - name: Check if issue exists
+        id: check_issue
+        if: steps.check_updates.outputs.HAS_UPDATES == 'true'
+        run: |
+          # Chercher une issue ouverte avec le label "dependencies"
+          ISSUE_NUMBER=$(gh issue list --label "dependencies" --state open --json number --jq '.[0].number')
+          echo "issue_number=${ISSUE_NUMBER}" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create or update issue
+        if: steps.check_updates.outputs.HAS_UPDATES == 'true'
+        run: |
+          ISSUE_BODY=$(cat updates.md)
+          ISSUE_TITLE="📦 Mises à jour de dépendances disponibles - $(date +%Y-%m-%d)"
+          
+          if [ -n "${{ steps.check_issue.outputs.issue_number }}" ]; then
+            # Mettre à jour l'issue existante
+            gh issue comment ${{ steps.check_issue.outputs.issue_number }} --body "$ISSUE_BODY"
+            echo "✅ Issue #${{ steps.check_issue.outputs.issue_number }} mise à jour"
+          else
+            # Créer une nouvelle issue
+            gh issue create \
+              --title "$ISSUE_TITLE" \
+              --body "$ISSUE_BODY" \
+              --label "dependencies,maintenance"
+            echo "✅ Nouvelle issue créée"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-reports
+          path: |
+            dependency_updates.txt
+            plugin_updates.txt
+            updates.md
+          retention-days: 30

@@ -31,3 +31,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Maven ###
+settings.xml
+.mvn/wrapper/maven-wrapper.properties
+
+### Docker ###
+.docker/settings.xml
+
+### GitHub Actions ###
+*.log
+
+### Environment Variables ###
+.env
+.env.local
+.env.*.local
