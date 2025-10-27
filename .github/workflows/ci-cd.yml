@@ -313,6 +313,9 @@ jobs:
           name: build-artifacts
           path: ./target
       
+      # Note: The target directory now contains both the executable JAR and .original file
+      # The Dockerfile will copy the executable JAR (starter-*.jar) excluding .original files
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       

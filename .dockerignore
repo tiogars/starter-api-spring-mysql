@@ -22,6 +22,7 @@ LICENSE
 # Build et target
 target/
 !target/*.jar
+target/*.jar.original
 build/
 out/
 

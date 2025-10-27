@@ -16,6 +16,7 @@ WORKDIR /app
 
 # Copier le JAR pré-construit
 # Le JAR doit être dans le contexte de build (copié depuis les artifacts)
+# Pattern *.jar will match the executable JAR but not *.jar.original files
 COPY target/*.jar app.jar
 
 # Changer le propriétaire des fichiers
