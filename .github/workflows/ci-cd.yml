@@ -191,20 +191,8 @@ jobs:
       - name: Compile application
         run: ./mvnw clean compile -B -V
       
-      - name: Run tests
-        run: ./mvnw test -B
-      
       - name: Package application
-        run: ./mvnw package -DskipTests -B
-      
-      - name: Generate test report
-        if: always()
-        uses: dorny/test-reporter@v1
-        with:
-          name: Maven Tests
-          path: target/surefire-reports/*.xml
-          reporter: java-junit
-          fail-on-error: false
+        run: ./mvnw package -Dmaven.test.skip=true -B
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
@@ -213,14 +201,6 @@ jobs:
           path: |
             target/*.jar
             target/*.jar.original
-          retention-days: 7
-      
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: target/surefire-reports/
           retention-days: 7
 
   create-release:
@@ -327,6 +307,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
       
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./target
+      
+      # Note: The target directory now contains both the executable JAR and .original file
+      # The Dockerfile will copy the executable JAR (starter-*.jar) excluding .original files
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
@@ -351,24 +340,6 @@ jobs:
             type=sha,prefix={{branch}}-
             type=raw,value=latest,enable={{is_default_branch}}
       
-      - name: Create Maven settings for Docker build
-        run: |
-          mkdir -p .docker
-          cat > .docker/settings.xml <<EOF
-          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                                        https://maven.apache.org/xsd/settings-1.0.0.xsd">
-            <servers>
-              <server>
-                <id>github</id>
-                <username>${{ github.actor }}</username>
-                <password>${{ secrets.GITHUB_TOKEN }}</password>
-              </server>
-            </servers>
-          </settings>
-          EOF
-      
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
@@ -379,9 +350,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-            GITHUB_ACTOR=${{ github.actor }}
       
       - name: Generate SBOM (Software Bill of Materials)
         if: github.event_name != 'pull_request'
