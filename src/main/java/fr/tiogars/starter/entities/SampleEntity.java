@@ -3,6 +3,7 @@ package fr.tiogars.starter.entities;
 import java.util.Date;
 
 import fr.tiogars.architecture.create.entities.AbstractEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -40,36 +41,43 @@ public class SampleEntity extends AbstractEntity {
     /**
      * Name of the sample
      */
+    @Column(nullable = false, length = 255)
     private String name;
 
     /**
      * Description of the sample
      */
+    @Column(nullable = true, length = 255)
     private String description;
 
     /**
      * Active status
      */
+    @Column(nullable = false)
     private boolean active;
 
     /**
      * Created at timestamp
      */
+    @Column(nullable = false)
     private Date createdAt;
 
     /**
      * Created by user
      */
+    @Column(nullable = false, length = 255)
     private String createdBy;
 
     /**
      * Updated at timestamp
      */
+    @Column(nullable = false)
     private Date updatedAt;
 
     /**
      * Updated by user
      */
+    @Column(nullable = false, length = 255)
     private String updatedBy;
 
     public SampleEntity() {

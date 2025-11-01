@@ -2,6 +2,11 @@ package fr.tiogars.starter.models;
 
 import java.util.Date;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 /**
  * Represents a sample model with basic CRUD tracking capabilities.
  * This class serves as a data model for managing sample records with 
@@ -26,6 +31,10 @@ public class Sample {
     /**
      * Name of the sample
      */
+    @Size(min=1, max = 10, message = "Name must not exceed 10 characters")
+    @NotBlank(message = "Name cannot be blank")
+    @NotEmpty(message = "Name cannot be empty")
+    @NotNull(message = "Name cannot be null")
     private String name;
 
     /**
