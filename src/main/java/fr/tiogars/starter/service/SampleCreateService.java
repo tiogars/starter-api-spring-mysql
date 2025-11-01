@@ -1,19 +1,31 @@
 package fr.tiogars.starter.service;
 
+import java.util.Set;
+import java.util.logging.Logger;
+
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import fr.tiogars.architecture.create.services.AbstractCreateService;
 import fr.tiogars.starter.entities.SampleEntity;
 import fr.tiogars.starter.forms.SampleCreateForm;
 import fr.tiogars.starter.models.Sample;
 import fr.tiogars.starter.repository.SampleRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 
 @Service
+@Validated
 public class SampleCreateService
         extends AbstractCreateService<SampleCreateForm, SampleEntity, Sample, SampleRepository> {
 
-    public SampleCreateService(SampleRepository sampleRepository) {
+    private final Logger logger = Logger.getLogger(SampleCreateService.class.getName());
+    private final Validator validator;
+
+    public SampleCreateService(SampleRepository sampleRepository, Validator validator) {
         super(sampleRepository);
+        this.validator = validator;
     }
 
     @Override
@@ -58,7 +70,11 @@ public class SampleCreateService
 
     @Override
     public void validate(Sample sample) {
-        
+        Set<ConstraintViolation<Sample>> violations = validator.validate(sample);
+    if (!violations.isEmpty()) {
+        throw new ConstraintViolationException(violations);
+    }
+    logger.info("Validating sample: " + sample.getName());
     }
 
 }

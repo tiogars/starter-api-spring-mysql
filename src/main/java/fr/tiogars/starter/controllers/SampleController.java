@@ -9,10 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.tiogars.starter.exceptions.ErrorResponse;
 import fr.tiogars.starter.forms.SampleCreateForm;
 import fr.tiogars.starter.models.Sample;
 import fr.tiogars.starter.service.SampleCreateService;
 import fr.tiogars.starter.service.SampleCrudService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -29,6 +35,13 @@ public class SampleController {
     }
 
     @PostMapping("sample")
+    @Operation(summary = "Create a new sample", description = "Creates a new sample with validation")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sample created successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Sample.class))),
+        @ApiResponse(responseCode = "400", description = "Validation failed - Invalid input data",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
     public Sample createSample(@RequestBody SampleCreateForm form) {
         
         return this.sampleCreateService.create(form);
