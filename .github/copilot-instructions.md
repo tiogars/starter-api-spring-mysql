@@ -3,21 +3,18 @@
 This repo is a Spring Boot 3.5 (Java 21) REST API backed by MySQL with a simple, opinionated layering and CI/CD via GitHub Actions. Use the conventions below to stay productive and consistent with the codebase.
 
 ## Architecture and conventions
-- Layers and packages:
   - controllers: REST endpoints, minimal logic (e.g. `SampleController`, `RouteDefinitionController`).
   - service: business logic and mapping between persistence and API models (e.g. `SampleCreateService`, `SampleCrudService`, `RouteService`).
   - repository: Spring Data JPA repositories (`JpaRepository<..., Long>`), e.g. `SampleRepository`.
   - entities: JPA entities (DB shape), e.g. `SampleEntity`.
   - models: API/domain models (response shape) with Bean Validation annotations, e.g. `Sample`.
   - forms: request DTOs for create/update, e.g. `SampleCreateForm`, `RouteCreateForm`, `RouteUpdateForm`.
-- Don’t expose entities from controllers. Map entity ⇄ model in services.
-- Validation:
   - Input DTOs → convert to model in service, then validate model with `jakarta.validation.Validator`.
   - On validation errors, throw `ConstraintViolationException`; `GlobalExceptionHandler` returns `ErrorResponse { status, error, message, violations }`.
-- External base libs from GitHub Packages:
   - `fr.tiogars:architecture-create-service` and `fr.tiogars:architecture-select-service` provide base classes (e.g., `AbstractCreateService`, `AbstractCreateForm`, `AbstractEntity`). Ensure Maven can read GitHub Packages (see `settings.xml.example`).
-- OpenAPI/Swagger via springdoc; annotate controllers with `@Tag`, methods with `@Operation`/`@ApiResponses` when useful.
 
+## Documentation Language
+- All documentation (including code comments, README, and guides) must be written in **English**.
 ## Typical data flow
 HTTP → controller (request DTO) → service (toModel, validate, toEntity, CRUD via repository) → service (toModel) → controller returns model.
 
