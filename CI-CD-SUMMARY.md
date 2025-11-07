@@ -1,307 +1,322 @@
-# 🎯 Résumé - CI/CD Pipeline Complet
+# 🎯 CI/CD Pipeline Summary
 
-## 📂 Fichiers créés
+## 📂 Created Files
 
-Voici tous les fichiers créés pour votre pipeline CI/CD :
+All files created for the CI/CD pipeline:
 
-### 🔧 Configuration CI/CD
-```
+### 🔧 CI/CD Configuration
+
+```text
 .github/
 ├── workflows/
-│   ├── ci-cd.yml                 # Pipeline principal (build, test, release, docker)
-│   ├── dependency-check.yml      # Vérification automatique des dépendances
-│   └── README.md                 # Documentation des workflows
+│   ├── ci-cd.yml                 # Main pipeline (build, test, release, docker)
+│   ├── dependency-check.yml      # Automated dependency verification
+│   └── README.md                 # Workflow documentation
 ```
 
 ### 📚 Documentation
-```
-├── QUICKSTART.md                 # Guide de démarrage rapide
-├── RELEASE_CHECKLIST.md          # Checklist pour les releases
-└── README.md                     # README principal (mis à jour)
+
+```text
+├── QUICKSTART.md                 # Quick start guide
+├── RELEASE_CHECKLIST.md          # Release checklist
+└── README.md                     # Main README (updated)
 ```
 
 ### 🔑 Configuration
-```
-├── settings.xml.example          # Exemple de configuration Maven
-├── .env.example                  # Exemple de variables d'environnement
-├── cicd.ps1                      # Script PowerShell pour automatiser les tâches
-└── pom.xml                       # Mis à jour avec repositories GitHub
-```
 
-### 🚫 Fichiers ignorés
-```
-.gitignore                        # Mis à jour (settings.xml, .env, etc.)
+```text
+├── settings.xml.example          # Maven configuration example
+├── .env.example                  # Environment variables example
+├── cicd.ps1                      # PowerShell automation script
+└── pom.xml                       # Updated with GitHub repositories
 ```
 
-## 🚀 Fonctionnalités principales
+### 🚫 Ignored Files
 
-### 1. Pipeline CI/CD automatique
+```text
+.gitignore                        # Updated (settings.xml, .env, etc.)
+```
 
-Le workflow `ci-cd.yml` fournit :
+## 🚀 Main Features
+
+### 1. Automated CI/CD Pipeline
+
+The `ci-cd.yml` workflow provides:
 
 ✅ **Build & Test**
-- Compilation avec Maven et Java 21
-- Récupération des dépendances depuis GitHub Packages
-- Exécution des tests avec rapports
-- Upload des artifacts (JAR)
 
-✅ **Release automatique** (sur tags)
-- Création de release GitHub
-- Génération automatique du changelog
-- Attachement des sources (ZIP, TAR.GZ)
-- Attachement du JAR compilé
+* Compile with Maven and Java 21
+* Resolve dependencies from GitHub Packages
+* Run tests with reports
+* Upload artifacts (JAR)
 
-✅ **Conteneurisation**
-- Build multi-plateforme (amd64, arm64)
-- Push vers GitHub Container Registry (ghcr.io)
-- Tagging automatique intelligent
-- Génération du SBOM (Software Bill of Materials)
+✅ **Automatic Release** (on tags)
 
-✅ **Sécurité**
-- Scan de vulnérabilités avec Trivy
-- Upload des résultats vers GitHub Security
-- Niveau : CRITICAL et HIGH
+* Create GitHub Release
+* Auto-generate changelog
+* Attach sources (ZIP, TAR.GZ)
+* Attach compiled JAR
 
-### 2. Vérification des dépendances
+✅ **Containerization**
 
-Le workflow `dependency-check.yml` :
-- S'exécute chaque lundi à 9h00 UTC
-- Vérifie les mises à jour disponibles
-- Crée/met à jour une issue GitHub automatiquement
-- Fournit des recommandations d'action
+* Multi-platform build (amd64, arm64)
+* Push to GitHub Container Registry (ghcr.io)
+* Intelligent automatic tagging
+* Generate SBOM (Software Bill of Materials)
 
-### 3. Script PowerShell d'automatisation
+✅ **Security**
 
-Le script `cicd.ps1` permet de :
+* Vulnerability scan with Trivy
+* Upload results to GitHub Security
+* Severity: CRITICAL and HIGH
+
+### 2. Dependency Verification
+
+The `dependency-check.yml` workflow:
+
+* Runs every Monday at 09:00 UTC
+* Checks for available updates
+* Creates/updates a GitHub issue automatically
+* Provides action recommendations
+
+### 3. Automation PowerShell Script
+
+The `cicd.ps1` script enables:
+
 ```powershell
-.\cicd.ps1 setup          # Configurer Maven avec GitHub Packages
-.\cicd.ps1 build          # Compiler l'application
-.\cicd.ps1 test           # Exécuter les tests
-.\cicd.ps1 package        # Créer le package JAR
-.\cicd.ps1 release 1.0.0  # Créer une release complète
-.\cicd.ps1 docker-build   # Build Docker local
-.\cicd.ps1 docker-run     # Lancer avec docker-compose
-.\cicd.ps1 status         # Voir le statut des workflows
+./cicd.ps1 setup          # Configure Maven with GitHub Packages
+./cicd.ps1 build          # Compile the application
+./cicd.ps1 test           # Run tests
+./cicd.ps1 package        # Create JAR package
+./cicd.ps1 release 1.0.0  # Create a complete release
+./cicd.ps1 docker-build   # Local Docker build
+./cicd.ps1 docker-run     # Launch with docker-compose
+./cicd.ps1 status         # View workflow status
 ```
 
-## 📋 Workflows de développement
+## 📋 Development Workflows
 
-### Développement sur branche
+### Branch Development
 
 ```bash
-# 1. Créer une branche
-git checkout -b feature/ma-fonctionnalite
+# 1. Create a branch
+git checkout -b feature/my-feature
 
-# 2. Développer et tester localement
-.\cicd.ps1 build
-.\cicd.ps1 test
+# 2. Develop and test locally
+./cicd.ps1 build
+./cicd.ps1 test
 
-# 3. Commiter et pousser
+# 3. Commit and push
 git add .
-git commit -m "feat: ajout de la fonctionnalité"
-git push origin feature/ma-fonctionnalite
+git commit -m "feat: add new feature"
+git push origin feature/my-feature
 
-# 4. Créer une Pull Request sur GitHub
-# → Le workflow build & test s'exécute automatiquement
+# 4. Open a Pull Request on GitHub
+# → Build & test workflow runs automatically
 ```
 
-### Merge vers develop/main
+### Merge to develop/main
 
 ```bash
-# Après merge de la PR
-# → Build automatique
-# → Tests automatiques
-# → Image Docker créée avec tag de branche
+# After PR merge
+# → Automatic build
+# → Automatic tests
+# → Docker image created with branch tag
 ```
 
-### Créer une release
+### Create a release
 
 ```bash
-# Option 1 : Avec le script (recommandé)
-.\cicd.ps1 release 1.0.0
+# Option 1: Using the script (recommended)
+./cicd.ps1 release 1.0.0
 
-# Option 2 : Manuellement
+# Option 2: Manually
 git tag -a v1.0.0 -m "Release 1.0.0"
 git push origin v1.0.0
 
-# → Pipeline complet s'exécute :
+# → Full pipeline runs:
 #   ✅ Build & Test
-#   📦 Release GitHub avec artifacts
-#   🐳 Images Docker multi-tags
-#   🔒 Scan de sécurité
+#   📦 GitHub Release with artifacts
+#   🐳 Multi-tag Docker images
+#   🔒 Security scan
 ```
 
-## 🐳 Utilisation des images Docker
+## 🐳 Using Docker Images
 
-### Tags disponibles
+### Available tags
 
-Après une release `v1.2.3`, les tags suivants sont créés :
+After release `v1.2.3`, the following tags are created:
 
 ```bash
-ghcr.io/tiogars/starter-api-spring-mysql:v1.2.3    # Version exacte
-ghcr.io/tiogars/starter-api-spring-mysql:1.2       # Majeur.Mineur
-ghcr.io/tiogars/starter-api-spring-mysql:1         # Majeur
-ghcr.io/tiogars/starter-api-spring-mysql:latest    # Dernière (si sur main)
-ghcr.io/tiogars/starter-api-spring-mysql:develop   # Branche develop
-ghcr.io/tiogars/starter-api-spring-mysql:main      # Branche main
+ghcr.io/tiogars/starter-api-spring-mysql:v1.2.3    # Exact version
+ghcr.io/tiogars/starter-api-spring-mysql:1.2       # Major.Minor
+ghcr.io/tiogars/starter-api-spring-mysql:1         # Major
+ghcr.io/tiogars/starter-api-spring-mysql:latest    # Latest (if on main)
+ghcr.io/tiogars/starter-api-spring-mysql:develop   # develop branch
+ghcr.io/tiogars/starter-api-spring-mysql:main      # main branch
 ```
 
-### Pull et run
+### Pull and run
 
 ```bash
-# Pull de l'image
+# Pull the image
 docker pull ghcr.io/tiogars/starter-api-spring-mysql:latest
 
-# Run simple
+# Simple run
 docker run -d -p 8080:8080 ghcr.io/tiogars/starter-api-spring-mysql:latest
 
-# Avec docker-compose (recommandé)
+# With docker-compose (recommended)
 docker-compose up -d
 ```
 
-## 🔐 Configuration requise
+## 🔐 Required Configuration
 
-### GitHub Secrets (automatique)
+### GitHub Secrets (automatic)
 
-Le workflow utilise `GITHUB_TOKEN` fourni automatiquement par GitHub Actions.
-**Aucune configuration manuelle nécessaire !**
+The workflow uses `GITHUB_TOKEN` automatically provided by GitHub Actions.
+**No manual configuration required!**
 
-### Configuration locale
+### Local configuration
 
-Pour développer localement :
+To develop locally:
 
-1. **Créer un Personal Access Token** sur GitHub
-   - Permissions : `read:packages`, `write:packages`
+1. **Create a Personal Access Token** on GitHub
+   * Permissions: `read:packages`, `write:packages`
 
-2. **Configurer Maven**
+2. **Configure Maven**
+
    ```powershell
-   .\cicd.ps1 setup
-   # Ou manuellement avec settings.xml.example
+   ./cicd.ps1 setup
+   # Or manually with settings.xml.example
    ```
 
-3. **Tester**
+3. **Test**
+
    ```powershell
-   .\cicd.ps1 build
+   ./cicd.ps1 build
    ```
 
-## 📊 Monitoring et rapports
+## 📊 Monitoring and Reports
 
 ### Via GitHub
 
-1. **Actions** : https://github.com/tiogars/starter-api-spring-mysql/actions
-   - Statut des workflows
-   - Logs détaillés
-   - Artifacts téléchargeables
+1. **Actions**: <https://github.com/tiogars/starter-api-spring-mysql/actions>
+   * Workflow status
+   * Detailed logs
+   * Downloadable artifacts
 
-2. **Releases** : https://github.com/tiogars/starter-api-spring-mysql/releases
-   - Versions publiées
-   - Changelogs
-   - Téléchargement des artifacts
+2. **Releases**: <https://github.com/tiogars/starter-api-spring-mysql/releases>
+   * Published versions
+   * Changelogs
+   * Artifact downloads
 
-3. **Packages** : https://github.com/tiogars?tab=packages
-   - Images Docker
-   - Statistiques d'utilisation
+3. **Packages**: <https://github.com/tiogars?tab=packages>
+   * Docker images
+   * Usage statistics
 
-4. **Security** : https://github.com/tiogars/starter-api-spring-mysql/security
-   - Vulnérabilités détectées
-   - Rapports Trivy
+4. **Security**: <https://github.com/tiogars/starter-api-spring-mysql/security>
+   * Detected vulnerabilities
+   * Trivy reports
 
-### Localement
+### Locally
 
 ```bash
 # Health check
 curl http://localhost:8080/actuator/health
 
-# Métriques
+# Metrics
 curl http://localhost:8080/actuator/metrics
 
 # Swagger UI
 open http://localhost:8080/swagger-ui.html
 ```
 
-## 🎓 Documentation complète
+## 🎓 Full Documentation
 
-- 📖 **[QUICKSTART.md](QUICKSTART.md)** - Guide de démarrage rapide
-- 🔄 **[.github/workflows/README.md](.github/workflows/README.md)** - Documentation détaillée des workflows
-- ✅ **[RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)** - Checklist avant release
-- 🔧 **[settings.xml.example](settings.xml.example)** - Configuration Maven
-- 🌍 **[.env.example](.env.example)** - Variables d'environnement
+* 📖 **[QUICKSTART.md](QUICKSTART.md)** - Quick start guide
+* 🔄 **[.github/workflows/README.md](.github/workflows/README.md)** - Detailed workflow documentation
+* ✅ **[RELEASE_CHECKLIST.md](RELEASE_CHECKLIST.md)** - Pre-release checklist
+* 🔧 **[settings.xml.example](settings.xml.example)** - Maven configuration
+* 🌍 **[.env.example](.env.example)** - Environment variables
 
-## ⚡ Commandes rapides
+## ⚡ Quick Commands
 
 ```powershell
-# Configuration initiale (une seule fois)
-.\cicd.ps1 setup
+# Initial setup (one time)
+./cicd.ps1 setup
 
-# Développement quotidien
-.\cicd.ps1 build              # Compiler
-.\cicd.ps1 test               # Tester
-.\cicd.ps1 docker-run         # Lancer l'app
+# Daily development
+./cicd.ps1 build              # Compile
+./cicd.ps1 test               # Test
+./cicd.ps1 docker-run         # Launch app
 
-# Créer une release
-.\cicd.ps1 release 1.0.0      # Version majeure
-.\cicd.ps1 release 1.0.1      # Patch
-.\cicd.ps1 release 1.1.0      # Version mineure
+# Create a release
+./cicd.ps1 release 1.0.0      # Major version
+./cicd.ps1 release 1.0.1      # Patch
+./cicd.ps1 release 1.1.0      # Minor version
 
-# Docker local
-.\cicd.ps1 docker-build       # Build image
-docker-compose up -d          # Lancer avec DB
-docker-compose logs -f        # Voir les logs
-docker-compose down           # Arrêter
+# Local Docker
+./cicd.ps1 docker-build       # Build image
+docker-compose up -d          # Launch with DB
+docker-compose logs -f        # View logs
+docker-compose down           # Stop
 ```
 
-## 🆘 Support et dépannage
+## 🆘 Support and Troubleshooting
 
-### Problèmes courants
+### Common Problems
 
-| Problème | Solution |
-|----------|----------|
-| Dépendances GitHub non trouvées | Vérifier `settings.xml` et le PAT |
-| Tests échouent | Exécuter `.\mvnw.cmd test -X` pour les logs détaillés |
-| Docker build échoue | Vérifier que Docker Desktop est lancé |
-| Image ne démarre pas | Vérifier les variables d'environnement |
+| Problem | Solution |
+|---------|----------|
+| GitHub dependencies not found | Check `settings.xml` and PAT |
+| Tests failing | Run `./mvnw.cmd test -X` for detailed logs |
+| Docker build failing | Ensure Docker Desktop is running |
+| Image not starting | Check environment variables |
 
-### Obtenir de l'aide
+### Getting Help
 
-1. Consultez la documentation : [QUICKSTART.md](QUICKSTART.md)
-2. Vérifiez les logs GitHub Actions
-3. Créez une issue : https://github.com/tiogars/starter-api-spring-mysql/issues
+1. Read the documentation: [QUICKSTART.md](QUICKSTART.md)
+2. Review GitHub Actions logs
+3. Open an issue: <https://github.com/tiogars/starter-api-spring-mysql/issues>
 
-## 🎉 Prochaines étapes
+## 🎉 Next Steps
 
-Maintenant que le CI/CD est configuré :
+Now that CI/CD is configured:
 
-1. ✅ **Testez le pipeline**
+1. ✅ **Test the pipeline**
+
    ```bash
    git add .
    git commit -m "ci: add complete CI/CD pipeline"
    git push
    ```
 
-2. ✅ **Créez votre première release**
+2. ✅ **Create your first release**
+
    ```powershell
-   .\cicd.ps1 release 0.1.0
+   ./cicd.ps1 release 0.1.0
    ```
 
-3. ✅ **Vérifiez les résultats**
-   - Actions : https://github.com/tiogars/starter-api-spring-mysql/actions
-   - Releases : https://github.com/tiogars/starter-api-spring-mysql/releases
-   - Packages : https://github.com/tiogars?tab=packages
+3. ✅ **Verify results**
+   * Actions: <https://github.com/tiogars/starter-api-spring-mysql/actions>
+   * Releases: <https://github.com/tiogars/starter-api-spring-mysql/releases>
+   * Packages: <https://github.com/tiogars?tab=packages>
 
-4. ✅ **Utilisez l'image Docker**
+4. ✅ **Use the Docker image**
+
    ```bash
    docker pull ghcr.io/tiogars/starter-api-spring-mysql:latest
    docker run -d -p 8080:8080 ghcr.io/tiogars/starter-api-spring-mysql:latest
    ```
 
-## 📜 Licence et attribution
+## 📜 License and Attribution
 
-Ce pipeline CI/CD a été créé pour le projet **starter-api-spring-mysql**.
+This CI/CD pipeline was created for the **starter-api-spring-mysql** project.
 
-**Auteur** : Tiogars  
-**Repository** : https://github.com/tiogars/starter-api-spring-mysql  
-**Date** : Octobre 2025
+**Author**: Tiogars  
+**Repository**: <https://github.com/tiogars/starter-api-spring-mysql>  
+**Date**: October 2025
 
 ---
 
-🌟 **Bon développement et bonnes releases !** 🚀
+🌟 **Happy building and smooth releases!** 🚀

@@ -1,61 +1,62 @@
-# 🔢 Gestion de la version avec Maven
+# 🔢 Version Management with Maven
 
-## Vue d'ensemble
+## Overview
 
-Le projet utilise le **Maven Versions Plugin** et le **Build Helper Maven Plugin** pour gérer automatiquement les versions selon la méthode **Semantic Versioning**.
+This project uses the **Maven Versions Plugin** and the **Build Helper Maven Plugin** to automate versioning following **Semantic Versioning**.
 
 ## 🎯 Semantic Versioning (SemVer)
 
-Format : `MAJOR.MINOR.PATCH`
+Format: `MAJOR.MINOR.PATCH`
 
-- **MAJOR** : Changements incompatibles avec les versions précédentes
-- **MINOR** : Ajout de fonctionnalités rétrocompatibles
-- **PATCH** : Corrections de bugs rétrocompatibles
+- MAJOR: Incompatible API changes
+- MINOR: Backward-compatible feature additions
+- PATCH: Backward-compatible bug fixes
 
-### Exemples
+### Examples
 
+```text
+1.0.0 -> 1.0.1  (patch): Bug fix
+1.0.1 -> 1.1.0  (minor): New feature
+1.1.0 -> 2.0.0  (major): Breaking change
 ```
-1.0.0 -> 1.0.1  (patch)  : Correction de bugs
-1.0.1 -> 1.1.0  (minor)  : Nouvelle fonctionnalité
-1.1.0 -> 2.0.0  (major)  : Changement majeur (breaking changes)
-```
 
-## 🚀 Bump de version automatique
+## 🚀 Automatic version bump
 
-### Méthode recommandée : Via GitHub Actions
+### Recommended method: via GitHub Actions
 
 ```powershell
-# Bump patch (0.0.1 -> 0.0.2)
-.\cicd.ps1 release patch
+# Patch bump (0.0.1 -> 0.0.2)
+./cicd.ps1 release patch
 
-# Bump minor (0.0.1 -> 0.1.0)
-.\cicd.ps1 release minor
+# Minor bump (0.0.1 -> 0.1.0)
+./cicd.ps1 release minor
 
-# Bump major (0.0.1 -> 1.0.0)
-.\cicd.ps1 release major
+# Major bump (0.0.1 -> 1.0.0)
+./cicd.ps1 release major
 ```
 
-Le workflow fait automatiquement :
-1. ✅ Retire le `-SNAPSHOT` de la version
-2. ✅ Applique le bump (patch/minor/major)
-3. ✅ Met à jour `pom.xml`
-4. ✅ Commit les changements `[skip ci]`
-5. ✅ Crée et pousse le tag
-6. ✅ Déclenche build, test, release et Docker
+The workflow automatically:
 
-## 📋 Commandes Maven utiles
+1. ✅ Removes `-SNAPSHOT` from the version
+2. ✅ Applies the bump (patch/minor/major)
+3. ✅ Updates `pom.xml`
+4. ✅ Commits changes with `[skip ci]`
+5. ✅ Creates and pushes the tag
+6. ✅ Triggers build, test, release, and Docker
 
-```bash
-# Afficher la version actuelle
-.\mvnw.cmd help:evaluate -Dexpression=project.version -q -DforceStdout
+## 📋 Useful Maven commands
 
-# Définir une version spécifique
-.\mvnw.cmd versions:set -DnewVersion=1.2.3
+```powershell
+# Show current version
+./mvnw.cmd help:evaluate -Dexpression=project.version -q -DforceStdout
 
-# Vérifier les dépendances obsolètes
-.\mvnw.cmd versions:display-dependency-updates
+# Set a specific version
+./mvnw.cmd versions:set -DnewVersion=1.2.3
+
+# Show outdated dependencies
+./mvnw.cmd versions:display-dependency-updates
 ```
 
-## 📚 Documentation complète
+## 📚 Full documentation
 
-Consultez [VERSION-MANAGEMENT.md](VERSION-MANAGEMENT.md) pour plus de détails.
+See [CHANGELOG-VERSION-MANAGEMENT.md](CHANGELOG-VERSION-MANAGEMENT.md) for the change summary and [QUICKSTART.md](QUICKSTART.md) for usage.
