@@ -1,202 +1,213 @@
-# 📝 Résumé des modifications - Gestion de version automatisée
+# 📝 Summary of changes — Automated version management
 
-## ✅ Changements effectués
+## ✅ What changed
 
-### 1. Workflow GitHub Actions mis à jour
+### 1. GitHub Actions workflow updated
 
-**Fichier** : `.github/workflows/ci-cd.yml`
+File: `.github/workflows/ci-cd.yml`
 
-#### Modifications principales :
-- ✅ **Branche unique** : Ne se déclenche que sur `main` (plus de `develop`)
-- ✅ **Nouveau job `version-bump`** : Gestion automatique du versioning Maven
-- ✅ **Support des bumps** : patch, minor, major via workflow_dispatch
-- ✅ **Commit automatique** : Le workflow commit la nouvelle version avec `[skip ci]`
-- ✅ **Tag automatique** : Création et push du tag de version
+Key updates:
 
-#### Déclencheurs :
+* ✅ Single branch: triggers on `main` (no `develop` for version bump job)
+* ✅ New `version-bump` job: automatic Maven versioning
+* ✅ Supported bumps: patch, minor, major via workflow_dispatch
+* ✅ Automatic commit: the workflow commits the new version with `[skip ci]`
+* ✅ Automatic tag: creates and pushes the version tag
+
+Triggers:
+
 ```yaml
 on:
   push:
-    branches: [ main ]           # Push sur main uniquement
-    tags: [ 'v*.*.*' ]          # Tags de version
+    branches: [ main ]           # Push on main only
+    tags: [ 'v*.*.*' ]           # Version tags
   pull_request:
-    branches: [ main ]           # PR vers main
-  workflow_dispatch:             # Déclenchement manuel avec choix du bump
+    branches: [ main ]           # PRs to main
+  workflow_dispatch:             # Manual trigger with bump choice
 ```
 
-### 2. POM.xml enrichi
+### 2. Enriched POM.xml
 
-**Fichier** : `pom.xml`
+File: `pom.xml`
 
-#### Plugins ajoutés :
-- ✅ **versions-maven-plugin (2.17.1)** : Gestion des versions
-- ✅ **build-helper-maven-plugin (3.6.0)** : Parsing et manipulation de versions
+Plugins added:
 
-Ces plugins permettent au workflow de :
-- Parser la version actuelle
-- Calculer la nouvelle version selon le type de bump
-- Mettre à jour automatiquement le pom.xml
+* ✅ versions-maven-plugin (2.17.1): version management
+* ✅ build-helper-maven-plugin (3.6.0): version parsing and manipulation
 
-### 3. Script PowerShell amélioré
+These plugins allow the workflow to:
 
-**Fichier** : `cicd.ps1`
+* Parse the current version
+* Calculate the next version based on the bump type
+* Update `pom.xml` automatically
 
-#### Fonction `Create-Release` réécrite :
+### 3. Improved PowerShell script
+
+File: `cicd.ps1`
+
+Rewritten `Create-Release` function:
+
 ```powershell
-# Avant (manuel)
-.\cicd.ps1 release 1.0.0
+# Before (manual)
+./cicd.ps1 release 1.0.0
 
-# Maintenant (automatique)
-.\cicd.ps1 release patch   # Bump automatique
-.\cicd.ps1 release minor
-.\cicd.ps1 release major
+# Now (automatic)
+./cicd.ps1 release patch   # Automatic bump
+./cicd.ps1 release minor
+./cicd.ps1 release major
 ```
 
-Le script :
-- ✅ Valide que vous êtes sur `main`
-- ✅ Vérifie l'installation de GitHub CLI
-- ✅ Affiche la version actuelle
-- ✅ Déclenche le workflow GitHub Actions avec les bons paramètres
+The script:
 
-### 4. Documentation ajoutée
+* ✅ Validates you are on `main`
+* ✅ Checks that GitHub CLI is installed
+* ✅ Shows the current version
+* ✅ Triggers the GitHub Actions workflow with the right inputs
 
-**Nouveau fichier** : `VERSION-MANAGEMENT.md`
-- Guide complet de gestion de version
-- Explications détaillées du Semantic Versioning
-- Exemples d'utilisation
-- Commandes Maven utiles
-- Dépannage
+### 4. Documentation added
 
-## 🚀 Utilisation
+New file: `VERSION-MANAGEMENT.md`
 
-### Workflow complet de release
+* Complete version management guide
+* Detailed explanation of Semantic Versioning
+* Usage examples
+* Useful Maven commands
+* Troubleshooting
+
+## 🚀 How to use
+
+### Complete release workflow
 
 ```bash
-# 1. S'assurer d'être sur main
+# 1) Ensure you’re on main
 git checkout main
 git pull origin main
 
-# 2. Lancer le bump de version (exemple: patch)
-.\cicd.ps1 release patch
+# 2) Trigger a version bump (example: patch)
+./cicd.ps1 release patch
 
-# 3. Le workflow GitHub Actions fait automatiquement :
-#    - Bump 0.0.1-SNAPSHOT -> 0.0.2
-#    - Commit dans pom.xml
-#    - Crée le tag v0.0.2
-#    - Build, test, release, Docker
+# 3) GitHub Actions then automatically:
+#    - Bumps 0.0.1-SNAPSHOT -> 0.0.2
+#    - Commits updated pom.xml
+#    - Creates tag v0.0.2
+#    - Runs build, tests, release, and Docker
 ```
 
-### Exemples de bumps
+### Bump examples
 
 ```powershell
-# Version actuelle : 0.0.1-SNAPSHOT
+# Current version: 0.0.1-SNAPSHOT
 
-# Correction de bug
-.\cicd.ps1 release patch
-# Résultat : 0.0.2
+# Bug fix
+./cicd.ps1 release patch
+# Result: 0.0.2
 
-# Nouvelle fonctionnalité
-.\cicd.ps1 release minor
-# Résultat : 0.1.0
+# New feature
+./cicd.ps1 release minor
+# Result: 0.1.0
 
 # Breaking change
-.\cicd.ps1 release major
-# Résultat : 1.0.0
+./cicd.ps1 release major
+# Result: 1.0.0
 ```
 
-## 🔄 Comparaison Avant/Après
+## 🔄 Before vs After
 
-### Avant
+### Before
+
 ```bash
-# 1. Éditer manuellement pom.xml
-# 2. Commiter
+# 1) Manually edit pom.xml
+# 2) Commit
 git add pom.xml
 git commit -m "chore: bump version to 1.0.0"
-# 3. Créer le tag
+# 3) Create tag
 git tag v1.0.0
-# 4. Pousser
+# 4) Push
 git push origin main
 git push origin v1.0.0
-# 5. Attendre le workflow
+# 5) Wait for workflow
 ```
 
-### Maintenant
+### Now
+
 ```bash
-# 1. Une seule commande
-.\cicd.ps1 release patch
-# Tout le reste est automatique !
+# 1) Single command
+./cicd.ps1 release patch
+# Everything else is automatic!
 ```
 
-## ✨ Avantages
+## ✨ Benefits
 
-1. **Moins d'erreurs** : Plus de manipulation manuelle du pom.xml
-2. **Cohérence** : Le format de version est toujours correct
-3. **Traçabilité** : Commits automatiques avec format standard
-4. **Rapidité** : Une commande au lieu de 5+
-5. **Semantic Versioning** : Respect automatique des règles SemVer
+1. Fewer errors: no manual pom.xml handling
+2. Consistency: always valid version format
+3. Traceability: standardized automatic commits
+4. Speed: one command instead of 5+
+5. Semantic Versioning: SemVer rules applied automatically
 
-## 📋 Vérifications effectuées
+## 📋 Built-in checks
 
-Le système vérifie automatiquement :
-- ✅ Vous êtes sur la branche `main`
-- ✅ GitHub CLI est installé
-- ✅ Pas de modifications non commitées
-- ✅ La version actuelle est valide
-- ✅ Le type de bump est valide (patch/minor/major)
+The system automatically validates:
 
-## 🎯 Prochaines étapes
+* ✅ You’re on the `main` branch
+* ✅ GitHub CLI is installed
+* ✅ No uncommitted changes
+* ✅ The current version is valid
+* ✅ The bump type is valid (patch/minor/major)
 
-### Pour tester le système
+## 🎯 Next steps
+
+### Test the system
 
 ```bash
-# 1. Assurez-vous d'être à jour
+# 1) Make sure you’re up to date
 git checkout main
 git pull origin main
 
-# 2. Installez GitHub CLI si nécessaire
-# Windows : winget install GitHub.cli
-# Ou téléchargez depuis https://cli.github.com/
+# 2) Install GitHub CLI if needed
+# Windows: winget install GitHub.cli
+# Or download from https://cli.github.com/
 
-# 3. Testez avec un bump patch
-.\cicd.ps1 release patch
+# 3) Try a patch bump
+./cicd.ps1 release patch
 
-# 4. Suivez l'exécution
+# 4) Follow the run
 # https://github.com/tiogars/starter-api-spring-mysql/actions
 ```
 
-### Workflow recommandé
+### Recommended workflow
 
+```text
+Development → PR → Merge → Bump → Release
+     ↓         ↓       ↓       ↓       ↓
+  feature/x  Review   main   patch   v0.0.2
 ```
-Développement → PR → Merge → Bump → Release
-     ↓           ↓      ↓       ↓       ↓
-  feature/x    Review  main   patch  v0.0.2
-```
 
-## 📚 Documentation mise à jour
+## 📚 Updated documentation
 
-- ✅ `VERSION-MANAGEMENT.md` - Nouveau guide de gestion de version
-- ✅ `QUICKSTART.md` - Mis à jour avec nouvelles commandes
-- ✅ `cicd.ps1` - Fonction release réécrite
-- ✅ `.github/workflows/ci-cd.yml` - Job version-bump ajouté
-- ✅ `pom.xml` - Plugins de versioning ajoutés
+* ✅ `VERSION-MANAGEMENT.md` — New version management guide
+* ✅ `QUICKSTART.md` — Updated with new commands
+* ✅ `cicd.ps1` — Release function rewritten
+* ✅ `.github/workflows/ci-cd.yml` — Added version-bump job
+* ✅ `pom.xml` — Versioning plugins added
 
-## 🔐 Sécurité
+## 🔐 Security
 
-- ✅ Utilise `GITHUB_TOKEN` fourni automatiquement
-- ✅ Commit marqué `[skip ci]` pour éviter les boucles
-- ✅ Validation des entrées utilisateur
-- ✅ Vérifications de l'état Git avant exécution
+* ✅ Uses the automatically provided `GITHUB_TOKEN`
+* ✅ Commits are marked `[skip ci]` to avoid loops
+* ✅ User inputs are validated
+* ✅ Git state checks run before execution
 
 ## 🆘 Support
 
-En cas de problème :
-1. Consultez `VERSION-MANAGEMENT.md`
-2. Vérifiez que GitHub CLI est installé : `gh --version`
-3. Vérifiez que vous êtes sur main : `git branch --show-current`
-4. Consultez les logs du workflow sur GitHub Actions
+If something goes wrong:
+
+1. Read `VERSION-MANAGEMENT.md`
+2. Verify that GitHub CLI is installed: `gh --version`
+3. Confirm you are on main: `git branch --show-current`
+4. Inspect the workflow logs in GitHub Actions
 
 ---
 
-**Date** : 2025-10-24
-**Auteur** : GitHub Copilot
-**Version** : 2.0
+Date: 2025-10-24  
+Author: GitHub Copilot  
+Version: 2.0
