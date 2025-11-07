@@ -15,6 +15,22 @@ This repo is a Spring Boot 3.5 (Java 21) REST API backed by MySQL with a simple,
 
 ## Documentation Language
 - All documentation (including code comments, README, and guides) must be written in **English**.
+
+## Markdown Linting Guidelines
+Keep all Markdown files (README, QUICKSTART, ARCHITECTURE, workflow docs) compliant with common lint rules to maintain consistency and readability. When adding or updating docs:
+
+* Single H1: Only one top-level heading per file (avoid duplicates) (MD025).
+* Heading spacing: Blank line before and after headings (MD022).
+* Code fences: Surround fenced blocks with blank lines, specify language (`bash`, `powershell`, `json`, etc.) (MD031).
+* Lists spacing: Ensure a blank line before and after lists (MD032).
+* Bullet style: Use asterisks `*` for unordered lists consistently (MD004); no mixed `-`/`*` styles.
+* Indentation: Left-align list markers (no leading spaces) unless nesting (MD007); keep nested items indented by two spaces.
+* Ordered lists: Use `1.` for each item unless semantic numbering is required; auto-renumbering allowed (MD029).
+* Bare URLs: Wrap URLs in angle brackets or convert to markdown links; avoid naked raw URLs inside text (MD034).
+* Language: Remove any non-English residual content when updating docs.
+* Long command blocks: Prefer concise examples; add comments for multi-line scripts.
+
+Before committing large doc changes, preview Markdown and (optionally) run a local linter (e.g. `markdownlint-cli`) to catch violations early.
 ## Typical data flow
 HTTP → controller (request DTO) → service (toModel, validate, toEntity, CRUD via repository) → service (toModel) → controller returns model.
 

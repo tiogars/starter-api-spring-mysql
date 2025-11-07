@@ -4,149 +4,130 @@
 [![GitHub release](https://img.shields.io/github/v/release/tiogars/starter-api-spring-mysql)](https://github.com/tiogars/starter-api-spring-mysql/releases)
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/tiogars/starter-api-spring-mysql/pkgs/container/starter-api-spring-mysql)
 
-Spring Boot + MySQL Starter API avec CI/CD automatisé
+Spring Boot + MySQL Starter API with automated CI/CD.
 
-## 📋 Table des matières
+## 📋 Table of Contents
 
-- [Fonctionnalités](#fonctionnalités)
-- [Prérequis](#prérequis)
-- [Installation](#installation)
-- [Utilisation](#utilisation)
-- [CI/CD](#cicd)
-- [Docker](#docker)
-- [Documentation](#documentation)
+* [Features](#-features)
+* [Requirements](#️-requirements)
+* [Installation](#-installation)
+* [Usage](#-usage)
+* [CI/CD](#-cicd)
+* [Docker](#-docker)
+* [Documentation](#-documentation)
 
-## ✨ Fonctionnalités
+## ✨ Features
 
-- **Spring Boot 3.5.7** avec Java 21
-- **API REST** avec documentation OpenAPI/Swagger
-- **Persistance** avec Spring Data JPA et MySQL
-- **Monitoring** avec Spring Boot Actuator
-- **CI/CD complet** avec GitHub Actions
-- **Containerisation** avec Docker multi-stage
-- **Tests automatisés** et rapports de couverture
-- **Scan de sécurité** avec Trivy
-- **Releases automatiques** avec artifacts
+* **Spring Boot 3.5.7** with Java 21
+* **REST API** with OpenAPI/Swagger documentation
+* **Persistence** with Spring Data JPA and MySQL
+* **Monitoring** with Spring Boot Actuator
+* **Full CI/CD** with GitHub Actions
+* **Containerization** with multi-stage Docker
+* **Automated tests** and coverage reports
+* **Security scanning** with Trivy
+* **Automatic releases** with artifacts
 
-## 🛠️ Prérequis
+## 🛠️ Requirements
 
-### Pour le développement local
-- Java 21+
-- Maven 3.6+
-- MySQL 8.0+
-- Docker & Docker Compose (optionnel)
+### Local development
+* Java 21+
+* Maven 3.6+
+* MySQL 8.0+
+* Docker & Docker Compose (optional)
 
-### Pour accéder aux dépendances GitHub
-- Un compte GitHub
-- Un Personal Access Token avec permission `read:packages`
+### Access GitHub dependencies
+* GitHub account
+* Personal Access Token with `read:packages`
 
 ## 📥 Installation
 
-### 1. Configuration rapide (recommandé)
+### 1. Quick setup (recommended)
 
 ```powershell
-# Cloner le repository
+# Clone repository
 git clone https://github.com/tiogars/starter-api-spring-mysql.git
 cd starter-api-spring-mysql
 
-# Configurer Maven pour GitHub Packages
-.\cicd.ps1 setup
+# Configure Maven for GitHub Packages
+./cicd.ps1 setup
 
-# Compiler l'application
-.\cicd.ps1 build
+# Build application
+./cicd.ps1 build
 ```
 
-### 2. Configuration manuelle
+### 2. Manual setup
 
 ```powershell
-# Copier le fichier de configuration Maven
+# Copy Maven settings
 copy settings.xml.example $env:USERPROFILE\.m2\settings.xml
 
-# Éditer et configurer avec vos credentials GitHub
+# Edit with your GitHub credentials
 notepad $env:USERPROFILE\.m2\settings.xml
 
-# Compiler
-.\mvnw.cmd clean compile
+# Build
+./mvnw.cmd clean compile
 ```
 
-Voir [QUICKSTART.md](QUICKSTART.md) pour plus de détails.
+See [QUICKSTART.md](QUICKSTART.md) for more details.
 
-## 🚀 Utilisation
+## 🚀 Usage
 
-### Développement local
+### Local development (repeat for quick copy)
 
-```bash
-# Compiler
-.\mvnw.cmd compile
-
-# Exécuter les tests
-.\mvnw.cmd test
-
-# Lancer l'application
-.\mvnw.cmd spring-boot:run
+```powershell
+./mvnw.cmd compile
+./mvnw.cmd test
+./mvnw.cmd spring-boot:run
 ```
 
-### Avec Docker Compose (recommandé)
+### Docker Compose (recommended)
 
 ```bash
-# Lancer l'application et MySQL
 docker-compose up -d
-
-# Voir les logs
 docker-compose logs -f
-
-# Arrêter
 docker-compose down
 ```
 
-### Accéder à l'application
+### Access endpoints
 
-- **API Swagger UI**: http://localhost:8080/swagger-ui/index.html
-- **Health Check**: http://localhost:8080/actuator/health
-- **Métriques**: http://localhost:8080/actuator/metrics
-- **Info**: http://localhost:8080/actuator/info
+* Swagger UI: <http://localhost:8080/swagger-ui/index.html>
+* Health: <http://localhost:8080/actuator/health>
+* Metrics: <http://localhost:8080/actuator/metrics>
+* Info: <http://localhost:8080/actuator/info>
 
 ## 🔄 CI/CD
 
-Ce projet utilise GitHub Actions pour l'intégration et le déploiement continus.
+GitHub Actions handles build, test, release, Docker image publishing and security scanning.
 
-### Pipeline automatique
+Triggers:
 
-Le workflow CI/CD se déclenche automatiquement sur :
-- **Push** vers `main` ou `develop`
-- **Pull Requests** vers `main` ou `develop`
-- **Tags** au format `v*.*.*`
-- **Déclenchement manuel**
+* Push to `main` or `develop`
+* Pull Request targeting `main` or `develop`
+* Tags matching `v*.*.*`
+* Manual dispatch
 
-### Étapes du pipeline
+Pipeline steps:
 
-1. ✅ **Build & Test** - Compilation et tests avec Maven
-2. 📦 **Release** - Création de release GitHub avec artifacts (sur tags)
-3. 🐳 **Docker** - Build et push vers GitHub Container Registry
-4. 🔒 **Security** - Scan de vulnérabilités avec Trivy
+1. Build & Test (Maven compile/test)
+2. Release (on tags) – GitHub Release with artifacts
+3. Docker – Multi-platform build & push (GHCR)
+4. Security – Trivy vulnerability scan
 
-### Créer une release
+Release examples:
 
 ```powershell
-# Avec le script PowerShell (recommandé)
-.\cicd.ps1 release 1.0.0
-
-# Ou manuellement
+./cicd.ps1 release 1.0.0
 git tag -a v1.0.0 -m "Release version 1.0.0"
 git push origin v1.0.0
 ```
 
-📚 **Documentation complète** : [.github/workflows/README.md](.github/workflows/README.md)
+More: `.github/workflows/README.md`.
 
 ## 🐳 Docker
 
-### Utiliser l'image depuis GitHub Container Registry
-
 ```bash
-# Pull de l'image
 docker pull ghcr.io/tiogars/starter-api-spring-mysql:latest
-
-# Lancer avec variables d'environnement
 docker run -d \
   -p 8080:8080 \
   -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/starterdb \
@@ -156,72 +137,59 @@ docker run -d \
   ghcr.io/tiogars/starter-api-spring-mysql:latest
 ```
 
-### Build local
+Local image build:
 
 ```powershell
-# Avec le script PowerShell
-.\cicd.ps1 docker-build
-
-# Ou manuellement
+./cicd.ps1 docker-build
 docker build -t starter-api:latest .
 ```
 
 ## 📚 Documentation
 
-### Technologies utilisées
+Includes:
 
-Ce projet a été créé avec [Spring Initializr](https://start.spring.io/) et inclut :
+* Spring Boot Actuator, DevTools, Configuration Processor
+* Spring Web, Spring Data JPA, MySQL Driver
+* SpringDoc OpenAPI (Swagger)
 
-- **Spring Boot Actuator** - Monitoring et métriques
-- **Spring Boot DevTools** - Outils de développement
-- **Spring Configuration Processor** - Traitement de configuration
-- **Spring Web** - API REST
-- **MySQL Driver** - Connecteur MySQL
-- **Spring Data JPA** - Persistance des données
-- **SpringDoc OpenAPI** - Documentation API ([springdoc.org](https://springdoc.org/#getting-started))
+Custom dependencies (GitHub Packages):
 
-### Dépendances personnalisées
+* `architecture-create-service` (1.0.2)
+* `architecture-select-service` (1.0.0)
 
-- `architecture-create-service` (v1.0.2) - Service de création
-- `architecture-select-service` (v1.0.0) - Service de sélection
+Guides:
 
-Ces dépendances sont hébergées sur GitHub Packages.
+* Quickstart: `QUICKSTART.md`
+* CI/CD details: `.github/workflows/README.md`
+* Container: `Dockerfile`
+* Maven auth: `settings.xml.example`
 
-### Guides utiles
+## 🤝 Contributing
 
-- 📖 [Guide de démarrage rapide](QUICKSTART.md)
-- 🔧 [Documentation CI/CD](.github/workflows/README.md)
-- 🐳 [Dockerfile](Dockerfile)
-- 🔑 [Configuration Maven](settings.xml.example)
+```bash
+git checkout -b feature/amazing-feature
+git commit -m "feat: add amazing feature"
+git push origin feature/amazing-feature
+```
 
-## 🤝 Contribution
+Open a Pull Request and follow Conventional Commits.
 
-1. Fork le projet
-2. Créez une branche (`git checkout -b feature/amazing-feature`)
-3. Committez vos changements (`git commit -m 'feat: add amazing feature'`)
-4. Poussez vers la branche (`git push origin feature/amazing-feature`)
-5. Ouvrez une Pull Request
+## 📄 License
 
-Suivez les [Conventional Commits](https://www.conventionalcommits.org/) pour vos messages de commit.
+See [LICENSE](LICENSE) for details.
 
-## 📄 Licence
+## 👤 Author
 
-Ce projet est sous licence libre. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+**Tiogars** – GitHub: [@tiogars](https://github.com/tiogars)
 
-## 👤 Auteur
+## 🔗 Useful Links
 
-**Tiogars**
-- GitHub: [@tiogars](https://github.com/tiogars)
-- Repository: [starter-api-spring-mysql](https://github.com/tiogars/starter-api-spring-mysql)
-
-## 🔗 Liens utiles
-
-- [Documentation Spring Boot](https://docs.spring.io/spring-boot/docs/current/reference/html/)
-- [GitHub Actions](https://docs.github.com/actions)
-- [GitHub Packages](https://docs.github.com/packages)
-- [Docker Hub](https://hub.docker.com/)
-- [Conventional Commits](https://www.conventionalcommits.org/)
+* Spring Boot Docs
+* GitHub Actions Docs
+* GitHub Packages Docs
+* Docker Hub
+* Conventional Commits
 
 ---
 
-⭐ Si ce projet vous aide, n'hésitez pas à lui donner une étoile !
+⭐ If this project helps you, give it a star!
