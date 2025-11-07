@@ -1,199 +1,227 @@
-# Configuration GitHub Actions CI/CD
+# GitHub Actions CI/CD Configuration
 
-Ce repository utilise GitHub Actions pour automatiser le build, les tests, la création de releases et le déploiement Docker.
+This repository uses GitHub Actions to automate build, tests, releases, and Docker publishing.
 
-## 🔄 Workflows disponibles
+## 🔄 Available Workflows
 
-### CI/CD Pipeline Complet (`ci-cd.yml`)
+### Full CI/CD Pipeline (`ci-cd.yml`)
 
-Ce workflow s'exécute sur :
-- Push sur les branches `main` et `develop`
-- Création de tags `v*.*.*`
-- Pull requests vers `main` et `develop`
-- Déclenchement manuel
+This workflow runs on:
 
-#### Jobs inclus :
+* Pushes to `main` and `develop`
+* Tag creation `v*.*.*`
+* Pull requests targeting `main` and `develop`
+* Manual dispatch
+
+#### Included jobs
 
 1. **Build and Test**
-   - Configure Java 21 et Maven
-   - Récupère les dépendances depuis GitHub Packages
-   - Compile l'application
-   - Exécute les tests
-   - Upload des artifacts
+    * Configure Java 21 and Maven
+    * Fetch dependencies from GitHub Packages
+    * Compile the application
+    * Run tests
+    * Upload artifacts
 
-2. **Create Release** (uniquement sur tags)
-   - Crée une release GitHub
-   - Génère un changelog automatique
-   - Attache les sources et le JAR compilé
+2. **Create Release** (tags only)
+    * Create a GitHub Release
+    * Generate an automatic changelog
+    * Attach sources and built JAR
 
 3. **Docker Build & Push**
-   - Build multi-plateforme (amd64/arm64)
-   - Push vers GitHub Container Registry
-   - Génération du SBOM
+    * Multi-platform build (amd64/arm64)
+    * Push to GitHub Container Registry
+    * Generate SBOM
 
 4. **Security Scan**
-   - Scan de vulnérabilités avec Trivy
-   - Upload des résultats vers GitHub Security
+    * Scan vulnerabilities with Trivy
+    * Upload results to GitHub Security
 
-## 📋 Prérequis
+## 📋 Prerequisites
 
-### Secrets GitHub (déjà configurés automatiquement)
-- `GITHUB_TOKEN` : Token fourni automatiquement par GitHub Actions
+### GitHub Secrets (auto-provisioned)
 
-### Configuration locale pour Maven
+* `GITHUB_TOKEN`: Token automatically provided by GitHub Actions
 
-Pour accéder aux dépendances GitHub Packages en local, créez `~/.m2/settings.xml` :
+### Local Maven configuration
+
+To access GitHub Packages locally, create `~/.m2/settings.xml`:
 
 ```xml
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
-                              https://maven.apache.org/xsd/settings-1.0.0.xsd">
-  <servers>
-    <server>
-      <id>github</id>
-      <username>VOTRE_USERNAME_GITHUB</username>
-      <password>VOTRE_PERSONAL_ACCESS_TOKEN</password>
-    </server>
-  </servers>
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                                             https://maven.apache.org/xsd/settings-1.0.0.xsd">
+   <servers>
+      <server>
+         <id>github</id>
+         <username>YOUR_GITHUB_USERNAME</username>
+         <password>YOUR_PERSONAL_ACCESS_TOKEN</password>
+      </server>
+   </servers>
+   <profiles>
+      <profile>
+         <id>github</id>
+         <repositories>
+            <repository>
+               <id>central</id>
+               <url>https://repo.maven.apache.org/maven2</url>
+            </repository>
+            <repository>
+               <id>github</id>
+               <url>https://maven.pkg.github.com/tiogars/*</url>
+            </repository>
+         </repositories>
+      </profile>
+   </profiles>
+   <activeProfiles>
+      <activeProfile>github</activeProfile>
+   </activeProfiles>
 </settings>
 ```
 
-**Créer un Personal Access Token (PAT) :**
-1. Allez sur GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
-2. Générez un nouveau token avec les permissions : `read:packages`
+Create a Personal Access Token (PAT):
 
-## 🚀 Utilisation
+1. GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate with permission: `read:packages`
 
-### Déclencher un build automatique
+## 🚀 Usage
+
+### Trigger an automatic build
 
 ```bash
-# Sur la branche develop ou main
+# On develop or main
 git add .
-git commit -m "feat: nouvelle fonctionnalité"
+git commit -m "feat: new feature"
 git push
 ```
 
-### Créer une release
+### Create a release
 
 ```bash
-# Créer un tag de version
+# Create a version tag
 git tag -a v1.0.0 -m "Release version 1.0.0"
 git push origin v1.0.0
 ```
 
-Le workflow va automatiquement :
-1. ✅ Compiler et tester l'application
-2. 📦 Créer une release GitHub avec les artifacts
-3. 🐳 Build et push l'image Docker
-4. 🔒 Scanner les vulnérabilités
+The workflow will automatically:
 
-### Déclenchement manuel
+1. ✅ Build and test the application
+2. 📦 Create a GitHub Release with artifacts
+3. 🐳 Build and push the Docker image
+4. 🔒 Scan for vulnerabilities
 
-Allez sur : `Actions` → `CI/CD Pipeline` → `Run workflow`
+### Manual dispatch
 
-## 🐳 Utiliser l'image Docker
+Go to: `Actions` → `CI/CD Pipeline` → `Run workflow`
 
-### Pull depuis GitHub Container Registry
+## 🐳 Use the Docker image
+
+### Pull from GitHub Container Registry
 
 ```bash
-# Dernière version
+# Latest
 docker pull ghcr.io/tiogars/starter-api-spring-mysql:latest
 
-# Version spécifique
+# Specific version
 docker pull ghcr.io/tiogars/starter-api-spring-mysql:v1.0.0
 
-# Branche develop
+# develop branch
 docker pull ghcr.io/tiogars/starter-api-spring-mysql:develop
 ```
 
-### Lancer l'application
+### Run the application
 
 ```bash
-# Avec docker-compose (recommandé)
+# With docker-compose (recommended)
 docker-compose up -d
 
-# Ou manuellement
+# Or manually
 docker run -d \
-  -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/starterdb \
-  -e SPRING_DATASOURCE_USERNAME=root \
-  -e SPRING_DATASOURCE_PASSWORD=password \
-  --name starter-api \
-  ghcr.io/tiogars/starter-api-spring-mysql:latest
+   -p 8080:8080 \
+   -e SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/starterdb \
+   -e SPRING_DATASOURCE_USERNAME=root \
+   -e SPRING_DATASOURCE_PASSWORD=password \
+   --name starter-api \
+   ghcr.io/tiogars/starter-api-spring-mysql:latest
 ```
 
-## 📊 Artifacts disponibles
+## 📊 Available artifacts
 
-Après chaque build réussi, vous trouverez :
+After each successful build you will find:
 
-### Dans GitHub Actions
-- **build-artifacts** : JAR compilé (7 jours)
-- **test-results** : Rapports de tests (7 jours)
-- **sbom** : Software Bill of Materials (90 jours)
+### In GitHub Actions
 
-### Dans GitHub Releases (pour les tags)
-- `starter-VERSION.jar` : Application compilée
-- `starter-api-VERSION-sources.zip` : Code source (ZIP)
-- `starter-api-VERSION-sources.tar.gz` : Code source (TAR.GZ)
+* build-artifacts: built JAR (7 days)
+* test-results: test reports (7 days)
+* sbom: Software Bill of Materials (90 days)
 
-### Dans GitHub Container Registry
-- Images Docker avec tags multiples
-- Support multi-architecture (amd64, arm64)
+### In GitHub Releases (tags)
 
-## 🔐 Sécurité
+* `starter-VERSION.jar`: compiled application
+* `starter-api-VERSION-sources.zip`: source code (ZIP)
+* `starter-api-VERSION-sources.tar.gz`: source code (TAR.GZ)
 
-### Scan de vulnérabilités
-Chaque image Docker est scannée avec Trivy pour détecter :
-- Vulnérabilités CRITICAL et HIGH
-- Résultats disponibles dans l'onglet Security
+### In GitHub Container Registry
+
+* Docker images with multiple tags
+* Multi-architecture support (amd64, arm64)
+
+## 🔐 Security
+
+### Vulnerability scanning
+
+Each Docker image is scanned with Trivy to detect:
+
+* CRITICAL and HIGH vulnerabilities
+* Results available in the Security tab
 
 ### SBOM (Software Bill of Materials)
-Un SBOM au format CycloneDX est généré pour chaque build et conservé 90 jours.
 
-## 🏷️ Convention de versioning
+An SBOM in CycloneDX format is generated for each build and kept for 90 days.
 
-Le projet utilise Semantic Versioning (SemVer) :
-- `v1.0.0` : Release stable
-- `v1.0.0-RC1` : Release candidate (prerelease)
-- `v1.0.0-SNAPSHOT` : Version de développement (prerelease)
+## 🏷️ Versioning convention
 
-### Tags Docker générés automatiquement
-- `latest` : Dernière version de la branche main
-- `v1.0.0` : Tag de version exacte
-- `1.0` : Tag majeur.mineur
-- `1` : Tag majeur
-- `develop` : Branche develop
-- `main-abc1234` : SHA du commit sur main
+The project uses Semantic Versioning (SemVer):
 
-## 📝 Notes importantes
+* `v1.0.0`: Stable release
+* `v1.0.0-RC1`: Release candidate (prerelease)
+* `v1.0.0-SNAPSHOT`: Development version (prerelease)
 
-1. **Dépendances GitHub** : Les dépendances `architecture-create-service` et `architecture-select-service` doivent être disponibles sur GitHub Packages du compte `tiogars`
+### Automatically generated Docker tags
 
-2. **Cache Maven** : Le cache Maven est géré automatiquement par GitHub Actions pour accélérer les builds
+* `latest`: Latest version from main branch
+* `v1.0.0`: Exact version tag
+* `1.0`: Major.minor tag
+* `1`: Major tag
+* `develop`: develop branch
+* `main-abc1234`: SHA of a commit on main
 
-3. **Multi-platform builds** : Les images Docker sont buildées pour AMD64 et ARM64
+## 📝 Important notes
 
-4. **Tests** : Les tests doivent passer pour que le workflow continue (sauf build Docker qui peut continuer)
+1. GitHub dependencies: `architecture-create-service` and `architecture-select-service` must be available in GitHub Packages for account `tiogars`.
+2. Maven cache: handled automatically by GitHub Actions to speed up builds.
+3. Multi-platform builds: images are built for AMD64 and ARM64.
+4. Tests: tests must pass for the workflow to continue (Docker build may continue depending on workflow conditions).
 
 ## 🔧 Maintenance
 
-### Mettre à jour les dépendances
+### Update dependencies
 
 ```bash
 ./mvnw versions:display-dependency-updates
 ./mvnw versions:use-latest-releases
 ```
 
-### Nettoyer les anciens artifacts
+### Clean old artifacts
 
-Les artifacts sont automatiquement supprimés après :
-- 7 jours pour build-artifacts et test-results
-- 90 jours pour les SBOM
+Artifacts are automatically removed after:
 
-## 📚 Ressources
+* 7 days for build-artifacts and test-results
+* 90 days for SBOM
 
-- [GitHub Actions Documentation](https://docs.github.com/actions)
-- [GitHub Packages Maven](https://docs.github.com/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
-- [GitHub Container Registry](https://docs.github.com/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
-- [Spring Boot with Docker](https://spring.io/guides/topicals/spring-boot-docker)
+## 📚 Resources
+
+* [GitHub Actions Documentation](https://docs.github.com/actions)
+* [GitHub Packages Maven](https://docs.github.com/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry)
+* [GitHub Container Registry](https://docs.github.com/packages/working-with-a-github-packages-registry/working-with-the-container-registry)
+* [Spring Boot with Docker](https://spring.io/guides/topicals/spring-boot-docker)

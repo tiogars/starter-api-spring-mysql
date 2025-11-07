@@ -1,100 +1,100 @@
-# Architecture CI/CD - Diagramme et Flux
+# CI/CD Architecture — Diagrams and Flows
 
-## 🏗️ Architecture globale
+## 🏗️ Global Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         DÉVELOPPEUR LOCAL                            │
-│                                                                       │
-│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐          │
-│  │   cicd.ps1   │ → │    Maven     │ → │   GitHub     │          │
-│  │   (Helper)   │    │   + Java 21  │    │   Packages   │          │
-│  └──────────────┘    └──────────────┘    └──────────────┘          │
-│         │                    │                    │                  │
-└─────────┼────────────────────┼────────────────────┼──────────────────┘
+│                           LOCAL DEVELOPER                           │
+│                                                                     │
+│  ┌──────────────┐    ┌──────────────┐    ┌──────────────┐           │
+│  │   cicd.ps1   │ →  │    Maven     │ →  │   GitHub      │           │
+│  │   (Helper)   │    │   + Java 21  │    │   Packages    │           │
+│  └──────────────┘    └──────────────┘    └──────────────┘           │
+│         │                    │                    │                 │
+└─────────┼────────────────────┼────────────────────┼─────────────────┘
           │                    │                    │
           ▼                    ▼                    ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                           GIT REPOSITORY                             │
-│                    github.com/tiogars/starter-api                   │
-│                                                                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                │
-│  │   develop   │  │    main     │  │  v*.*.*     │                │
-│  │  (feature)  │  │  (stable)   │  │  (release)  │                │
-│  └─────────────┘  └─────────────┘  └─────────────┘                │
-│         │                │                │                          │
-└─────────┼────────────────┼────────────────┼──────────────────────────┘
+│                           GIT REPOSITORY                            │
+│                 github.com/tiogars/starter-api-spring-mysql         │
+│                                                                     │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                  │
+│  │   develop   │  │    main     │  │  v*.*.*     │                  │
+│  │ (features)  │  │  (stable)   │  │  (release)  │                  │
+│  └─────────────┘  └─────────────┘  └─────────────┘                  │
+│         │                │                │                         │
+└─────────┼────────────────┼────────────────┼─────────────────────────┘
           │                │                │
           ▼                ▼                ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        GITHUB ACTIONS                                │
-│                      (Workflows Automatiques)                        │
-│                                                                       │
+│                            GITHUB ACTIONS                            │
+│                         (Automated Workflows)                        │
+│                                                                     │
 │  ┌───────────────────────────────────────────────────────────┐      │
 │  │  JOB 1: Build & Test                                      │      │
-│  │  ├─ Setup Java 21                                         │      │
-│  │  ├─ Configure Maven (GitHub Packages auth)               │      │
-│  │  ├─ Fetch dependencies from GitHub Packages              │      │
-│  │  ├─ Compile (mvn compile)                                │      │
-│  │  ├─ Run tests (mvn test)                                 │      │
-│  │  ├─ Package (mvn package)                                │      │
-│  │  └─ Upload artifacts (JAR, test reports)                 │      │
+│  │  ├─ Setup Java 21                                          │      │
+│  │  ├─ Configure Maven (GitHub Packages auth)                 │      │
+│  │  ├─ Fetch dependencies from GitHub Packages               │      │
+│  │  ├─ Compile (mvn compile)                                  │      │
+│  │  ├─ Run tests (mvn test)                                   │      │
+│  │  ├─ Package (mvn package)                                  │      │
+│  │  └─ Upload artifacts (JAR, test reports)                   │      │
 │  └───────────────────────────────────────────────────────────┘      │
-│         │                                                             │
-│         ▼                                                             │
+│         │                                                            │
+│         ▼                                                            │
 │  ┌───────────────────────────────────────────────────────────┐      │
-│  │  JOB 2: Create Release (only on tags)                    │      │
-│  │  ├─ Download build artifacts                             │      │
-│  │  ├─ Create source archives (zip, tar.gz)                 │      │
-│  │  ├─ Generate changelog from git history                  │      │
-│  │  └─ Create GitHub Release with attachments               │      │
+│  │  JOB 2: Create Release (tags only)                        │      │
+│  │  ├─ Download build artifacts                               │      │
+│  │  ├─ Create source archives (zip, tar.gz)                   │      │
+│  │  ├─ Generate changelog from git history                    │      │
+│  │  └─ Create GitHub Release with attachments                 │      │
 │  └───────────────────────────────────────────────────────────┘      │
-│         │                                                             │
-│         ▼                                                             │
+│         │                                                            │
+│         ▼                                                            │
 │  ┌───────────────────────────────────────────────────────────┐      │
 │  │  JOB 3: Docker Build & Push                               │      │
-│  │  ├─ Setup Docker Buildx (multi-platform)                 │      │
-│  │  ├─ Login to GitHub Container Registry                   │      │
-│  │  ├─ Extract metadata (tags, labels)                      │      │
-│  │  ├─ Build image (amd64 + arm64)                          │      │
-│  │  ├─ Push to ghcr.io/tiogars/starter-api-spring-mysql    │      │
-│  │  └─ Generate SBOM (CycloneDX)                            │      │
+│  │  ├─ Setup Docker Buildx (multi-platform)                  │      │
+│  │  ├─ Login to GitHub Container Registry                     │      │
+│  │  ├─ Extract metadata (tags, labels)                        │      │
+│  │  ├─ Build image (amd64 + arm64)                            │      │
+│  │  ├─ Push to ghcr.io/tiogars/starter-api-spring-mysql       │      │
+│  │  └─ Generate SBOM (CycloneDX)                              │      │
 │  └───────────────────────────────────────────────────────────┘      │
-│         │                                                             │
-│         ▼                                                             │
+│         │                                                            │
+│         ▼                                                            │
 │  ┌───────────────────────────────────────────────────────────┐      │
 │  │  JOB 4: Security Scan                                     │      │
-│  │  ├─ Pull Docker image                                     │      │
-│  │  ├─ Run Trivy vulnerability scanner                      │      │
-│  │  ├─ Generate SARIF report                                │      │
-│  │  └─ Upload to GitHub Security                            │      │
+│  │  ├─ Pull Docker image                                      │      │
+│  │  ├─ Run Trivy vulnerability scanner                         │      │
+│  │  ├─ Generate SARIF report                                   │      │
+│  │  └─ Upload to GitHub Security                               │      │
 │  └───────────────────────────────────────────────────────────┘      │
-│                                                                       │
+│                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
           │                │                │
           ▼                ▼                ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                           ARTIFACTS & OUTPUTS                        │
-│                                                                       │
-│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐    │
-│  │ GitHub Releases │  │  Docker Images  │  │ Security Reports│    │
-│  │                 │  │                 │  │                 │    │
-│  │ • JAR files     │  │ ghcr.io tags:   │  │ • Trivy scans   │    │
-│  │ • Sources (zip) │  │ • latest        │  │ • SARIF format  │    │
-│  │ • Changelogs    │  │ • v1.0.0        │  │ • GitHub Sec.   │    │
-│  │                 │  │ • 1.0           │  │                 │    │
-│  └─────────────────┘  │ • 1             │  └─────────────────┘    │
-│                       │ • develop       │                          │
-│                       │ • main-sha      │                          │
-│                       └─────────────────┘                          │
+│                                                                     │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐      │
+│  │ GitHub Releases │  │  Docker Images  │  │ Security Reports│      │
+│  │                 │  │                 │  │                 │      │
+│  │ • JAR files     │  │ ghcr.io tags:   │  │ • Trivy scans   │      │
+│  │ • Sources (zip) │  │ • latest        │  │ • SARIF format  │      │
+│  │ • Changelogs    │  │ • v1.0.0        │  │ • GitHub Sec.   │      │
+│  │                 │  │ • 1.0           │  │                 │      │
+│  └─────────────────┘  │ • 1             │  └─────────────────┘      │
+│                       │ • develop       │                            │
+│                       │ • main-sha      │                            │
+│                       └─────────────────┘                            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-## 🔄 Flux de travail détaillé
+## 🔄 Detailed Workflow
 
-### 1️⃣ Push sur branche (develop/main)
+### 1️⃣ Branch push (develop/main)
 
-```
+```text
 Developer                GitHub Actions                 GitHub Registry
     │                           │                              │
     │ git push origin develop   │                              │
@@ -119,7 +119,7 @@ Developer                GitHub Actions                 GitHub Registry
 
 ### 2️⃣ Pull Request
 
-```
+```text
 Developer                GitHub Actions                 Status Check
     │                           │                              │
     │ Create PR                 │                              │
@@ -133,12 +133,12 @@ Developer                GitHub Actions                 Status Check
     │    ✅ All checks passed   │                              │
     │    ❌ Tests failed        │                              │
     │                           │                              │
-    │ (NO Docker build on PR)   │                              │
+    │ (no Docker build on PR)   │                              │
 ```
 
-### 3️⃣ Release avec Tag
+### 3️⃣ Release with Tag
 
-```
+```text
 Developer          GitHub Actions      GitHub Releases    Docker Registry    Security
     │                    │                    │                  │              │
     │ git tag v1.0.0     │                    │                  │              │
@@ -171,43 +171,43 @@ Developer          GitHub Actions      GitHub Releases    Docker Registry    Sec
     │   (Email/GitHub)   │                    │                  │              │
 ```
 
-## 📊 Matrice de déclenchement
+## 📊 Trigger Matrix
 
-| Événement | Build & Test | Release | Docker Push | Security Scan |
-|-----------|--------------|---------|-------------|---------------|
-| Push (develop) | ✅ | ❌ | ✅ (tag: develop) | ✅ |
-| Push (main) | ✅ | ❌ | ✅ (tag: main, latest) | ✅ |
-| Pull Request | ✅ | ❌ | ❌ | ❌ |
-| Tag (v*.*.*) | ✅ | ✅ | ✅ (multi-tags) | ✅ |
-| Manual | ✅ | ⚙️ (option) | ✅ | ✅ |
+| Event           | Build & Test | Release | Docker Push               | Security Scan |
+|-----------------|--------------|---------|---------------------------|---------------|
+| Push (develop)  | ✅           | ❌      | ✅ (tag: develop)         | ✅            |
+| Push (main)     | ✅           | ❌      | ✅ (tag: main, latest)    | ✅            |
+| Pull Request    | ✅           | ❌      | ❌                         | ❌            |
+| Tag (v*.*.*)    | ✅           | ✅      | ✅ (multi-tags)           | ✅            |
+| Manual          | ✅           | ⚙️ (opt) | ✅                         | ✅            |
 
-## 🏷️ Stratégie de tagging Docker
+## 🏷️ Docker Tagging Strategy
 
-### Pour un tag `v1.2.3`
+### For a tag `v1.2.3`
 
-```
-ghcr.io/tiogars/starter-api-spring-mysql:v1.2.3    ← Version exacte
-ghcr.io/tiogars/starter-api-spring-mysql:1.2       ← Mineur (reçoit patches)
-ghcr.io/tiogars/starter-api-spring-mysql:1         ← Majeur (reçoit mineurs)
-ghcr.io/tiogars/starter-api-spring-mysql:latest    ← Dernière stable (main)
-```
-
-### Pour une branche
-
-```
-ghcr.io/tiogars/starter-api-spring-mysql:develop           ← Branche develop
-ghcr.io/tiogars/starter-api-spring-mysql:main              ← Branche main
-ghcr.io/tiogars/starter-api-spring-mysql:main-abc1234     ← SHA commit
+```text
+ghcr.io/tiogars/starter-api-spring-mysql:v1.2.3   ← Exact version
+ghcr.io/tiogars/starter-api-spring-mysql:1.2      ← Minor (receives patches)
+ghcr.io/tiogars/starter-api-spring-mysql:1        ← Major (receives minors)
+ghcr.io/tiogars/starter-api-spring-mysql:latest   ← Latest stable (main)
 ```
 
-## 🔐 Sécurité et permissions
+### For a branch
 
-### Tokens et authentification
-
+```text
+ghcr.io/tiogars/starter-api-spring-mysql:develop        ← develop branch
+ghcr.io/tiogars/starter-api-spring-mysql:main           ← main branch
+ghcr.io/tiogars/starter-api-spring-mysql:main-abc1234   ← commit SHA
 ```
+
+## 🔐 Security & Permissions
+
+### Tokens and authentication
+
+```text
 ┌─────────────────────────┐
-│   GITHUB_TOKEN          │  Fourni automatiquement par GitHub Actions
-│   (automatique)         │  Permissions : read/write packages, contents, issues
+│   GITHUB_TOKEN          │  Provided automatically by GitHub Actions
+│   (automatic)           │  Permissions: packages, contents, issues
 └─────────────────────────┘
           │
           ├─> GitHub Packages (Maven dependencies)
@@ -216,53 +216,53 @@ ghcr.io/tiogars/starter-api-spring-mysql:main-abc1234     ← SHA commit
           └─> GitHub Security (SARIF reports)
 
 ┌─────────────────────────┐
-│   Personal Access Token │  Configuration locale uniquement
-│   (développeur)         │  Permissions : read:packages
+│   Personal Access Token │  Local developer configuration only
+│   (developer)           │  Permissions: read:packages
 └─────────────────────────┘
           │
-          └─> Maven local (~/.m2/settings.xml)
+          └─> Local Maven (~/.m2/settings.xml)
 ```
 
-### Permissions des jobs
+### Job permissions
 
-| Job | contents | packages | security-events | id-token |
-|-----|----------|----------|-----------------|----------|
-| Build & Test | read | read | - | - |
-| Create Release | write | read | - | - |
-| Docker Push | read | write | - | write |
-| Security Scan | read | read | write | - |
+| Job            | contents | packages | security-events | id-token |
+|----------------|----------|----------|-----------------|----------|
+| Build & Test   | read     | read     | -               | -        |
+| Create Release | write    | read     | -               | -        |
+| Docker Push    | read     | write    | -               | write    |
+| Security Scan  | read     | read     | write           | -        |
 
-## 📦 Gestion des dépendances
+## 📦 Dependency Management
 
-```
+```text
 ┌───────────────────────────────────────────────┐
-│         Dépendances du projet                 │
+│               Project dependencies            │
 ├───────────────────────────────────────────────┤
 │                                               │
 │  Maven Central                                │
-│  ├─ Spring Boot 3.5.7                        │
-│  ├─ MySQL Connector                          │
-│  ├─ SpringDoc OpenAPI                        │
-│  └─ [autres dépendances publiques]           │
+│  ├─ Spring Boot 3.5.7                         │
+│  ├─ MySQL Connector                           │
+│  ├─ SpringDoc OpenAPI                         │
+│  └─ [other public dependencies]               │
 │                                               │
 │  GitHub Packages (tiogars)                    │
-│  ├─ architecture-create-service (1.0.2)      │
-│  └─ architecture-select-service (1.0.0)      │
+│  ├─ architecture-create-service (1.0.2)       │
+│  └─ architecture-select-service (1.0.0)       │
 │                                               │
 └───────────────────────────────────────────────┘
          │                        │
          ▼                        ▼
 ┌─────────────────┐    ┌──────────────────┐
 │  Maven Central  │    │ GitHub Packages  │
-│  (public)       │    │  (authentified)  │
+│  (public)       │    │  (authenticated) │
 └─────────────────┘    └──────────────────┘
 ```
 
-### Workflow de mise à jour
+### Update workflow
 
-Le workflow `dependency-check.yml` s'exécute automatiquement chaque lundi :
+The `dependency-check.yml` workflow runs automatically every Monday:
 
-```
+```text
 Monday 9:00 UTC
     │
     ├─> Check Maven Central updates
@@ -273,32 +273,34 @@ Monday 9:00 UTC
     │
     └─> Create/Update GitHub Issue
             │
-            └─> Label: "dependencies", "maintenance"
+            └─> Labels: "dependencies", "maintenance"
 ```
 
-## 🎯 Résumé des workflows
+## 🎯 Workflow Summary
 
-### ci-cd.yml (Principal)
-- **Déclencheurs** : push, PR, tags, manual
-- **Jobs** : 4 (build, release, docker, security)
-- **Durée** : ~5-10 minutes
-- **Artifacts** : JAR, Docker images, SBOM, reports
+### ci-cd.yml (Main)
+
+* Triggers: push, PR, tags, manual
+* Jobs: 4 (build, release, docker, security)
+* Duration: ~5–10 minutes
+* Artifacts: JAR, Docker images, SBOM, reports
 
 ### dependency-check.yml (Maintenance)
-- **Déclencheurs** : schedule (weekly), manual
-- **Jobs** : 1 (check)
-- **Durée** : ~2-3 minutes
-- **Output** : GitHub Issue
 
-## 🚀 Points d'entrée pour les utilisateurs
+* Triggers: schedule (weekly), manual
+* Jobs: 1 (check)
+* Duration: ~2–3 minutes
+* Output: GitHub Issue
 
-### Développeur (Local)
+## 🚀 Entry Points
+
+### Developer (Local)
 
 ```powershell
-.\cicd.ps1 setup      # Configuration initiale
-.\cicd.ps1 build      # Build quotidien
-.\cicd.ps1 test       # Tests
-.\cicd.ps1 release    # Créer une release
+./cicd.ps1 setup      # Initial configuration
+./cicd.ps1 build      # Daily build
+./cicd.ps1 test       # Tests
+./cicd.ps1 release    # Create a release
 ```
 
 ### DevOps / Release Manager
@@ -312,20 +314,20 @@ git tag -a v1.0.0 -m "Release 1.0.0"
 git push origin v1.0.0
 ```
 
-### Utilisateur final
+### End user
 
 ```bash
 # Docker
 docker pull ghcr.io/tiogars/starter-api-spring-mysql:latest
 docker run -d -p 8080:8080 ghcr.io/tiogars/starter-api-spring-mysql:latest
 
-# JAR (depuis release)
+# JAR (from a release)
 wget https://github.com/tiogars/starter-api-spring-mysql/releases/download/v1.0.0/starter-1.0.0.jar
 java -jar starter-1.0.0.jar
 ```
 
 ---
 
-**Dernière mise à jour** : 2025-10-24  
-**Version** : 1.0  
-**Maintenu par** : Tiogars
+Last updated: 2025-10-24  
+Version: 1.0  
+Maintained by: Tiogars

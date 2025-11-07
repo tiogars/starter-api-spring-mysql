@@ -31,12 +31,14 @@ Spring Boot + MySQL Starter API with automated CI/CD.
 ## 🛠️ Requirements
 
 ### Local development
+
 * Java 21+
 * Maven 3.6+
 * MySQL 8.0+
 * Docker & Docker Compose (optional)
 
 ### Access GitHub dependencies
+
 * GitHub account
 * Personal Access Token with `read:packages`
 
@@ -184,11 +186,11 @@ See [LICENSE](LICENSE) for details.
 
 ## 🔗 Useful Links
 
-* Spring Boot Docs
-* GitHub Actions Docs
-* GitHub Packages Docs
-* Docker Hub
-* Conventional Commits
+* [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/current/reference/html/)
+* [GitHub Actions Docs](https://docs.github.com/actions)
+* [GitHub Packages Docs](https://docs.github.com/packages)
+* [Docker Hub](https://hub.docker.com/)
+* [Conventional Commits](https://www.conventionalcommits.org/)
 
 ---
 

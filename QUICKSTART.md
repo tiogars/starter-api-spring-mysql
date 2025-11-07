@@ -133,7 +133,7 @@ Missing GitHub package dependency:
 * Check package exists in GitHub Packages
 
 Docker permission denied:
- 
+
 ```powershell
 sudo usermod -aG docker $USER && newgrp docker
 ```
