@@ -30,6 +30,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    # environment:
+    #   - 
     ports:
       - "8081:8080"
 
