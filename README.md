@@ -2,8 +2,7 @@
 
 Spring Boot + MySQL Starter API with automated CI/CD.
 
-[![CI/CD Pipeline](https://github.com/tiogars/starter-api-spring-mysql/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/tiogars/starter-api-spring-mysql/actions/workflows/ci-cd.yml)
-[![GitHub release](https://img.shields.io/github/v/release/tiogars/starter-api-spring-mysql)](https://github.com/tiogars/starter-api-spring-mysql/releases)
+[![Build develop](https://github.com/tiogars/starter-api-spring-mysql/actions/workflows/build.yml/badge.svg)](https://github.com/tiogars/starter-api-spring-mysql/actions/workflows/build.yml)
 [![Docker Image](https://img.shields.io/badge/docker-ghcr.io-blue)](https://github.com/tiogars/starter-api-spring-mysql/pkgs/container/starter-api-spring-mysql)
 
 ## ✨ Features
