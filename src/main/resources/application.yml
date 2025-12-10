@@ -1,15 +1,15 @@
 # Default application.yml
-spring:
-    application:
-        name: ${SPRING_APPLICATION_NAME}
-    config:
-        name: ${SPRING_APPLICATION_NAME}
-        import: ${SPRING_CONFIG_IMPORT}
-    profiles:
-        active:
-            - ${spring.profiles.active}
+# spring:
+#     application:
+#         name: ${SPRING_APPLICATION_NAME}
+#     config:
+#         name: ${SPRING_APPLICATION_NAME}
+#         import: ${SPRING_CONFIG_IMPORT}
+#     profiles:
+#         active:
+#             - ${spring.profiles.active}
 
----
+# ---
 
 # Development application.yml
 spring:
