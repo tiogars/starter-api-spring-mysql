@@ -3,6 +3,7 @@ package fr.tiogars.starter.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 /**
  * use tag for rtkquery
  */
+@CrossOrigin
 @RestController
 @Tag(name = "route", description = "CRUD operations for Route entities")
 public class RouteDefinitionController {
