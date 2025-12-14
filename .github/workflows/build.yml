@@ -25,11 +25,11 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: 'maven'
-        server-id: github
-        server-username: ${{ github.actor }}
-        server-password: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
+        # server-id: github
+        # server-username: ${{ github.actor }}
+        # server-password: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
 
-    - run: mvn package # -s /home/runner/.m2/settings.xml
-      shell: bash
-      env:
-        GITHUB_TOKEN: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
+    - run: mvn install # -s /home/runner/.m2/settings.xml
+      # shell: bash
+      # env:
+      #   GITHUB_TOKEN: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
