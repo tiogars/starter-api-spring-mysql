@@ -15,7 +15,6 @@ jobs:
 
     permissions:
       contents: read
-      packages: read
 
     steps:
       - uses: tiogars/maven-build-action@v1.0.0
