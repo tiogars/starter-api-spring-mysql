@@ -31,5 +31,5 @@ jobs:
 
     - run: mvn install # -s /home/runner/.m2/settings.xml
       # shell: bash
-      # env:
-      #   GITHUB_TOKEN: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
