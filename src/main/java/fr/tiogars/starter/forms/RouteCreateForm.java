@@ -1,5 +1,8 @@
 package fr.tiogars.starter.forms;
 
+/**
+ * Form for creating a new Route.
+ */
 public class RouteCreateForm {
 
     private String name;
