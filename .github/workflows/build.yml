@@ -21,4 +21,4 @@ jobs:
       - uses: tiogars/maven-build-action@v1.0.6
         with:
           setup-java-server-username: ${{ github.actor }}
-          setup-java-server-password: ${{ secrets.GITHUB_TOKEN }}
+          setup-java-server-password: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
