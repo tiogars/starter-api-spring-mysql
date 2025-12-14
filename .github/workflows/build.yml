@@ -19,3 +19,7 @@ jobs:
 
     steps:
       - uses: tiogars/maven-build-action@v1
+        with:
+          setup-java-server-id: github
+          setup-java-server-username: ${{ github.actor }}
+          setup-java-server-password: ${{ secrets.GITHUB_TOKEN }}
