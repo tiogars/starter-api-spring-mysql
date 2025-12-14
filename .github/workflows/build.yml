@@ -15,9 +15,10 @@ jobs:
 
     permissions:
       contents: read
+      packages: read
 
     steps:
-      - uses: tiogars/maven-build-action@v1.0.0
+      - uses: tiogars/maven-build-action@v1.0.1
         with:
           setup-java-server-id: github
           setup-java-server-username: ${{ github.actor }}
