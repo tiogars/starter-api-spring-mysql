@@ -10,8 +10,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  packages: write
+  contents: read
+  packages: read
 
 jobs:
   build:
@@ -20,4 +20,4 @@ jobs:
     steps:
       - uses: tiogars/maven-build-action@v1.0.8
         with:
-          setup-java-token: ${{ secrets.TIOGARS_GITHUB_READ_PACKAGES_PAT }}
+          setup-java-token: ${{ secrets.GITHUB_TOKEN }}
