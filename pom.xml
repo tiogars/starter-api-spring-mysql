@@ -154,7 +154,42 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>3.6.1</version>
 			</plugin>
-		</plugins>
-	</build>
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-site-plugin -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-site-plugin</artifactId>
+			<version>4.0.0-M16</version>
+		</plugin>
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-project-info-reports-plugin -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-project-info-reports-plugin</artifactId>
+			<version>3.8.0</version>
+		</plugin>
+	</plugins>
+</build>
 
+<reporting>
+	<plugins>
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-project-info-reports-plugin -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-project-info-reports-plugin</artifactId>
+			<version>3.8.0</version>
+			<reportSets>
+				<reportSet>
+					<reports>
+						<report>index</report>
+						<report>summary</report>
+						<report>dependency-info</report>
+						<report>dependencies</report>
+						<report>licenses</report>
+						<report>team</report>
+						<report>scm</report>
+					</reports>
+				</reportSet>
+			</reportSets>
+		</plugin>
+	</plugins>
+</reporting>
 </project>
