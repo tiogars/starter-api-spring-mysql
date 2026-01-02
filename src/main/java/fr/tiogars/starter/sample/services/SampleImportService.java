@@ -46,7 +46,8 @@ public class SampleImportService {
         if (form.getSamples() == null || form.getSamples().isEmpty()) {
             report.setTotalProvided(0);
             report.setTotalCreated(0);
-            report.setTotalSkipped(0);
+            report.setTotalDuplicates(0);
+            report.setTotalErrors(0);
             report.setMessage("No samples provided for import");
             report.setAlertLevel("warning");
             return report;
@@ -54,7 +55,8 @@ public class SampleImportService {
         
         int totalProvided = form.getSamples().size();
         int totalCreated = 0;
-        int totalSkipped = 0;
+        int totalDuplicates = 0;
+        int totalErrors = 0;
         
         logger.info("Starting import of " + totalProvided + " samples");
         
@@ -64,28 +66,45 @@ public class SampleImportService {
             
             if (item.isCreated()) {
                 totalCreated++;
+            } else if ("info".equals(item.getAlertLevel())) {
+                // Duplicate sample
+                totalDuplicates++;
             } else {
-                totalSkipped++;
+                // Validation or other error
+                totalErrors++;
             }
         }
         
         report.setTotalProvided(totalProvided);
         report.setTotalCreated(totalCreated);
-        report.setTotalSkipped(totalSkipped);
+        report.setTotalDuplicates(totalDuplicates);
+        report.setTotalErrors(totalErrors);
         
         // Set overall message and alert level
         if (totalCreated == totalProvided) {
             report.setMessage("Successfully imported " + totalCreated + " of " + totalProvided + " samples");
             report.setAlertLevel("success");
         } else if (totalCreated > 0) {
-            report.setMessage("Imported " + totalCreated + " of " + totalProvided + " samples. " + totalSkipped + " skipped due to duplicates");
+            StringBuilder message = new StringBuilder("Imported " + totalCreated + " of " + totalProvided + " samples");
+            if (totalDuplicates > 0) {
+                message.append(". ").append(totalDuplicates).append(" duplicate").append(totalDuplicates > 1 ? "s" : "");
+            }
+            if (totalErrors > 0) {
+                message.append(". ").append(totalErrors).append(" error").append(totalErrors > 1 ? "s" : "");
+            }
+            report.setMessage(message.toString());
             report.setAlertLevel("info");
         } else {
-            report.setMessage("No samples imported. All " + totalSkipped + " samples already exist");
-            report.setAlertLevel("warning");
+            if (totalErrors > 0) {
+                report.setMessage("No samples imported. " + totalDuplicates + " duplicates and " + totalErrors + " errors");
+                report.setAlertLevel("error");
+            } else {
+                report.setMessage("No samples imported. All " + totalDuplicates + " samples already exist");
+                report.setAlertLevel("warning");
+            }
         }
         
-        logger.info("Import completed: " + totalCreated + " created, " + totalSkipped + " skipped");
+        logger.info("Import completed: " + totalCreated + " created, " + totalDuplicates + " duplicates, " + totalErrors + " errors");
         
         return report;
     }

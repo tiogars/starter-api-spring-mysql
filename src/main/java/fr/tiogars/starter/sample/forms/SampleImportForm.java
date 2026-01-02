@@ -2,6 +2,9 @@ package fr.tiogars.starter.sample.forms;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 /**
  * Form for importing multiple samples at once.
  * Contains a list of sample creation forms to process.
@@ -15,6 +18,8 @@ public class SampleImportForm {
     /**
      * List of samples to import
      */
+    @NotNull(message = "Samples list cannot be null")
+    @Valid
     private List<SampleCreateForm> samples;
 
     public SampleImportForm() {

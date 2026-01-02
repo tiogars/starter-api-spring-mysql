@@ -88,7 +88,8 @@ class SampleImportServiceTest {
         assertNotNull(report);
         assertEquals(2, report.getTotalProvided());
         assertEquals(2, report.getTotalCreated());
-        assertEquals(0, report.getTotalSkipped());
+        assertEquals(0, report.getTotalDuplicates());
+        assertEquals(0, report.getTotalErrors());
         assertEquals("success", report.getAlertLevel());
         assertEquals("Successfully imported 2 of 2 samples", report.getMessage());
         assertEquals(2, report.getItems().size());
@@ -127,9 +128,11 @@ class SampleImportServiceTest {
         assertNotNull(report);
         assertEquals(2, report.getTotalProvided());
         assertEquals(1, report.getTotalCreated());
-        assertEquals(1, report.getTotalSkipped());
+        assertEquals(1, report.getTotalDuplicates());
+        assertEquals(0, report.getTotalErrors());
         assertEquals("info", report.getAlertLevel());
-        assertEquals("Imported 1 of 2 samples. 1 skipped due to duplicates", report.getMessage());
+        assertTrue(report.getMessage().contains("Imported 1 of 2 samples"));
+        assertTrue(report.getMessage().contains("1 duplicate"));
         assertEquals(2, report.getItems().size());
         
         assertFalse(report.getItems().get(0).isCreated());
@@ -166,7 +169,8 @@ class SampleImportServiceTest {
         assertNotNull(report);
         assertEquals(2, report.getTotalProvided());
         assertEquals(0, report.getTotalCreated());
-        assertEquals(2, report.getTotalSkipped());
+        assertEquals(2, report.getTotalDuplicates());
+        assertEquals(0, report.getTotalErrors());
         assertEquals("warning", report.getAlertLevel());
         assertEquals("No samples imported. All 2 samples already exist", report.getMessage());
         assertEquals(2, report.getItems().size());
@@ -191,7 +195,8 @@ class SampleImportServiceTest {
         assertNotNull(report);
         assertEquals(0, report.getTotalProvided());
         assertEquals(0, report.getTotalCreated());
-        assertEquals(0, report.getTotalSkipped());
+        assertEquals(0, report.getTotalDuplicates());
+        assertEquals(0, report.getTotalErrors());
         assertEquals("warning", report.getAlertLevel());
         assertEquals("No samples provided for import", report.getMessage());
         assertEquals(0, report.getItems().size());
@@ -212,7 +217,8 @@ class SampleImportServiceTest {
         assertNotNull(report);
         assertEquals(0, report.getTotalProvided());
         assertEquals(0, report.getTotalCreated());
-        assertEquals(0, report.getTotalSkipped());
+        assertEquals(0, report.getTotalDuplicates());
+        assertEquals(0, report.getTotalErrors());
         assertEquals("warning", report.getAlertLevel());
         assertEquals("No samples provided for import", report.getMessage());
         assertEquals(0, report.getItems().size());
@@ -238,8 +244,9 @@ class SampleImportServiceTest {
         assertNotNull(report);
         assertEquals(1, report.getTotalProvided());
         assertEquals(0, report.getTotalCreated());
-        assertEquals(1, report.getTotalSkipped());
-        assertEquals("warning", report.getAlertLevel());
+        assertEquals(0, report.getTotalDuplicates());
+        assertEquals(1, report.getTotalErrors());
+        assertEquals("error", report.getAlertLevel());
         assertEquals(1, report.getItems().size());
         
         assertFalse(report.getItems().get(0).isCreated());
@@ -311,9 +318,12 @@ class SampleImportServiceTest {
         assertNotNull(report);
         assertEquals(3, report.getTotalProvided());
         assertEquals(1, report.getTotalCreated());
-        assertEquals(2, report.getTotalSkipped());
+        assertEquals(1, report.getTotalDuplicates());
+        assertEquals(1, report.getTotalErrors());
         assertEquals("info", report.getAlertLevel());
-        assertEquals("Imported 1 of 3 samples. 2 skipped due to duplicates", report.getMessage());
+        assertTrue(report.getMessage().contains("Imported 1 of 3 samples"));
+        assertTrue(report.getMessage().contains("1 duplicate"));
+        assertTrue(report.getMessage().contains("1 error"));
         assertEquals(3, report.getItems().size());
         
         // First item - duplicate

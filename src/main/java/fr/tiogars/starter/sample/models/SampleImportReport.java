@@ -26,7 +26,12 @@ public class SampleImportReport {
     /**
      * Number of samples skipped due to duplicate names
      */
-    private int totalSkipped;
+    private int totalDuplicates;
+    
+    /**
+     * Number of samples that failed validation or other errors
+     */
+    private int totalErrors;
     
     /**
      * Overall alert level for the import operation: "success", "info", "warning", "error"
@@ -63,12 +68,20 @@ public class SampleImportReport {
         this.totalCreated = totalCreated;
     }
 
-    public int getTotalSkipped() {
-        return totalSkipped;
+    public int getTotalDuplicates() {
+        return totalDuplicates;
     }
 
-    public void setTotalSkipped(int totalSkipped) {
-        this.totalSkipped = totalSkipped;
+    public void setTotalDuplicates(int totalDuplicates) {
+        this.totalDuplicates = totalDuplicates;
+    }
+
+    public int getTotalErrors() {
+        return totalErrors;
+    }
+
+    public void setTotalErrors(int totalErrors) {
+        this.totalErrors = totalErrors;
     }
 
     public String getAlertLevel() {
