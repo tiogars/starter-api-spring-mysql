@@ -1,4 +1,4 @@
-package fr.tiogars.starter.forms;
+package fr.tiogars.starter.route.forms;
 
 /**
  * Form for creating a new Route.

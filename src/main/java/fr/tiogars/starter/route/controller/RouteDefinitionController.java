@@ -1,4 +1,4 @@
-package fr.tiogars.starter.controllers;
+package fr.tiogars.starter.route.controller;
 
 import java.util.List;
 
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.tiogars.starter.forms.RouteCreateForm;
-import fr.tiogars.starter.forms.RouteUpdateForm;
-import fr.tiogars.starter.models.Route;
-import fr.tiogars.starter.service.RouteService;
+import fr.tiogars.starter.route.forms.RouteCreateForm;
+import fr.tiogars.starter.route.forms.RouteUpdateForm;
+import fr.tiogars.starter.route.models.Route;
+import fr.tiogars.starter.route.services.RouteService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /**

@@ -1,4 +1,4 @@
-package fr.tiogars.starter.controllers;
+package fr.tiogars.starter.sample.controller;
 
 import java.util.List;
 
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.tiogars.starter.exceptions.ErrorResponse;
-import fr.tiogars.starter.forms.SampleCreateForm;
-import fr.tiogars.starter.models.Sample;
-import fr.tiogars.starter.service.SampleCreateService;
-import fr.tiogars.starter.service.SampleCrudService;
+import fr.tiogars.starter.common.exception.ErrorResponse;
+import fr.tiogars.starter.sample.forms.SampleCreateForm;
+import fr.tiogars.starter.sample.models.Sample;
+import fr.tiogars.starter.sample.services.SampleCreateService;
+import fr.tiogars.starter.sample.services.SampleCrudService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

@@ -1,4 +1,4 @@
-package fr.tiogars.starter.forms;
+package fr.tiogars.starter.sample.forms;
 
 import fr.tiogars.architecture.create.forms.AbstractCreateForm;
 

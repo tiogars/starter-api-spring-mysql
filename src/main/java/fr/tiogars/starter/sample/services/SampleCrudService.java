@@ -1,4 +1,4 @@
-package fr.tiogars.starter.service;
+package fr.tiogars.starter.sample.services;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import fr.tiogars.starter.entities.SampleEntity;
-import fr.tiogars.starter.models.Sample;
-import fr.tiogars.starter.repository.SampleRepository;
+import fr.tiogars.starter.sample.entities.SampleEntity;
+import fr.tiogars.starter.sample.models.Sample;
+import fr.tiogars.starter.sample.repositories.SampleRepository;
 
 @Service
 public class SampleCrudService {
