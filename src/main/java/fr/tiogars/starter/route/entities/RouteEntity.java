@@ -1,4 +1,4 @@
-package fr.tiogars.starter.entities;
+package fr.tiogars.starter.route.entities;
 
 import fr.tiogars.architecture.create.entities.AbstractEntity;
 import jakarta.persistence.Entity;

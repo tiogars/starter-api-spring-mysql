@@ -1,4 +1,4 @@
-package fr.tiogars.starter.controllers;
+package fr.tiogars.starter.route.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;

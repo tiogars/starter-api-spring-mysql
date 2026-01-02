@@ -1,4 +1,4 @@
-package fr.tiogars.starter.service;
+package fr.tiogars.starter.sample.services;
 
 import java.util.Set;
 import java.util.logging.Logger;
@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import fr.tiogars.architecture.create.services.AbstractCreateService;
-import fr.tiogars.starter.entities.SampleEntity;
-import fr.tiogars.starter.forms.SampleCreateForm;
-import fr.tiogars.starter.models.Sample;
-import fr.tiogars.starter.repository.SampleRepository;
+import fr.tiogars.starter.sample.entities.SampleEntity;
+import fr.tiogars.starter.sample.forms.SampleCreateForm;
+import fr.tiogars.starter.sample.models.Sample;
+import fr.tiogars.starter.sample.repositories.SampleRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;

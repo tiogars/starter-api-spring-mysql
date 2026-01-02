@@ -1,4 +1,4 @@
-package fr.tiogars.starter.exceptions;
+package fr.tiogars.starter.common.exception;
 
 import java.util.Map;
 

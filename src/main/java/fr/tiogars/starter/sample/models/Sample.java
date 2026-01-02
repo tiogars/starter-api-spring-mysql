@@ -1,4 +1,4 @@
-package fr.tiogars.starter.models;
+package fr.tiogars.starter.sample.models;
 
 import java.util.Date;
 

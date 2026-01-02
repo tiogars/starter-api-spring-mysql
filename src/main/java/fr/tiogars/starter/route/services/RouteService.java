@@ -1,14 +1,14 @@
-package fr.tiogars.starter.service;
+package fr.tiogars.starter.route.services;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import fr.tiogars.starter.entities.RouteEntity;
-import fr.tiogars.starter.forms.RouteCreateForm;
-import fr.tiogars.starter.forms.RouteUpdateForm;
-import fr.tiogars.starter.models.Route;
-import fr.tiogars.starter.repository.RouteRepository;
+import fr.tiogars.starter.route.entities.RouteEntity;
+import fr.tiogars.starter.route.forms.RouteCreateForm;
+import fr.tiogars.starter.route.forms.RouteUpdateForm;
+import fr.tiogars.starter.route.models.Route;
+import fr.tiogars.starter.route.repositories.RouteRepository;
 
 @Service
 public class RouteService {

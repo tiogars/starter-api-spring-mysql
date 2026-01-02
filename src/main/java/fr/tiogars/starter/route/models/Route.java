@@ -1,6 +1,6 @@
-package fr.tiogars.starter.forms;
+package fr.tiogars.starter.route.models;
 
-public class RouteUpdateForm {
+public class Route {
 
     private Long id;
 
@@ -8,11 +8,10 @@ public class RouteUpdateForm {
 
     private String path;
 
-    public RouteUpdateForm() {
+    public Route() {
     }
 
-    public RouteUpdateForm(Long id, String name, String path) {
-        this.id = id;
+    public Route(String name, String path) {
         this.name = name;
         this.path = path;
     }

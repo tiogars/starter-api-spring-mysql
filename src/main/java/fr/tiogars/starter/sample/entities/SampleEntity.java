@@ -1,4 +1,4 @@
-package fr.tiogars.starter.entities;
+package fr.tiogars.starter.sample.entities;
 
 import java.util.Date;
 
