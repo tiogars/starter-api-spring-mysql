@@ -149,6 +149,9 @@ class SampleCrudServiceTest {
 
     @Test
     void testToModel_ConvertsEntityToModel() {
+        // Arrange
+        when(sampleRepository.save(any(SampleEntity.class))).thenReturn(sampleEntity);
+
         // Act
         Sample result = sampleCrudService.save(sampleEntity);
 
