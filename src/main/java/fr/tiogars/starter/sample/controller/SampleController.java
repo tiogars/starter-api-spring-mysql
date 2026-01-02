@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.tiogars.starter.common.exception.ErrorResponse;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
+import fr.tiogars.starter.sample.forms.SampleImportForm;
 import fr.tiogars.starter.sample.forms.SampleUpdateForm;
 import fr.tiogars.starter.sample.models.Sample;
+import fr.tiogars.starter.sample.models.SampleImportReport;
 import fr.tiogars.starter.sample.services.SampleCreateService;
 import fr.tiogars.starter.sample.services.SampleCrudService;
+import fr.tiogars.starter.sample.services.SampleImportService;
 import fr.tiogars.starter.sample.services.SampleUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -39,11 +42,14 @@ public class SampleController {
 
     private SampleUpdateService sampleUpdateService;
 
+    private SampleImportService sampleImportService;
+
     public SampleController(SampleCreateService sampleCreateService, SampleCrudService sampleCrudService,
-            SampleUpdateService sampleUpdateService) {
+            SampleUpdateService sampleUpdateService, SampleImportService sampleImportService) {
         this.sampleCreateService = sampleCreateService;
         this.sampleCrudService = sampleCrudService;
         this.sampleUpdateService = sampleUpdateService;
+        this.sampleImportService = sampleImportService;
     }
 
     @PostMapping("sample")
@@ -87,5 +93,17 @@ public class SampleController {
     public Sample updateSample(@PathVariable Long id, @RequestBody SampleUpdateForm form) {
         form.setId(id);
         return this.sampleUpdateService.update(form);
+    }
+
+    @PostMapping("sample/import")
+    @Operation(summary = "Import multiple samples", description = "Imports multiple samples in bulk, checking for duplicates by name")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Import completed with detailed report",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SampleImportReport.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public SampleImportReport importSamples(@RequestBody SampleImportForm form) {
+        return this.sampleImportService.importSamples(form);
     }
 }
