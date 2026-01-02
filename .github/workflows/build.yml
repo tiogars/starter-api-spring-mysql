@@ -1,0 +1,23 @@
+name: Build develop
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: tiogars/maven-build-action@v1.0.8
+        with:
+          setup-java-token: ${{ secrets.GITHUB_TOKEN }}

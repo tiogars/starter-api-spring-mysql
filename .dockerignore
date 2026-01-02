@@ -1,0 +1,48 @@
+# Fichiers Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+*.md
+README.md
+HELP.md
+LICENSE
+
+# IDE
+.idea
+.vscode
+.settings
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+
+# Build et target
+target/
+!target/*.jar
+target/*.jar.original
+build/
+out/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Tests
+src/test/
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*.swp
+*~
