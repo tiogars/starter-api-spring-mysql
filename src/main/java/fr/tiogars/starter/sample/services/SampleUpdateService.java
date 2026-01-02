@@ -80,10 +80,10 @@ public class SampleUpdateService {
     }
 
     private void validate(Sample sample) {
+        logger.info("Validating sample update: " + sample.getName());
         Set<ConstraintViolation<Sample>> violations = validator.validate(sample);
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
-        logger.info("Validating sample update: " + sample.getName());
     }
 }
