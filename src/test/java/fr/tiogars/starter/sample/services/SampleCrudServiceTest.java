@@ -37,7 +37,7 @@ class SampleCrudServiceTest {
         testDate = new Date();
         sampleEntity = new SampleEntity();
         sampleEntity.setId(1L);
-        sampleEntity.setName("Test Sample");
+        sampleEntity.setName("TestSample");
         sampleEntity.setDescription("Test Description");
         sampleEntity.setActive(true);
         sampleEntity.setCreatedAt(testDate);
@@ -67,7 +67,7 @@ class SampleCrudServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertEquals("Test Sample", result.get(0).getName());
+        assertEquals("TestSample", result.get(0).getName());
         assertEquals("Sample 2", result.get(1).getName());
         verify(sampleRepository, times(1)).findAll();
     }
@@ -96,7 +96,7 @@ class SampleCrudServiceTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals("Test Sample", result.get().getName());
+        assertEquals("TestSample", result.get().getName());
         assertEquals("Test Description", result.get().getDescription());
         assertEquals(true, result.get().isActive());
         verify(sampleRepository, times(1)).findById(1L);
@@ -126,7 +126,7 @@ class SampleCrudServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(1L, result.getId());
-        assertEquals("Test Sample", result.getName());
+        assertEquals("TestSample", result.getName());
         assertEquals("Test Description", result.getDescription());
         assertTrue(result.isActive());
         assertEquals(testDate, result.getCreatedAt());

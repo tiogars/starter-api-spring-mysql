@@ -44,7 +44,7 @@ class SampleCreateServiceTest {
 
         // Setup Sample model
         sample = new Sample();
-        sample.setName("Test Sample");
+        sample.setName("TestSample");
         sample.setDescription("Test Description");
         sample.setActive(true);
         sample.setCreatedAt(testDate);
@@ -55,7 +55,7 @@ class SampleCreateServiceTest {
         // Setup SampleEntity
         sampleEntity = new SampleEntity();
         sampleEntity.setId(1L);
-        sampleEntity.setName("Test Sample");
+        sampleEntity.setName("TestSample");
         sampleEntity.setDescription("Test Description");
         sampleEntity.setActive(true);
         sampleEntity.setCreatedAt(testDate);
@@ -65,7 +65,7 @@ class SampleCreateServiceTest {
 
         // Setup SampleCreateForm
         sampleCreateForm = new SampleCreateForm();
-        sampleCreateForm.setName("Test Sample");
+        sampleCreateForm.setName("TestSample");
         sampleCreateForm.setDescription("Test Description");
         sampleCreateForm.setActive(true);
     }
