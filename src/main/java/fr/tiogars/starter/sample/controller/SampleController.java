@@ -7,14 +7,17 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import fr.tiogars.starter.common.exception.ErrorResponse;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
+import fr.tiogars.starter.sample.forms.SampleUpdateForm;
 import fr.tiogars.starter.sample.models.Sample;
 import fr.tiogars.starter.sample.services.SampleCreateService;
 import fr.tiogars.starter.sample.services.SampleCrudService;
+import fr.tiogars.starter.sample.services.SampleUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,9 +37,13 @@ public class SampleController {
 
     private SampleCrudService sampleCrudService;
 
-    public SampleController(SampleCreateService sampleCreateService, SampleCrudService sampleCrudService) {
+    private SampleUpdateService sampleUpdateService;
+
+    public SampleController(SampleCreateService sampleCreateService, SampleCrudService sampleCrudService,
+            SampleUpdateService sampleUpdateService) {
         this.sampleCreateService = sampleCreateService;
         this.sampleCrudService = sampleCrudService;
+        this.sampleUpdateService = sampleUpdateService;
     }
 
     @PostMapping("sample")
@@ -66,5 +73,19 @@ public class SampleController {
     @DeleteMapping("sample/{id}")
     public void deleteSample(@PathVariable Long id) {
         this.sampleCrudService.deleteById(id);
+    }
+
+    @PutMapping("sample/{id}")
+    @Operation(summary = "Update an existing sample", description = "Updates a sample with validation")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sample updated successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Sample.class))),
+        @ApiResponse(responseCode = "400", description = "Validation failed - Invalid input data",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Sample not found")
+    })
+    public Sample updateSample(@PathVariable Long id, @RequestBody SampleUpdateForm form) {
+        form.setId(id);
+        return this.sampleUpdateService.update(form);
     }
 }
