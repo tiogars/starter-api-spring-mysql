@@ -197,9 +197,9 @@ public class SampleSearchService {
             case "endsWith":
                 return cb.like(cb.lower(path), "%" + strValue.toLowerCase());
             case "isEmpty":
-                return cb.or(cb.isNull(path), cb.equal(path, ""));
+                return cb.or(cb.isNull(path), cb.equal(cb.length(path), 0));
             case "isNotEmpty":
-                return cb.and(cb.isNotNull(path), cb.notEqual(path, ""));
+                return cb.and(cb.isNotNull(path), cb.greaterThan(cb.length(path), 0));
             default:
                 return null;
         }
@@ -262,7 +262,8 @@ public class SampleSearchService {
                 return ((Number) value).longValue();
             }
             return Long.parseLong(value.toString());
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            // Invalid number format, return null to skip this filter
             return null;
         }
     }
@@ -298,7 +299,8 @@ public class SampleSearchService {
             // Try parsing as timestamp
             long timestamp = Long.parseLong(value.toString());
             return new Date(timestamp);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            // Invalid timestamp format, return null to skip this filter
             return null;
         }
     }
