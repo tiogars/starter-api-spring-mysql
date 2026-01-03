@@ -2,6 +2,7 @@ package fr.tiogars.starter.sample.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import jakarta.validation.Valid;
 
 import fr.tiogars.starter.common.exception.ErrorResponse;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
+import fr.tiogars.starter.sample.forms.SampleExportForm;
 import fr.tiogars.starter.sample.forms.SampleImportForm;
 import fr.tiogars.starter.sample.forms.SampleInitForm;
 import fr.tiogars.starter.sample.forms.SampleUpdateForm;
@@ -24,6 +26,7 @@ import fr.tiogars.starter.sample.models.SampleSearchRequest;
 import fr.tiogars.starter.sample.models.SampleSearchResponse;
 import fr.tiogars.starter.sample.services.SampleCreateService;
 import fr.tiogars.starter.sample.services.SampleCrudService;
+import fr.tiogars.starter.sample.services.SampleExportService;
 import fr.tiogars.starter.sample.services.SampleImportService;
 import fr.tiogars.starter.sample.services.SampleInitService;
 import fr.tiogars.starter.sample.services.SampleSearchService;
@@ -51,17 +54,21 @@ public class SampleController {
 
     private SampleImportService sampleImportService;
 
+    private SampleExportService sampleExportService;
+
     private SampleInitService sampleInitService;
 
     private SampleSearchService sampleSearchService;
 
     public SampleController(SampleCreateService sampleCreateService, SampleCrudService sampleCrudService,
             SampleUpdateService sampleUpdateService, SampleImportService sampleImportService,
-            SampleInitService sampleInitService, SampleSearchService sampleSearchService) {
+            SampleExportService sampleExportService, SampleInitService sampleInitService, 
+            SampleSearchService sampleSearchService) {
         this.sampleCreateService = sampleCreateService;
         this.sampleCrudService = sampleCrudService;
         this.sampleUpdateService = sampleUpdateService;
         this.sampleImportService = sampleImportService;
+        this.sampleExportService = sampleExportService;
         this.sampleInitService = sampleInitService;
         this.sampleSearchService = sampleSearchService;
     }
@@ -144,5 +151,18 @@ public class SampleController {
     })
     public SampleSearchResponse searchSamples(@RequestBody SampleSearchRequest request) {
         return this.sampleSearchService.search(request);
+    }
+
+    @PostMapping("sample/export")
+    @Operation(summary = "Export samples to file", 
+               description = "Export samples in various formats (XLSX, CSV, XML, JSON) with optional ZIP compression. Filename is prefixed with datetime.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Export completed successfully",
+            content = @Content(mediaType = "application/octet-stream")),
+        @ApiResponse(responseCode = "400", description = "Invalid export parameters",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public ResponseEntity<byte[]> exportSamples(@Valid @RequestBody SampleExportForm form) {
+        return this.sampleExportService.exportSamples(form);
     }
 }
