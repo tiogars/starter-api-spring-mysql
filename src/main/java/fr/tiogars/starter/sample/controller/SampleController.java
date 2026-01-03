@@ -20,10 +20,13 @@ import fr.tiogars.starter.sample.forms.SampleInitForm;
 import fr.tiogars.starter.sample.forms.SampleUpdateForm;
 import fr.tiogars.starter.sample.models.Sample;
 import fr.tiogars.starter.sample.models.SampleImportReport;
+import fr.tiogars.starter.sample.models.SampleSearchRequest;
+import fr.tiogars.starter.sample.models.SampleSearchResponse;
 import fr.tiogars.starter.sample.services.SampleCreateService;
 import fr.tiogars.starter.sample.services.SampleCrudService;
 import fr.tiogars.starter.sample.services.SampleImportService;
 import fr.tiogars.starter.sample.services.SampleInitService;
+import fr.tiogars.starter.sample.services.SampleSearchService;
 import fr.tiogars.starter.sample.services.SampleUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -50,14 +53,17 @@ public class SampleController {
 
     private SampleInitService sampleInitService;
 
+    private SampleSearchService sampleSearchService;
+
     public SampleController(SampleCreateService sampleCreateService, SampleCrudService sampleCrudService,
             SampleUpdateService sampleUpdateService, SampleImportService sampleImportService,
-            SampleInitService sampleInitService) {
+            SampleInitService sampleInitService, SampleSearchService sampleSearchService) {
         this.sampleCreateService = sampleCreateService;
         this.sampleCrudService = sampleCrudService;
         this.sampleUpdateService = sampleUpdateService;
         this.sampleImportService = sampleImportService;
         this.sampleInitService = sampleInitService;
+        this.sampleSearchService = sampleSearchService;
     }
 
     @PostMapping("sample")
@@ -125,5 +131,18 @@ public class SampleController {
     })
     public List<Sample> initSamples(@Valid @RequestBody SampleInitForm form) {
         return this.sampleInitService.initSamples(form);
+    }
+
+    @PostMapping("sample/search")
+    @Operation(summary = "Search samples with pagination and filtering", 
+               description = "Search samples with support for pagination, sorting, and filtering on all Sample fields. Compatible with MUI X DataGrid v7.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Search completed successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = SampleSearchResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid search criteria",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public SampleSearchResponse searchSamples(@RequestBody SampleSearchRequest request) {
+        return this.sampleSearchService.search(request);
     }
 }
