@@ -36,6 +36,11 @@ Spring Boot + MySQL Starter API with automated CI/CD.
 * Swagger UI: <http://localhost:8080/swagger-ui/index.html>
 * Health: <http://localhost:8080/actuator/health>
 
+## 📚 API Documentation
+
+* [CRUD API](CRUD_API.md) - Complete guide for Create, Read, Update, Delete operations
+* [Search API](SEARCH_API.md) - Advanced search with pagination, sorting, and filtering
+
 ## 🔄 CI/CD
 
 GitHub Actions handles build, test, release, Docker image publishing and security scanning.
