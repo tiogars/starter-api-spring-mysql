@@ -155,10 +155,21 @@ public class SampleController {
 
     @PostMapping("sample/export")
     @Operation(summary = "Export samples to file", 
-               description = "Export samples in various formats (XLSX, CSV, XML, JSON) with optional ZIP compression. Filename is prefixed with datetime.")
+               description = "Export samples in various formats (XLSX, CSV, XML, JSON) with optional ZIP compression. Filename is prefixed with datetime. Returns a file attachment for download.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Export completed successfully",
-            content = @Content(mediaType = "application/octet-stream")),
+        @ApiResponse(responseCode = "200", description = "Export completed successfully. Returns binary file content with appropriate Content-Type and Content-Disposition headers.",
+            content = {
+                @Content(mediaType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                         schema = @Schema(type = "string", format = "binary", description = "Excel file (XLSX format)")),
+                @Content(mediaType = "text/csv", 
+                         schema = @Schema(type = "string", format = "binary", description = "CSV file")),
+                @Content(mediaType = "application/xml", 
+                         schema = @Schema(type = "string", format = "binary", description = "XML file")),
+                @Content(mediaType = "application/json", 
+                         schema = @Schema(type = "string", format = "binary", description = "JSON file")),
+                @Content(mediaType = "application/zip", 
+                         schema = @Schema(type = "string", format = "binary", description = "ZIP compressed file"))
+            }),
         @ApiResponse(responseCode = "400", description = "Invalid export parameters",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
