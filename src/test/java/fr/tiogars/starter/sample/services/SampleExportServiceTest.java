@@ -327,24 +327,13 @@ class SampleExportServiceTest {
                       "Entry name should match pattern yyyyMMdd_HHmmss_samples.json but was: " + entryName);
             
             // Read and verify the content can be extracted
-            byte[] buffer = new byte[1024];
-            int totalRead = 0;
-            int bytesRead;
-            while ((bytesRead = zis.read(buffer)) != -1) {
-                totalRead += bytesRead;
-            }
-            
-            assertTrue(totalRead > 0, "ZIP entry should contain data");
+            byte[] contentBytes = zis.readAllBytes();
+            assertTrue(contentBytes.length > 0, "ZIP entry should contain data");
             
             // Verify the extracted content is valid JSON (starts with '[' for array)
-            try (ByteArrayInputStream bais2 = new ByteArrayInputStream(zipContent);
-                 ZipInputStream zis2 = new ZipInputStream(bais2)) {
-                zis2.getNextEntry();
-                byte[] contentBytes = zis2.readAllBytes();
-                String jsonContent = new String(contentBytes);
-                assertTrue(jsonContent.trim().startsWith("["), "Content should be a JSON array");
-                assertTrue(jsonContent.trim().endsWith("]"), "Content should be a JSON array");
-            }
+            String jsonContent = new String(contentBytes);
+            assertTrue(jsonContent.trim().startsWith("["), "Content should be a JSON array");
+            assertTrue(jsonContent.trim().endsWith("]"), "Content should be a JSON array");
             
             zis.closeEntry();
             
