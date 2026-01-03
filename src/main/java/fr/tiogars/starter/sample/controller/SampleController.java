@@ -11,15 +11,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import fr.tiogars.starter.common.exception.ErrorResponse;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
 import fr.tiogars.starter.sample.forms.SampleImportForm;
+import fr.tiogars.starter.sample.forms.SampleInitForm;
 import fr.tiogars.starter.sample.forms.SampleUpdateForm;
 import fr.tiogars.starter.sample.models.Sample;
 import fr.tiogars.starter.sample.models.SampleImportReport;
 import fr.tiogars.starter.sample.services.SampleCreateService;
 import fr.tiogars.starter.sample.services.SampleCrudService;
 import fr.tiogars.starter.sample.services.SampleImportService;
+import fr.tiogars.starter.sample.services.SampleInitService;
 import fr.tiogars.starter.sample.services.SampleUpdateService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -44,12 +48,16 @@ public class SampleController {
 
     private SampleImportService sampleImportService;
 
+    private SampleInitService sampleInitService;
+
     public SampleController(SampleCreateService sampleCreateService, SampleCrudService sampleCrudService,
-            SampleUpdateService sampleUpdateService, SampleImportService sampleImportService) {
+            SampleUpdateService sampleUpdateService, SampleImportService sampleImportService,
+            SampleInitService sampleInitService) {
         this.sampleCreateService = sampleCreateService;
         this.sampleCrudService = sampleCrudService;
         this.sampleUpdateService = sampleUpdateService;
         this.sampleImportService = sampleImportService;
+        this.sampleInitService = sampleInitService;
     }
 
     @PostMapping("sample")
@@ -105,5 +113,17 @@ public class SampleController {
     })
     public SampleImportReport importSamples(@RequestBody SampleImportForm form) {
         return this.sampleImportService.importSamples(form);
+    }
+
+    @PostMapping("sample/init")
+    @Operation(summary = "Initialize samples with mock data", description = "Creates a specified number of samples with randomly generated mock data for testing and development purposes")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Samples initialized successfully",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = List.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid input data",
+            content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public List<Sample> initSamples(@Valid @RequestBody SampleInitForm form) {
+        return this.sampleInitService.initSamples(form);
     }
 }
