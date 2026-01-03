@@ -118,13 +118,17 @@ public class SampleExportService {
      */
     private List<Sample> fetchSamples(SampleSearchRequest searchRequest) {
         if (searchRequest != null) {
-            // Use search service to get filtered results
-            // Limit to 100,000 records to prevent memory issues
-            searchRequest.setPage(0);
-            int requestedPageSize = searchRequest.getPageSize() > 0 ? searchRequest.getPageSize() : 100000;
-            searchRequest.setPageSize(Math.min(requestedPageSize, 100000));
+            // Create a copy to avoid modifying the input parameter
+            SampleSearchRequest exportRequest = new SampleSearchRequest();
+            exportRequest.setPage(0);
+            exportRequest.setSortModel(searchRequest.getSortModel());
+            exportRequest.setFilterModel(searchRequest.getFilterModel());
             
-            var searchResponse = sampleSearchService.search(searchRequest);
+            // Use default of 10,000 if pageSize not set or invalid, max 100,000 for memory safety
+            int requestedPageSize = searchRequest.getPageSize() > 0 ? searchRequest.getPageSize() : 10000;
+            exportRequest.setPageSize(Math.min(requestedPageSize, 100000));
+            
+            var searchResponse = sampleSearchService.search(exportRequest);
             return searchResponse.getRows();
         } else {
             // Export all samples (limited to first 100,000 for memory safety)

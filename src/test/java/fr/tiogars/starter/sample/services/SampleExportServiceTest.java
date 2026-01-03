@@ -19,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 
 import fr.tiogars.starter.sample.entities.SampleEntity;
 import fr.tiogars.starter.sample.forms.SampleExportForm;
+import fr.tiogars.starter.sample.models.Sample;
 import fr.tiogars.starter.sample.models.SampleSearchRequest;
+import fr.tiogars.starter.sample.models.SampleSearchResponse;
 import fr.tiogars.starter.sample.repositories.SampleRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -216,11 +218,10 @@ class SampleExportServiceTest {
         searchRequest.setPageSize(100);
         form.setSearchRequest(searchRequest);
 
-        fr.tiogars.starter.sample.models.SampleSearchResponse searchResponse = 
-            new fr.tiogars.starter.sample.models.SampleSearchResponse(
-                sampleEntities.stream().map(this::toModel).toList(),
-                sampleEntities.size()
-            );
+        SampleSearchResponse searchResponse = new SampleSearchResponse(
+            sampleEntities.stream().map(this::toModel).toList(),
+            sampleEntities.size()
+        );
         
         when(sampleSearchService.search(any())).thenReturn(searchResponse);
 
@@ -236,8 +237,8 @@ class SampleExportServiceTest {
         verify(sampleSearchService, times(1)).search(any());
     }
     
-    private fr.tiogars.starter.sample.models.Sample toModel(SampleEntity entity) {
-        fr.tiogars.starter.sample.models.Sample model = new fr.tiogars.starter.sample.models.Sample();
+    private Sample toModel(SampleEntity entity) {
+        Sample model = new Sample();
         model.setId(entity.getId());
         model.setName(entity.getName());
         model.setDescription(entity.getDescription());
