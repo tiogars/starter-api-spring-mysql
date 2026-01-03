@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -113,18 +114,22 @@ public class SampleExportService {
 
     /**
      * Fetch samples based on search criteria or all samples if no criteria provided.
+     * Note: Exports are limited to 100,000 records to prevent memory issues.
      */
     private List<Sample> fetchSamples(SampleSearchRequest searchRequest) {
         if (searchRequest != null) {
             // Use search service to get filtered results
+            // Limit to 100,000 records to prevent memory issues
             searchRequest.setPage(0);
-            searchRequest.setPageSize(Integer.MAX_VALUE);
+            searchRequest.setPageSize(Math.min(searchRequest.getPageSize(), 100000));
             
             var searchResponse = sampleSearchService.search(searchRequest);
             return searchResponse.getRows();
         } else {
-            // Export all samples
-            List<SampleEntity> entities = sampleRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+            // Export all samples (limited to first 100,000 for memory safety)
+            List<SampleEntity> entities = sampleRepository.findAll(
+                PageRequest.of(0, 100000, Sort.by(Sort.Direction.ASC, "id"))
+            ).getContent();
             return entities.stream().map(this::toModel).toList();
         }
     }

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -70,7 +69,8 @@ class SampleExportServiceTest {
         form.setFormat("json");
         form.setZip(false);
 
-        when(sampleRepository.findAll(any(Sort.class))).thenReturn(sampleEntities);
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
@@ -88,7 +88,7 @@ class SampleExportServiceTest {
         assertTrue(contentDisposition.contains("samples.json"));
         assertTrue(contentDisposition.contains("attachment"));
 
-        verify(sampleRepository, times(1)).findAll(any(Sort.class));
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     @Test
@@ -98,7 +98,8 @@ class SampleExportServiceTest {
         form.setFormat("csv");
         form.setZip(false);
 
-        when(sampleRepository.findAll(any(Sort.class))).thenReturn(sampleEntities);
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
@@ -115,7 +116,7 @@ class SampleExportServiceTest {
         String contentDisposition = response.getHeaders().getContentDisposition().toString();
         assertTrue(contentDisposition.contains("samples.csv"));
 
-        verify(sampleRepository, times(1)).findAll(any(Sort.class));
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     @Test
@@ -125,7 +126,8 @@ class SampleExportServiceTest {
         form.setFormat("xml");
         form.setZip(false);
 
-        when(sampleRepository.findAll(any(Sort.class))).thenReturn(sampleEntities);
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
@@ -142,7 +144,7 @@ class SampleExportServiceTest {
         String contentDisposition = response.getHeaders().getContentDisposition().toString();
         assertTrue(contentDisposition.contains("samples.xml"));
 
-        verify(sampleRepository, times(1)).findAll(any(Sort.class));
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     @Test
@@ -152,7 +154,8 @@ class SampleExportServiceTest {
         form.setFormat("xlsx");
         form.setZip(false);
 
-        when(sampleRepository.findAll(any(Sort.class))).thenReturn(sampleEntities);
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
@@ -169,7 +172,7 @@ class SampleExportServiceTest {
         String contentDisposition = response.getHeaders().getContentDisposition().toString();
         assertTrue(contentDisposition.contains("samples.xlsx"));
 
-        verify(sampleRepository, times(1)).findAll(any(Sort.class));
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     @Test
@@ -179,7 +182,8 @@ class SampleExportServiceTest {
         form.setFormat("json");
         form.setZip(true);
 
-        when(sampleRepository.findAll(any(Sort.class))).thenReturn(sampleEntities);
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
@@ -197,7 +201,7 @@ class SampleExportServiceTest {
         assertTrue(contentDisposition.contains("samples.zip"));
         assertTrue(contentDisposition.contains("attachment"));
 
-        verify(sampleRepository, times(1)).findAll(any(Sort.class));
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     @Test
@@ -252,7 +256,8 @@ class SampleExportServiceTest {
         form.setFormat("json");
         form.setZip(false);
 
-        when(sampleRepository.findAll(any(Sort.class))).thenReturn(Arrays.asList());
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(java.util.Collections.emptyList()));
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
@@ -264,7 +269,7 @@ class SampleExportServiceTest {
         // Even with empty list, should produce valid JSON array
         assertTrue(response.getBody().length > 0);
 
-        verify(sampleRepository, times(1)).findAll(any(Sort.class));
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     @Test
@@ -274,7 +279,8 @@ class SampleExportServiceTest {
         form.setFormat("json");
         form.setZip(false);
 
-        when(sampleRepository.findAll(any(Sort.class))).thenReturn(sampleEntities);
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);

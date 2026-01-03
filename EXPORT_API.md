@@ -254,7 +254,7 @@ exportSamples('csv', false, {
 
 ## Notes
 
-- Large exports may take time; consider implementing pagination or background jobs for very large datasets
+- Large exports are limited to 100,000 records for memory safety. If you need to export more, use filtered exports with pagination
 - Filtered exports use the same search criteria as the search API (see SEARCH_API.md)
 - ZIP compression is useful for large exports or when transmitting over slow networks
 - All exports include all sample fields: id, name, description, active, createdAt, createdBy, updatedAt, updatedBy
