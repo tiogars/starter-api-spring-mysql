@@ -121,7 +121,8 @@ public class SampleExportService {
             // Use search service to get filtered results
             // Limit to 100,000 records to prevent memory issues
             searchRequest.setPage(0);
-            searchRequest.setPageSize(Math.min(searchRequest.getPageSize(), 100000));
+            int requestedPageSize = searchRequest.getPageSize() > 0 ? searchRequest.getPageSize() : 100000;
+            searchRequest.setPageSize(Math.min(requestedPageSize, 100000));
             
             var searchResponse = sampleSearchService.search(searchRequest);
             return searchResponse.getRows();
