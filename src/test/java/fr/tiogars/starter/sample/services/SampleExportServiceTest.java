@@ -4,9 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -290,5 +293,65 @@ class SampleExportServiceTest {
         String contentDisposition = response.getHeaders().getContentDisposition().toString();
         // Filename should match pattern: yyyyMMdd_HHmmss_samples.json
         assertTrue(contentDisposition.matches(".*\\d{8}_\\d{6}_samples\\.json.*"));
+    }
+
+    @Test
+    void testExportSamples_ZipFileIsValidAndCanBeUnzipped() throws Exception {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("json");
+        form.setZip(true);
+
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
+
+        // Act
+        ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
+
+        // Assert
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        byte[] zipContent = response.getBody();
+        assertTrue(zipContent.length > 0);
+
+        // Verify the ZIP file can be properly opened and extracted
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(zipContent);
+             ZipInputStream zis = new ZipInputStream(bais)) {
+            
+            ZipEntry entry = zis.getNextEntry();
+            assertNotNull(entry, "ZIP file should contain at least one entry");
+            
+            // Verify the entry name matches expected pattern (timestamp_samples.json)
+            String entryName = entry.getName();
+            assertTrue(entryName.matches("\\d{8}_\\d{6}_samples\\.json"), 
+                      "Entry name should match pattern yyyyMMdd_HHmmss_samples.json but was: " + entryName);
+            
+            // Read and verify the content can be extracted
+            byte[] buffer = new byte[1024];
+            int totalRead = 0;
+            int bytesRead;
+            while ((bytesRead = zis.read(buffer)) != -1) {
+                totalRead += bytesRead;
+            }
+            
+            assertTrue(totalRead > 0, "ZIP entry should contain data");
+            
+            // Verify the extracted content is valid JSON (starts with '[' for array)
+            try (ByteArrayInputStream bais2 = new ByteArrayInputStream(zipContent);
+                 ZipInputStream zis2 = new ZipInputStream(bais2)) {
+                zis2.getNextEntry();
+                byte[] contentBytes = zis2.readAllBytes();
+                String jsonContent = new String(contentBytes);
+                assertTrue(jsonContent.trim().startsWith("["), "Content should be a JSON array");
+                assertTrue(jsonContent.trim().endsWith("]"), "Content should be a JSON array");
+            }
+            
+            zis.closeEntry();
+            
+            // Verify there are no additional entries (should only be one file in the ZIP)
+            assertNull(zis.getNextEntry(), "ZIP file should contain only one entry");
+        }
+
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 }

@@ -268,6 +268,7 @@ public class SampleExportService {
             zipOut.putNextEntry(zipEntry);
             zipOut.write(content);
             zipOut.closeEntry();
+            zipOut.finish();
             
             return out.toByteArray();
         }
