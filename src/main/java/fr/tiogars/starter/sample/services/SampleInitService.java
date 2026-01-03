@@ -25,6 +25,8 @@ import jakarta.validation.Valid;
 @Validated
 public class SampleInitService {
 
+    private static final int MAX_NAME_LENGTH = 10;
+    
     private final Logger logger = Logger.getLogger(SampleInitService.class.getName());
     private final SampleCreateService sampleCreateService;
     private final Random random = new Random();
@@ -78,16 +80,22 @@ public class SampleInitService {
     private SampleCreateForm generateMockSampleForm(int index) {
         SampleCreateForm form = new SampleCreateForm();
         
-        // Generate a random name (max 10 characters to comply with validation)
+        // Generate a random name (max MAX_NAME_LENGTH characters to comply with validation)
         String adjective = ADJECTIVES[random.nextInt(ADJECTIVES.length)];
         String noun = NOUNS[random.nextInt(NOUNS.length)];
-        String name = adjective.substring(0, Math.min(3, adjective.length())) + 
-                      noun.substring(0, Math.min(3, noun.length())) + 
+        
+        // Create name with format: adjective prefix + noun prefix + index
+        // Use smaller prefixes to accommodate larger index numbers
+        int indexDigits = String.valueOf(index + 1).length();
+        int maxPrefixLength = (MAX_NAME_LENGTH - indexDigits) / 2;
+        
+        String name = adjective.substring(0, Math.min(maxPrefixLength, adjective.length())) + 
+                      noun.substring(0, Math.min(maxPrefixLength, noun.length())) + 
                       (index + 1);
         
-        // Ensure name doesn't exceed 10 characters
-        if (name.length() > 10) {
-            name = name.substring(0, 10);
+        // Ensure name doesn't exceed MAX_NAME_LENGTH characters
+        if (name.length() > MAX_NAME_LENGTH) {
+            name = name.substring(0, MAX_NAME_LENGTH);
         }
         
         form.setName(name);

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 import fr.tiogars.starter.common.exception.ErrorResponse;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
 import fr.tiogars.starter.sample.forms.SampleImportForm;
@@ -121,7 +123,7 @@ public class SampleController {
         @ApiResponse(responseCode = "400", description = "Invalid input data",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public List<Sample> initSamples(@RequestBody SampleInitForm form) {
+    public List<Sample> initSamples(@Valid @RequestBody SampleInitForm form) {
         return this.sampleInitService.initSamples(form);
     }
 }
