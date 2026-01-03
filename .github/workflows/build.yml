@@ -21,3 +21,4 @@ jobs:
       - uses: tiogars/maven-build-action@v1.0.8
         with:
           setup-java-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
