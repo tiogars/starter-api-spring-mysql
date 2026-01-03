@@ -14,16 +14,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import fr.tiogars.starter.sample.entities.SampleEntity;
 import fr.tiogars.starter.sample.forms.SampleExportForm;
+import fr.tiogars.starter.sample.models.SampleSearchRequest;
 import fr.tiogars.starter.sample.repositories.SampleRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -209,10 +206,19 @@ class SampleExportServiceTest {
         SampleExportForm form = new SampleExportForm();
         form.setFormat("json");
         form.setZip(false);
-        // Note: searchRequest is set but not fully tested due to simplification in export service
+        
+        SampleSearchRequest searchRequest = new SampleSearchRequest();
+        searchRequest.setPage(0);
+        searchRequest.setPageSize(100);
+        form.setSearchRequest(searchRequest);
 
-        Page<SampleEntity> page = new PageImpl<>(sampleEntities);
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
+        fr.tiogars.starter.sample.models.SampleSearchResponse searchResponse = 
+            new fr.tiogars.starter.sample.models.SampleSearchResponse(
+                sampleEntities.stream().map(this::toModel).toList(),
+                sampleEntities.size()
+            );
+        
+        when(sampleSearchService.search(any())).thenReturn(searchResponse);
 
         // Act
         ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
@@ -222,6 +228,21 @@ class SampleExportServiceTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertTrue(response.getBody().length > 0);
+        
+        verify(sampleSearchService, times(1)).search(any());
+    }
+    
+    private fr.tiogars.starter.sample.models.Sample toModel(SampleEntity entity) {
+        fr.tiogars.starter.sample.models.Sample model = new fr.tiogars.starter.sample.models.Sample();
+        model.setId(entity.getId());
+        model.setName(entity.getName());
+        model.setDescription(entity.getDescription());
+        model.setActive(entity.isActive());
+        model.setCreatedAt(entity.getCreatedAt());
+        model.setCreatedBy(entity.getCreatedBy());
+        model.setUpdatedAt(entity.getUpdatedAt());
+        model.setUpdatedBy(entity.getUpdatedBy());
+        return model;
     }
 
     @Test

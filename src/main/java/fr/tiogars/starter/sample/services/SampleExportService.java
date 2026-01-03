@@ -6,7 +6,6 @@ import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -17,10 +16,9 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,7 +49,7 @@ import fr.tiogars.starter.sample.repositories.SampleRepository;
 @Validated
 public class SampleExportService {
 
-    private final Logger logger = Logger.getLogger(SampleExportService.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(SampleExportService.class);
     private final SampleRepository sampleRepository;
     private final SampleSearchService sampleSearchService;
 
@@ -108,7 +106,7 @@ public class SampleExportService {
             return new ResponseEntity<>(finalContent, headers, HttpStatus.OK);
             
         } catch (Exception e) {
-            logger.severe("Export failed: " + e.getMessage());
+            logger.error("Export failed: " + e.getMessage(), e);
             throw new RuntimeException("Failed to export samples: " + e.getMessage(), e);
         }
     }
@@ -118,30 +116,17 @@ public class SampleExportService {
      */
     private List<Sample> fetchSamples(SampleSearchRequest searchRequest) {
         if (searchRequest != null) {
-            // Use search service to build specification and apply filters
-            Sort sort = Sort.by(Sort.Direction.ASC, "id");
-            if (searchRequest.getSortModel() != null && !searchRequest.getSortModel().isEmpty()) {
-                // Build sort from search request (simplified version)
-                sort = Sort.by(Sort.Direction.DESC, "id");
-            }
+            // Use search service to get filtered results
+            searchRequest.setPage(0);
+            searchRequest.setPageSize(Integer.MAX_VALUE);
             
-            Pageable pageable = PageRequest.of(0, Integer.MAX_VALUE, sort);
-            Specification<SampleEntity> specification = buildSpecification(searchRequest);
-            
-            List<SampleEntity> entities = sampleRepository.findAll(specification, pageable).getContent();
-            return entities.stream().map(this::toModel).toList();
+            var searchResponse = sampleSearchService.search(searchRequest);
+            return searchResponse.getRows();
         } else {
             // Export all samples
             List<SampleEntity> entities = sampleRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
             return entities.stream().map(this::toModel).toList();
         }
-    }
-
-    /**
-     * Build JPA Specification from search request (simplified version).
-     */
-    private Specification<SampleEntity> buildSpecification(SampleSearchRequest searchRequest) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.conjunction();
     }
 
     /**
