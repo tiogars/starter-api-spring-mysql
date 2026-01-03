@@ -32,6 +32,11 @@ public class SampleImportReport {
      * Number of samples that failed validation or other errors
      */
     private int totalErrors;
+
+    /**
+     * Number of samples skipped because creation failed for unexpected reasons
+     */
+    private int totalSkipped;
     
     /**
      * Overall alert level for the import operation: "success", "info", "warning", "error"
@@ -82,6 +87,14 @@ public class SampleImportReport {
 
     public void setTotalErrors(int totalErrors) {
         this.totalErrors = totalErrors;
+    }
+
+    public int getTotalSkipped() {
+        return totalSkipped;
+    }
+
+    public void setTotalSkipped(int totalSkipped) {
+        this.totalSkipped = totalSkipped;
     }
 
     public String getAlertLevel() {

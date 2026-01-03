@@ -48,6 +48,7 @@ public class SampleImportService {
             report.setTotalCreated(0);
             report.setTotalDuplicates(0);
             report.setTotalErrors(0);
+            report.setTotalSkipped(0);
             report.setMessage("No samples provided for import");
             report.setAlertLevel("warning");
             return report;
@@ -57,6 +58,7 @@ public class SampleImportService {
         int totalCreated = 0;
         int totalDuplicates = 0;
         int totalErrors = 0;
+        int totalSkipped = 0;
         
         logger.info("Starting import of " + totalProvided + " samples");
         
@@ -69,9 +71,11 @@ public class SampleImportService {
             } else if ("info".equals(item.getAlertLevel())) {
                 // Duplicate sample
                 totalDuplicates++;
-            } else {
-                // Validation or other error
+            } else if (item.getMessage() != null && item.getMessage().startsWith("Validation failed")) {
                 totalErrors++;
+            } else {
+                // Unexpected failure during creation
+                totalSkipped++;
             }
         }
         
@@ -79,6 +83,7 @@ public class SampleImportService {
         report.setTotalCreated(totalCreated);
         report.setTotalDuplicates(totalDuplicates);
         report.setTotalErrors(totalErrors);
+        report.setTotalSkipped(totalSkipped);
         
         // Set overall message and alert level
         if (totalCreated == totalProvided) {
@@ -92,19 +97,41 @@ public class SampleImportService {
             if (totalErrors > 0) {
                 message.append(". ").append(totalErrors).append(" error").append(totalErrors > 1 ? "s" : "");
             }
+            if (totalSkipped > 0) {
+                message.append(". ").append(totalSkipped).append(" skipped");
+            }
             report.setMessage(message.toString());
             report.setAlertLevel("info");
         } else {
-            if (totalErrors > 0) {
-                report.setMessage("No samples imported. " + totalDuplicates + " duplicates and " + totalErrors + " errors");
-                report.setAlertLevel("error");
-            } else {
+            if (totalErrors == 0 && totalSkipped == 0) {
                 report.setMessage("No samples imported. All " + totalDuplicates + " samples already exist");
                 report.setAlertLevel("warning");
+            } else {
+                StringBuilder message = new StringBuilder("No samples imported.");
+                if (totalDuplicates > 0) {
+                    message.append(" ").append(totalDuplicates).append(" duplicate").append(totalDuplicates > 1 ? "s" : "");
+                }
+                if (totalErrors > 0) {
+                    if (message.charAt(message.length() - 1) != '.') {
+                        message.append('.');
+                    }
+                    message.append(" ").append(totalErrors).append(" error").append(totalErrors > 1 ? "s" : "");
+                }
+                if (totalSkipped > 0) {
+                    if (message.charAt(message.length() - 1) != '.') {
+                        message.append('.');
+                    }
+                    message.append(" ").append(totalSkipped).append(" skipped");
+                }
+                if (message.charAt(message.length() - 1) != '.') {
+                    message.append('.');
+                }
+                report.setMessage(message.toString());
+                report.setAlertLevel("error");
             }
         }
         
-        logger.info("Import completed: " + totalCreated + " created, " + totalDuplicates + " duplicates, " + totalErrors + " errors");
+        logger.info("Import completed: " + totalCreated + " created, " + totalDuplicates + " duplicates, " + totalErrors + " errors, " + totalSkipped + " skipped");
         
         return report;
     }
