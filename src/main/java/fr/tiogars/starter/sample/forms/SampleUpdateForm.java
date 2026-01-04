@@ -1,5 +1,8 @@
 package fr.tiogars.starter.sample.forms;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class SampleUpdateForm {
 
     private Long id;
@@ -15,6 +18,11 @@ public class SampleUpdateForm {
      * Active status
      */
     private boolean active;
+
+    /**
+     * Tags associated with this sample
+     */
+    private Set<String> tagNames = new HashSet<>();
 
     public SampleUpdateForm() {
     }
@@ -56,5 +64,13 @@ public class SampleUpdateForm {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Set<String> getTagNames() {
+        return tagNames;
+    }
+
+    public void setTagNames(Set<String> tagNames) {
+        this.tagNames = tagNames;
     }
 }

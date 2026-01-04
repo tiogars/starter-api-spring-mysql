@@ -1,5 +1,8 @@
 package fr.tiogars.starter.sample.forms;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import fr.tiogars.architecture.create.forms.AbstractCreateForm;
 
 public class SampleCreateForm extends AbstractCreateForm {
@@ -14,6 +17,11 @@ public class SampleCreateForm extends AbstractCreateForm {
      * Active status
      */
     private boolean active;
+
+    /**
+     * Tags associated with this sample
+     */
+    private Set<String> tagNames = new HashSet<>();
 
     public SampleCreateForm() {
     }
@@ -40,5 +48,13 @@ public class SampleCreateForm extends AbstractCreateForm {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public Set<String> getTagNames() {
+        return tagNames;
+    }
+
+    public void setTagNames(Set<String> tagNames) {
+        this.tagNames = tagNames;
     }
 }

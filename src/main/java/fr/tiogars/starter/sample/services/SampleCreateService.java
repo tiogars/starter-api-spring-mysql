@@ -2,6 +2,7 @@ package fr.tiogars.starter.sample.services;
 
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -10,6 +11,7 @@ import fr.tiogars.architecture.create.services.AbstractCreateService;
 import fr.tiogars.starter.sample.entities.SampleEntity;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
 import fr.tiogars.starter.sample.models.Sample;
+import fr.tiogars.starter.sample.models.SampleTag;
 import fr.tiogars.starter.sample.repositories.SampleRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -22,10 +24,12 @@ public class SampleCreateService
 
     private final Logger logger = Logger.getLogger(SampleCreateService.class.getName());
     private final Validator validator;
+    private final SampleTagService sampleTagService;
 
-    public SampleCreateService(SampleRepository sampleRepository, Validator validator) {
+    public SampleCreateService(SampleRepository sampleRepository, Validator validator, SampleTagService sampleTagService) {
         super(sampleRepository);
         this.validator = validator;
+        this.sampleTagService = sampleTagService;
     }
 
     @Override
@@ -38,6 +42,16 @@ public class SampleCreateService
         entity.setCreatedBy(sample.getCreatedBy());
         entity.setUpdatedAt(sample.getUpdatedAt());
         entity.setUpdatedBy(sample.getUpdatedBy());
+        
+        // Handle tags
+        if (sample.getTags() != null && !sample.getTags().isEmpty()) {
+            var tagNames = sample.getTags().stream()
+                    .map(SampleTag::getName)
+                    .collect(Collectors.toList());
+            var tagEntities = sampleTagService.findOrCreateTags(tagNames);
+            entity.setTags(tagEntities.stream().collect(Collectors.toSet()));
+        }
+        
         return entity;
     }
 
@@ -52,6 +66,14 @@ public class SampleCreateService
         sample.setCreatedBy(entity.getCreatedBy());
         sample.setUpdatedAt(entity.getUpdatedAt());
         sample.setUpdatedBy(entity.getUpdatedBy());
+        
+        // Convert tags
+        if (entity.getTags() != null) {
+            sample.setTags(entity.getTags().stream()
+                    .map(tag -> new SampleTag(tag.getId(), tag.getName(), tag.getDescription()))
+                    .collect(Collectors.toSet()));
+        }
+        
         return sample;
     }
 
@@ -65,6 +87,14 @@ public class SampleCreateService
         sample.setCreatedBy("system");
         sample.setUpdatedAt(new java.util.Date());
         sample.setUpdatedBy("system");
+        
+        // Handle tags from form
+        if (form.getTagNames() != null && !form.getTagNames().isEmpty()) {
+            sample.setTags(form.getTagNames().stream()
+                    .map(name -> new SampleTag(null, name))
+                    .collect(Collectors.toSet()));
+        }
+        
         return sample;
     }
 

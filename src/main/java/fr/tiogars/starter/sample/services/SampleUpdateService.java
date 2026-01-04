@@ -2,6 +2,7 @@ package fr.tiogars.starter.sample.services;
 
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -9,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import fr.tiogars.starter.sample.entities.SampleEntity;
 import fr.tiogars.starter.sample.forms.SampleUpdateForm;
 import fr.tiogars.starter.sample.models.Sample;
+import fr.tiogars.starter.sample.models.SampleTag;
 import fr.tiogars.starter.sample.repositories.SampleRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -21,10 +23,12 @@ public class SampleUpdateService {
     private final Logger logger = Logger.getLogger(SampleUpdateService.class.getName());
     private final SampleRepository sampleRepository;
     private final Validator validator;
+    private final SampleTagService sampleTagService;
 
-    public SampleUpdateService(SampleRepository sampleRepository, Validator validator) {
+    public SampleUpdateService(SampleRepository sampleRepository, Validator validator, SampleTagService sampleTagService) {
         this.sampleRepository = sampleRepository;
         this.validator = validator;
+        this.sampleTagService = sampleTagService;
     }
 
     public Sample update(SampleUpdateForm form) {
@@ -34,22 +38,30 @@ public class SampleUpdateService {
         
         Sample sample = toModel(form, existingEntity);
         validate(sample);
-        SampleEntity entity = toEntity(sample);
+        SampleEntity entity = toEntity(sample, existingEntity);
         SampleEntity savedEntity = sampleRepository.save(entity);
         return toModel(savedEntity);
     }
 
-    private SampleEntity toEntity(Sample sample) {
-        SampleEntity entity = new SampleEntity();
-        entity.setId(sample.getId());
-        entity.setName(sample.getName());
-        entity.setDescription(sample.getDescription());
-        entity.setActive(sample.isActive());
-        entity.setCreatedAt(sample.getCreatedAt());
-        entity.setCreatedBy(sample.getCreatedBy());
-        entity.setUpdatedAt(sample.getUpdatedAt());
-        entity.setUpdatedBy(sample.getUpdatedBy());
-        return entity;
+    private SampleEntity toEntity(Sample sample, SampleEntity existingEntity) {
+        existingEntity.setName(sample.getName());
+        existingEntity.setDescription(sample.getDescription());
+        existingEntity.setActive(sample.isActive());
+        existingEntity.setUpdatedAt(sample.getUpdatedAt());
+        existingEntity.setUpdatedBy(sample.getUpdatedBy());
+        
+        // Handle tags
+        if (sample.getTags() != null && !sample.getTags().isEmpty()) {
+            var tagNames = sample.getTags().stream()
+                    .map(SampleTag::getName)
+                    .collect(Collectors.toList());
+            var tagEntities = sampleTagService.findOrCreateTags(tagNames);
+            existingEntity.setTags(tagEntities.stream().collect(Collectors.toSet()));
+        } else {
+            existingEntity.setTags(Set.of());
+        }
+        
+        return existingEntity;
     }
 
     private Sample toModel(SampleEntity entity) {
@@ -62,6 +74,14 @@ public class SampleUpdateService {
         sample.setCreatedBy(entity.getCreatedBy());
         sample.setUpdatedAt(entity.getUpdatedAt());
         sample.setUpdatedBy(entity.getUpdatedBy());
+        
+        // Convert tags
+        if (entity.getTags() != null) {
+            sample.setTags(entity.getTags().stream()
+                    .map(tag -> new SampleTag(tag.getId(), tag.getName(), tag.getDescription()))
+                    .collect(Collectors.toSet()));
+        }
+        
         return sample;
     }
 
@@ -76,6 +96,14 @@ public class SampleUpdateService {
         // Preserve creation fields from existing entity
         sample.setCreatedAt(existingEntity.getCreatedAt());
         sample.setCreatedBy(existingEntity.getCreatedBy());
+        
+        // Handle tags from form
+        if (form.getTagNames() != null && !form.getTagNames().isEmpty()) {
+            sample.setTags(form.getTagNames().stream()
+                    .map(name -> new SampleTag(null, name))
+                    .collect(Collectors.toSet()));
+        }
+        
         return sample;
     }
 

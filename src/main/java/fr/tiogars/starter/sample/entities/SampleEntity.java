@@ -1,13 +1,20 @@
 package fr.tiogars.starter.sample.entities;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import fr.tiogars.architecture.create.entities.AbstractEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 
 /**
@@ -30,7 +37,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "sample")
 public class SampleEntity extends AbstractEntity {
-    
+
     /**
      * Primary key
      */
@@ -79,6 +86,13 @@ public class SampleEntity extends AbstractEntity {
      */
     @Column(nullable = false, length = 255)
     private String updatedBy;
+
+    /**
+     * Tags associated with this sample
+     */
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "sample_sample_tag", joinColumns = @JoinColumn(name = "sample_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<SampleTagEntity> tags = new HashSet<>();
 
     public SampleEntity() {
     }
@@ -137,6 +151,22 @@ public class SampleEntity extends AbstractEntity {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+        
+    public Set<SampleTagEntity> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<SampleTagEntity> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(SampleTagEntity tag) {
+        this.tags.add(tag);
+    }
+
+    public void removeTag(SampleTagEntity tag) {
+        this.tags.remove(tag);
     }
 
     public String getUpdatedBy() {

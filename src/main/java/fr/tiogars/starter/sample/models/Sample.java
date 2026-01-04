@@ -1,6 +1,8 @@
 package fr.tiogars.starter.sample.models;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -67,6 +69,11 @@ public class Sample {
      */
     private String updatedBy;
 
+    /**
+     * Tags associated with this sample
+     */
+    private Set<SampleTag> tags = new HashSet<>();
+
     public Sample() {
     }
 
@@ -128,6 +135,14 @@ public class Sample {
 
     public String getUpdatedBy() {
         return updatedBy;
+    }
+
+    public Set<SampleTag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<SampleTag> tags) {
+        this.tags = tags;
     }
 
     public void setUpdatedBy(String updatedBy) {
