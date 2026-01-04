@@ -318,6 +318,14 @@ public class SampleSearchService {
         model.setCreatedBy(entity.getCreatedBy());
         model.setUpdatedAt(entity.getUpdatedAt());
         model.setUpdatedBy(entity.getUpdatedBy());
+        if (entity.getTags() != null) {
+            model.setTags(
+                entity.getTags()
+                    .stream()
+                    .map(tag -> new fr.tiogars.starter.sample.models.SampleTag(tag.getId(), tag.getName(), tag.getDescription()))
+                    .collect(java.util.stream.Collectors.toSet())
+            );
+        }
         return model;
     }
 }
