@@ -153,7 +153,13 @@ public class SampleController {
         return this.sampleSearchService.search(request);
     }
 
-    @PostMapping("sample/export")
+    @PostMapping(value = "sample/export", produces = {
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "text/csv",
+        "application/xml",
+        "application/json",
+        "application/zip"
+    })
     @Operation(summary = "Export samples to file", 
                description = "Export samples in various formats (XLSX, CSV, XML, JSON) with optional ZIP compression. Filename is prefixed with datetime. Returns a file attachment for download.")
     @ApiResponses(value = {
