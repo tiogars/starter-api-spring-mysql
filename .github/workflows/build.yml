@@ -28,8 +28,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin' # Alternative distribution options are available.
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          server-username: GITHUB_ACTOR # env variable for username in deploy
-          server-password: GITHUB_TOKEN # env variable for token in deploy
+          server-username: ${{ github.actor }}
+          server-password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache SonarQube packages
         uses: actions/cache@v5
@@ -49,6 +49,4 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-          GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} -Dsonar.projectName='starter-api-spring-mysql'
