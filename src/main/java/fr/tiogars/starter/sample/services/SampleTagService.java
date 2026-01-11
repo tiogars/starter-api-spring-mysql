@@ -52,7 +52,9 @@ public class SampleTagService {
             return List.of();
         }
         
-        List<SampleTagEntity> existingTags = sampleTagRepository.findByNameIn(tagNames);
+        List<SampleTagEntity> existingTags = sampleTagRepository.findByNameIn(tagNames)
+            .stream()
+            .collect(Collectors.toList());
         List<String> existingNames = existingTags.stream()
                 .map(SampleTagEntity::getName)
                 .collect(Collectors.toList());

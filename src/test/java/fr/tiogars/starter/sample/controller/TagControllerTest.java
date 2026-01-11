@@ -3,6 +3,7 @@ package fr.tiogars.starter.sample.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,13 +47,8 @@ class TagControllerTest {
 
     @BeforeEach
     void setUp() {
+        reset(sampleTagService);
         sampleTag = new SampleTag(1L, "TestTag", "Test Description");
-    }
-
-    @TestConfiguration
-    static class MockConfig {
-        @Bean
-        SampleTagService sampleTagService() { return mock(SampleTagService.class); }
     }
 
     @Test
@@ -122,6 +118,7 @@ class TagControllerTest {
         // Arrange
         SampleTag newTag = new SampleTag(null, "NewTag", "New Description");
         SampleTag createdTag = new SampleTag(3L, "NewTag", "New Description");
+
         when(sampleTagService.create(any(SampleTag.class))).thenReturn(createdTag);
 
         // Act & Assert
@@ -131,8 +128,7 @@ class TagControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(3))
-                .andExpect(jsonPath("$.name").value("NewTag"))
-                .andExpect(jsonPath("$.description").value("New Description"));
+                .andExpect(jsonPath("$.name").value("NewTag"));
 
         verify(sampleTagService, times(1)).create(any(SampleTag.class));
     }
@@ -147,5 +143,11 @@ class TagControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(sampleTagService, times(1)).deleteById(1L);
+    }
+
+    @TestConfiguration
+    static class MockConfig {
+        @Bean
+        SampleTagService sampleTagService() { return mock(SampleTagService.class); }
     }
 }

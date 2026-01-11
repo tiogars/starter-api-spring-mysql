@@ -39,6 +39,7 @@ class RouteDefinitionControllerTest {
 
     @BeforeEach
     void setUp() {
+        reset(routeService);
         route = new Route();
         route.setId(1L);
         route.setName("Test Route");

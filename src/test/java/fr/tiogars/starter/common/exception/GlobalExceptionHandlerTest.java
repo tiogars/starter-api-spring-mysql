@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,15 +36,11 @@ class GlobalExceptionHandlerTest {
     @Mock
     private Path propertyPath2;
 
-    @BeforeEach
-    void setUp() {
-        when(propertyPath1.toString()).thenReturn("field1");
-        when(propertyPath2.toString()).thenReturn("field2");
-    }
-
     @Test
     void testHandleConstraintViolationException_ReturnsErrorResponse() {
         // Arrange
+        when(propertyPath1.toString()).thenReturn("field1");
+        when(propertyPath2.toString()).thenReturn("field2");
         when(violation1.getPropertyPath()).thenReturn(propertyPath1);
         when(violation1.getMessage()).thenReturn("Field1 is invalid");
         when(violation2.getPropertyPath()).thenReturn(propertyPath2);
@@ -81,6 +76,7 @@ class GlobalExceptionHandlerTest {
     @Test
     void testHandleConstraintViolationException_WithSingleViolation() {
         // Arrange
+        when(propertyPath1.toString()).thenReturn("field1");
         when(violation1.getPropertyPath()).thenReturn(propertyPath1);
         when(violation1.getMessage()).thenReturn("Field1 is invalid");
 

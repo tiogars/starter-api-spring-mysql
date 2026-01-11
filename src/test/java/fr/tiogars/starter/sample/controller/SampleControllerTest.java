@@ -3,6 +3,7 @@ package fr.tiogars.starter.sample.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,6 +76,7 @@ class SampleControllerTest {
 
     @BeforeEach
     void setUp() {
+        reset(sampleCreateService, sampleCrudService, sampleUpdateService, sampleImportService, sampleExportService, sampleInitService, sampleSearchService);
         testDate = new Date();
         sample = new Sample();
         sample.setId(1L);
@@ -85,24 +87,6 @@ class SampleControllerTest {
         sample.setCreatedBy("testUser");
         sample.setUpdatedAt(testDate);
         sample.setUpdatedBy("testUser");
-    }
-
-    @TestConfiguration
-    static class MockConfig {
-        @Bean
-        SampleCreateService sampleCreateService() { return mock(SampleCreateService.class); }
-        @Bean
-        SampleCrudService sampleCrudService() { return mock(SampleCrudService.class); }
-        @Bean
-        SampleUpdateService sampleUpdateService() { return mock(SampleUpdateService.class); }
-        @Bean
-        SampleImportService sampleImportService() { return mock(SampleImportService.class); }
-        @Bean
-        SampleExportService sampleExportService() { return mock(SampleExportService.class); }
-        @Bean
-        SampleInitService sampleInitService() { return mock(SampleInitService.class); }
-        @Bean
-        SampleSearchService sampleSearchService() { return mock(SampleSearchService.class); }
     }
 
     @Test
@@ -232,5 +216,23 @@ class SampleControllerTest {
                 .andExpect(jsonPath("$.active").value(false));
 
         verify(sampleUpdateService, times(1)).update(any(SampleUpdateForm.class));
+    }
+
+    @TestConfiguration
+    static class MockConfig {
+        @Bean
+        SampleCreateService sampleCreateService() { return mock(SampleCreateService.class); }
+        @Bean
+        SampleCrudService sampleCrudService() { return mock(SampleCrudService.class); }
+        @Bean
+        SampleUpdateService sampleUpdateService() { return mock(SampleUpdateService.class); }
+        @Bean
+        SampleImportService sampleImportService() { return mock(SampleImportService.class); }
+        @Bean
+        SampleExportService sampleExportService() { return mock(SampleExportService.class); }
+        @Bean
+        SampleInitService sampleInitService() { return mock(SampleInitService.class); }
+        @Bean
+        SampleSearchService sampleSearchService() { return mock(SampleSearchService.class); }
     }
 }
