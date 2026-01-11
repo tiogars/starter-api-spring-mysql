@@ -11,8 +11,9 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -29,10 +30,9 @@ class RouteDefinitionControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @MockBean
+    @Autowired
     private RouteService routeService;
 
     private Route route;
@@ -43,6 +43,14 @@ class RouteDefinitionControllerTest {
         route.setId(1L);
         route.setName("Test Route");
         route.setPath("/test/path");
+    }
+
+    @TestConfiguration
+    static class MockConfig {
+        @Bean
+        RouteService routeService() {
+            return mock(RouteService.class);
+        }
     }
 
     @Test

@@ -70,12 +70,12 @@ class GlobalExceptionHandlerTest {
         assertEquals("Validation Failed", errorResponse.getError());
         assertEquals("Les données fournies ne sont pas valides", errorResponse.getMessage());
         
-        assertNotNull(errorResponse.getErrors());
-        assertEquals(2, errorResponse.getErrors().size());
-        assertTrue(errorResponse.getErrors().containsKey("field1"));
-        assertTrue(errorResponse.getErrors().containsKey("field2"));
-        assertEquals("Field1 is invalid", errorResponse.getErrors().get("field1"));
-        assertEquals("Field2 is required", errorResponse.getErrors().get("field2"));
+        assertNotNull(errorResponse.getViolations());
+        assertEquals(2, errorResponse.getViolations().size());
+        assertTrue(errorResponse.getViolations().containsKey("field1"));
+        assertTrue(errorResponse.getViolations().containsKey("field2"));
+        assertEquals("Field1 is invalid", errorResponse.getViolations().get("field1"));
+        assertEquals("Field2 is required", errorResponse.getViolations().get("field2"));
     }
 
     @Test
@@ -98,8 +98,8 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponse errorResponse = response.getBody();
         assertNotNull(errorResponse);
-        assertEquals(1, errorResponse.getErrors().size());
-        assertTrue(errorResponse.getErrors().containsKey("field1"));
+        assertEquals(1, errorResponse.getViolations().size());
+        assertTrue(errorResponse.getViolations().containsKey("field1"));
     }
 
     @Test
@@ -117,6 +117,6 @@ class GlobalExceptionHandlerTest {
         
         ErrorResponse errorResponse = response.getBody();
         assertNotNull(errorResponse);
-        assertEquals(0, errorResponse.getErrors().size());
+        assertEquals(0, errorResponse.getViolations().size());
     }
 }

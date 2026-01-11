@@ -1,9 +1,18 @@
 package fr.tiogars.starter.sample.controller;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -13,10 +22,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,28 +47,27 @@ class SampleControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @MockBean
+    @Autowired
     private SampleCreateService sampleCreateService;
 
-    @MockBean
+    @Autowired
     private SampleCrudService sampleCrudService;
 
-    @MockBean
+    @Autowired
     private SampleUpdateService sampleUpdateService;
 
-    @MockBean
+    @Autowired
     private SampleImportService sampleImportService;
 
-    @MockBean
+    @Autowired
     private SampleExportService sampleExportService;
 
-    @MockBean
+    @Autowired
     private SampleInitService sampleInitService;
 
-    @MockBean
+    @Autowired
     private SampleSearchService sampleSearchService;
 
     private Sample sample;
@@ -77,6 +85,24 @@ class SampleControllerTest {
         sample.setCreatedBy("testUser");
         sample.setUpdatedAt(testDate);
         sample.setUpdatedBy("testUser");
+    }
+
+    @TestConfiguration
+    static class MockConfig {
+        @Bean
+        SampleCreateService sampleCreateService() { return mock(SampleCreateService.class); }
+        @Bean
+        SampleCrudService sampleCrudService() { return mock(SampleCrudService.class); }
+        @Bean
+        SampleUpdateService sampleUpdateService() { return mock(SampleUpdateService.class); }
+        @Bean
+        SampleImportService sampleImportService() { return mock(SampleImportService.class); }
+        @Bean
+        SampleExportService sampleExportService() { return mock(SampleExportService.class); }
+        @Bean
+        SampleInitService sampleInitService() { return mock(SampleInitService.class); }
+        @Bean
+        SampleSearchService sampleSearchService() { return mock(SampleSearchService.class); }
     }
 
     @Test
