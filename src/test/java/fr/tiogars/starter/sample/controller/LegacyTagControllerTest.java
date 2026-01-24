@@ -14,8 +14,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -34,7 +35,7 @@ class LegacyTagControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private TagService tagService;
 
     @Autowired
@@ -45,6 +46,7 @@ class LegacyTagControllerTest {
 
     @BeforeEach
     void setUp() {
+        reset(tagService);
         tag1 = new Tag();
         tag1.setId(1L);
         tag1.setName("Tag1");
@@ -195,5 +197,11 @@ class LegacyTagControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(tagService, times(1)).deleteById(2L);
+    }
+
+    @TestConfiguration
+    static class MockConfig {
+        @Bean
+        TagService tagService() { return mock(TagService.class); }
     }
 }
