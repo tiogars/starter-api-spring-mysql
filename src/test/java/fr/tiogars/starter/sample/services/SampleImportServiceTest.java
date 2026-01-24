@@ -338,4 +338,259 @@ class SampleImportServiceTest {
         assertFalse(report.getItems().get(2).isCreated());
         assertEquals("error", report.getItems().get(2).getAlertLevel());
     }
+
+    @Test
+    void testImportSamples_MultipleDuplicates_CorrectMessage() {
+        // Arrange - multiple duplicates
+        SampleCreateForm sampleForm3 = new SampleCreateForm();
+        sampleForm3.setName("Sample3");
+        
+        importForm.setSamples(Arrays.asList(sampleForm1, sampleForm2, sampleForm3));
+        
+        SampleEntity existingEntity1 = new SampleEntity();
+        existingEntity1.setId(1L);
+        existingEntity1.setName("Sample1");
+        
+        SampleEntity existingEntity2 = new SampleEntity();
+        existingEntity2.setId(2L);
+        existingEntity2.setName("Sample2");
+        
+        SampleEntity existingEntity3 = new SampleEntity();
+        existingEntity3.setId(3L);
+        existingEntity3.setName("Sample3");
+        
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.of(existingEntity1));
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.of(existingEntity2));
+        when(sampleRepository.findByName("Sample3")).thenReturn(Optional.of(existingEntity3));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(3, report.getTotalProvided());
+        assertEquals(0, report.getTotalCreated());
+        assertEquals(3, report.getTotalDuplicates());
+        assertEquals("warning", report.getAlertLevel());
+        assertEquals("No samples imported. All 3 samples already exist", report.getMessage());
+    }
+
+    @Test
+    void testImportSamples_OnlyErrors_ErrorAlertLevel() {
+        // Arrange - all fail with validation errors
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.empty());
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.empty());
+        
+        when(sampleCreateService.create(sampleForm1))
+            .thenThrow(new ConstraintViolationException("Validation failed 1", null));
+        when(sampleCreateService.create(sampleForm2))
+            .thenThrow(new ConstraintViolationException("Validation failed 2", null));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(2, report.getTotalProvided());
+        assertEquals(0, report.getTotalCreated());
+        assertEquals(0, report.getTotalDuplicates());
+        assertEquals(2, report.getTotalErrors());
+        assertEquals("error", report.getAlertLevel());
+        assertTrue(report.getMessage().contains("No samples imported"));
+        assertTrue(report.getMessage().contains("2 errors"));
+    }
+
+    @Test
+    void testImportSamples_OnlySkipped_ErrorAlertLevel() {
+        // Arrange - all fail with generic exceptions
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.empty());
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.empty());
+        
+        when(sampleCreateService.create(sampleForm1))
+            .thenThrow(new RuntimeException("Database error 1"));
+        when(sampleCreateService.create(sampleForm2))
+            .thenThrow(new RuntimeException("Database error 2"));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(2, report.getTotalProvided());
+        assertEquals(0, report.getTotalCreated());
+        assertEquals(0, report.getTotalDuplicates());
+        assertEquals(2, report.getTotalSkipped());
+        assertEquals("error", report.getAlertLevel());
+        assertTrue(report.getMessage().contains("No samples imported"));
+        assertTrue(report.getMessage().contains("2 skipped"));
+    }
+
+    @Test
+    void testImportSamples_DuplicatesAndErrors_CorrectMessage() {
+        // Arrange - mix of duplicates and errors
+        SampleEntity existingEntity = new SampleEntity();
+        existingEntity.setId(1L);
+        existingEntity.setName("Sample1");
+        
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.of(existingEntity));
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.empty());
+        
+        when(sampleCreateService.create(sampleForm2))
+            .thenThrow(new ConstraintViolationException("Validation failed", null));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(2, report.getTotalProvided());
+        assertEquals(0, report.getTotalCreated());
+        assertEquals(1, report.getTotalDuplicates());
+        assertEquals(1, report.getTotalErrors());
+        assertEquals("error", report.getAlertLevel());
+        assertTrue(report.getMessage().contains("No samples imported"));
+        assertTrue(report.getMessage().contains("1 duplicate"));
+        assertTrue(report.getMessage().contains("1 error"));
+    }
+
+    @Test
+    void testImportSamples_DuplicatesAndSkipped_CorrectMessage() {
+        // Arrange - mix of duplicates and skipped
+        SampleEntity existingEntity = new SampleEntity();
+        existingEntity.setId(1L);
+        existingEntity.setName("Sample1");
+        
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.of(existingEntity));
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.empty());
+        
+        when(sampleCreateService.create(sampleForm2))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(2, report.getTotalProvided());
+        assertEquals(0, report.getTotalCreated());
+        assertEquals(1, report.getTotalDuplicates());
+        assertEquals(1, report.getTotalSkipped());
+        assertEquals("error", report.getAlertLevel());
+        assertTrue(report.getMessage().contains("No samples imported"));
+        assertTrue(report.getMessage().contains("1 duplicate"));
+        assertTrue(report.getMessage().contains("1 skipped"));
+    }
+
+    @Test
+    void testImportSamples_ErrorsAndSkipped_CorrectMessage() {
+        // Arrange - mix of errors and skipped
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.empty());
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.empty());
+        
+        when(sampleCreateService.create(sampleForm1))
+            .thenThrow(new ConstraintViolationException("Validation failed", null));
+        when(sampleCreateService.create(sampleForm2))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(2, report.getTotalProvided());
+        assertEquals(0, report.getTotalCreated());
+        assertEquals(1, report.getTotalErrors());
+        assertEquals(1, report.getTotalSkipped());
+        assertEquals("error", report.getAlertLevel());
+        assertTrue(report.getMessage().contains("No samples imported"));
+        assertTrue(report.getMessage().contains("1 error"));
+        assertTrue(report.getMessage().contains("1 skipped"));
+    }
+
+    @Test
+    void testImportSamples_AllThreeTypes_DuplicatesErrorsAndSkipped() {
+        // Arrange - duplicates, errors, and skipped
+        SampleCreateForm sampleForm3 = new SampleCreateForm();
+        sampleForm3.setName("Sample3");
+        
+        importForm.setSamples(Arrays.asList(sampleForm1, sampleForm2, sampleForm3));
+        
+        SampleEntity existingEntity = new SampleEntity();
+        existingEntity.setId(1L);
+        existingEntity.setName("Sample1");
+        
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.of(existingEntity));
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.empty());
+        when(sampleRepository.findByName("Sample3")).thenReturn(Optional.empty());
+        
+        when(sampleCreateService.create(sampleForm2))
+            .thenThrow(new ConstraintViolationException("Validation failed", null));
+        when(sampleCreateService.create(sampleForm3))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(3, report.getTotalProvided());
+        assertEquals(0, report.getTotalCreated());
+        assertEquals(1, report.getTotalDuplicates());
+        assertEquals(1, report.getTotalErrors());
+        assertEquals(1, report.getTotalSkipped());
+        assertEquals("error", report.getAlertLevel());
+        assertTrue(report.getMessage().contains("No samples imported"));
+        assertTrue(report.getMessage().contains("1 duplicate"));
+        assertTrue(report.getMessage().contains("1 error"));
+        assertTrue(report.getMessage().contains("1 skipped"));
+    }
+
+    @Test
+    void testImportSamples_PartialSuccess_WithAllFailureTypes() {
+        // Arrange - one success, one duplicate, one error, one skipped
+        SampleCreateForm sampleForm3 = new SampleCreateForm();
+        sampleForm3.setName("Sample3");
+        sampleForm3.setDescription("Description 3");
+        
+        SampleCreateForm sampleForm4 = new SampleCreateForm();
+        sampleForm4.setName("Sample4");
+        sampleForm4.setDescription("Description 4");
+        
+        importForm.setSamples(Arrays.asList(sampleForm1, sampleForm2, sampleForm3, sampleForm4));
+        
+        SampleEntity existingEntity = new SampleEntity();
+        existingEntity.setId(1L);
+        existingEntity.setName("Sample1");
+        
+        when(sampleRepository.findByName("Sample1")).thenReturn(Optional.of(existingEntity));
+        when(sampleRepository.findByName("Sample2")).thenReturn(Optional.empty());
+        when(sampleRepository.findByName("Sample3")).thenReturn(Optional.empty());
+        when(sampleRepository.findByName("Sample4")).thenReturn(Optional.empty());
+        
+        Sample sample2 = new Sample();
+        sample2.setId(2L);
+        sample2.setName("Sample2");
+        
+        when(sampleCreateService.create(sampleForm2)).thenReturn(sample2);
+        when(sampleCreateService.create(sampleForm3))
+            .thenThrow(new ConstraintViolationException("Validation failed", null));
+        when(sampleCreateService.create(sampleForm4))
+            .thenThrow(new RuntimeException("Database error"));
+
+        // Act
+        SampleImportReport report = sampleImportService.importSamples(importForm);
+
+        // Assert
+        assertNotNull(report);
+        assertEquals(4, report.getTotalProvided());
+        assertEquals(1, report.getTotalCreated());
+        assertEquals(1, report.getTotalDuplicates());
+        assertEquals(1, report.getTotalErrors());
+        assertEquals(1, report.getTotalSkipped());
+        assertEquals("info", report.getAlertLevel());
+        assertTrue(report.getMessage().contains("Imported 1 of 4 samples"));
+        assertTrue(report.getMessage().contains("1 duplicate"));
+        assertTrue(report.getMessage().contains("1 error"));
+        assertTrue(report.getMessage().contains("1 skipped"));
+    }
 }
