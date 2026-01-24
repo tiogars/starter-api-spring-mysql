@@ -343,4 +343,185 @@ class SampleExportServiceTest {
 
         verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
+
+    @Test
+    void testExportSamples_UnsupportedFormat_ThrowsException() {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("unsupported");
+        form.setZip(false);
+
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
+
+        // Act & Assert
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            sampleExportService.exportSamples(form);
+        });
+
+        assertTrue(exception.getMessage().contains("Failed to export samples"));
+    }
+
+    @Test
+    void testExportSamples_WithSearchRequest_CustomPageSize() {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("json");
+        form.setZip(false);
+        
+        SampleSearchRequest searchRequest = new SampleSearchRequest();
+        searchRequest.setPage(0);
+        searchRequest.setPageSize(50);  // Custom page size
+        form.setSearchRequest(searchRequest);
+
+        SampleSearchResponse searchResponse = new SampleSearchResponse(
+            sampleEntities.stream().map(this::toModel).toList(),
+            sampleEntities.size()
+        );
+        
+        when(sampleSearchService.search(any())).thenReturn(searchResponse);
+
+        // Act
+        ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(sampleSearchService, times(1)).search(any());
+    }
+
+    @Test
+    void testExportSamples_WithSearchRequest_ZeroPageSize_UsesDefault() {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("json");
+        form.setZip(false);
+        
+        SampleSearchRequest searchRequest = new SampleSearchRequest();
+        searchRequest.setPage(0);
+        searchRequest.setPageSize(0);  // Zero page size should use default of 10,000
+        form.setSearchRequest(searchRequest);
+
+        SampleSearchResponse searchResponse = new SampleSearchResponse(
+            sampleEntities.stream().map(this::toModel).toList(),
+            sampleEntities.size()
+        );
+        
+        when(sampleSearchService.search(any())).thenReturn(searchResponse);
+
+        // Act
+        ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(sampleSearchService, times(1)).search(any());
+    }
+
+    @Test
+    void testExportSamples_WithSearchRequest_ExceedsMaxLimit() {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("json");
+        form.setZip(false);
+        
+        SampleSearchRequest searchRequest = new SampleSearchRequest();
+        searchRequest.setPage(0);
+        searchRequest.setPageSize(200000);  // Exceeds 100,000 max limit
+        form.setSearchRequest(searchRequest);
+
+        SampleSearchResponse searchResponse = new SampleSearchResponse(
+            sampleEntities.stream().map(this::toModel).toList(),
+            sampleEntities.size()
+        );
+        
+        when(sampleSearchService.search(any())).thenReturn(searchResponse);
+
+        // Act
+        ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        // Verify service was called (page size capped at 100,000 internally)
+        verify(sampleSearchService, times(1)).search(any());
+    }
+
+    @Test
+    void testExportSamples_XlsxWithZip_Success() {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("xlsx");
+        form.setZip(true);
+
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
+
+        // Act
+        ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().length > 0);
+        
+        String contentType = response.getHeaders().getContentType().toString();
+        assertTrue(contentType.contains("application/zip"));
+        
+        String contentDisposition = response.getHeaders().getContentDisposition().toString();
+        assertTrue(contentDisposition.contains("samples.zip"));
+
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
+    }
+
+    @Test
+    void testExportSamples_CsvWithZip_Success() {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("csv");
+        form.setZip(true);
+
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
+
+        // Act
+        ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().length > 0);
+        
+        String contentType = response.getHeaders().getContentType().toString();
+        assertTrue(contentType.contains("application/zip"));
+
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
+    }
+
+    @Test
+    void testExportSamples_XmlWithZip_Success() {
+        // Arrange
+        SampleExportForm form = new SampleExportForm();
+        form.setFormat("xml");
+        form.setZip(true);
+
+        when(sampleRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+            .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
+
+        // Act
+        ResponseEntity<byte[]> response = sampleExportService.exportSamples(form);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().length > 0);
+        
+        String contentType = response.getHeaders().getContentType().toString();
+        assertTrue(contentType.contains("application/zip"));
+
+        verify(sampleRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
+    }
 }
