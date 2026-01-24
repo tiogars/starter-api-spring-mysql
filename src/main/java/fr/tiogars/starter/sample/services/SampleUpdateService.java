@@ -10,7 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import fr.tiogars.starter.sample.entities.SampleEntity;
 import fr.tiogars.starter.sample.forms.SampleUpdateForm;
 import fr.tiogars.starter.sample.models.Sample;
-import fr.tiogars.starter.sample.models.SampleTag;
+import fr.tiogars.starter.tag.models.Tag;
+import fr.tiogars.starter.tag.services.TagService;
 import fr.tiogars.starter.sample.repositories.SampleRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -23,12 +24,12 @@ public class SampleUpdateService {
     private final Logger logger = Logger.getLogger(SampleUpdateService.class.getName());
     private final SampleRepository sampleRepository;
     private final Validator validator;
-    private final SampleTagService sampleTagService;
+    private final TagService tagService;
 
-    public SampleUpdateService(SampleRepository sampleRepository, Validator validator, SampleTagService sampleTagService) {
+    public SampleUpdateService(SampleRepository sampleRepository, Validator validator, TagService tagService) {
         this.sampleRepository = sampleRepository;
         this.validator = validator;
-        this.sampleTagService = sampleTagService;
+        this.tagService = tagService;
     }
 
     public Sample update(SampleUpdateForm form) {
@@ -53,9 +54,9 @@ public class SampleUpdateService {
         // Handle tags
         if (sample.getTags() != null && !sample.getTags().isEmpty()) {
             var tagNames = sample.getTags().stream()
-                    .map(SampleTag::getName)
-                    .collect(Collectors.toList());
-            var tagEntities = sampleTagService.findOrCreateTags(tagNames);
+                    .map(Tag::getName)
+                    .toList();
+            var tagEntities = tagService.findOrCreateTags(tagNames);
             existingEntity.setTags(tagEntities.stream().collect(Collectors.toSet()));
         } else {
             existingEntity.setTags(Set.of());
@@ -78,7 +79,7 @@ public class SampleUpdateService {
         // Convert tags
         if (entity.getTags() != null) {
             sample.setTags(entity.getTags().stream()
-                    .map(tag -> new SampleTag(tag.getId(), tag.getName(), tag.getDescription()))
+                    .map(tag -> new Tag(tag.getId(), tag.getName(), tag.getDescription()))
                     .collect(Collectors.toSet()));
         }
         
@@ -100,7 +101,7 @@ public class SampleUpdateService {
         // Handle tags from form
         if (form.getTagNames() != null && !form.getTagNames().isEmpty()) {
             sample.setTags(form.getTagNames().stream()
-                    .map(name -> new SampleTag(null, name))
+                    .map(name -> new Tag(null, name))
                     .collect(Collectors.toSet()));
         }
         

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import fr.tiogars.starter.sample.entities.SampleEntity;
 import fr.tiogars.starter.sample.models.Sample;
-import fr.tiogars.starter.sample.models.SampleTag;
+import fr.tiogars.starter.tag.models.Tag;
 import fr.tiogars.starter.sample.repositories.SampleRepository;
 
 @Service
@@ -22,7 +22,7 @@ public class SampleCrudService {
     public List<Sample> findAll() {
         return sampleRepository.findAll().stream()
                 .map(this::toModel)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<Sample> findById(Long id) {
@@ -51,7 +51,7 @@ public class SampleCrudService {
         // Convert tags
         if (entity.getTags() != null) {
             model.setTags(entity.getTags().stream()
-                    .map(tag -> new SampleTag(tag.getId(), tag.getName(), tag.getDescription()))
+                    .map(tag -> new Tag(tag.getId(), tag.getName(), tag.getDescription()))
                     .collect(Collectors.toSet()));
         }
         

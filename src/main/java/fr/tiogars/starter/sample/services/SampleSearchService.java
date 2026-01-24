@@ -322,7 +322,7 @@ public class SampleSearchService {
             model.setTags(
                 entity.getTags()
                     .stream()
-                    .map(tag -> new fr.tiogars.starter.sample.models.SampleTag(tag.getId(), tag.getName(), tag.getDescription()))
+                    .map(tag -> new fr.tiogars.starter.tag.models.Tag(tag.getId(), tag.getName(), tag.getDescription()))
                     .collect(java.util.stream.Collectors.toSet())
             );
         }

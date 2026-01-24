@@ -11,7 +11,7 @@ import fr.tiogars.architecture.create.services.AbstractCreateService;
 import fr.tiogars.starter.sample.entities.SampleEntity;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
 import fr.tiogars.starter.sample.models.Sample;
-import fr.tiogars.starter.sample.models.SampleTag;
+import fr.tiogars.starter.tag.models.Tag;
 import fr.tiogars.starter.sample.repositories.SampleRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -24,12 +24,12 @@ public class SampleCreateService
 
     private final Logger logger = Logger.getLogger(SampleCreateService.class.getName());
     private final Validator validator;
-    private final SampleTagService sampleTagService;
+    private final fr.tiogars.starter.tag.services.TagService tagService;
 
-    public SampleCreateService(SampleRepository sampleRepository, Validator validator, SampleTagService sampleTagService) {
+    public SampleCreateService(SampleRepository sampleRepository, Validator validator, fr.tiogars.starter.tag.services.TagService tagService) {
         super(sampleRepository);
         this.validator = validator;
-        this.sampleTagService = sampleTagService;
+        this.tagService = tagService;
     }
 
     @Override
@@ -45,10 +45,10 @@ public class SampleCreateService
         
         // Handle tags
         if (sample.getTags() != null && !sample.getTags().isEmpty()) {
-            var tagNames = sample.getTags().stream()
-                    .map(SampleTag::getName)
-                    .collect(Collectors.toList());
-            var tagEntities = sampleTagService.findOrCreateTags(tagNames);
+                var tagNames = sample.getTags().stream()
+                    .map(Tag::getName)
+                    .toList();
+            var tagEntities = tagService.findOrCreateTags(tagNames);
             entity.setTags(tagEntities.stream().collect(Collectors.toSet()));
         }
         
@@ -70,8 +70,8 @@ public class SampleCreateService
         // Convert tags
         if (entity.getTags() != null) {
             sample.setTags(entity.getTags().stream()
-                    .map(tag -> new SampleTag(tag.getId(), tag.getName(), tag.getDescription()))
-                    .collect(Collectors.toSet()));
+                .map(tag -> new Tag(tag.getId(), tag.getName(), tag.getDescription()))
+                .collect(Collectors.toSet()));
         }
         
         return sample;
@@ -91,8 +91,8 @@ public class SampleCreateService
         // Handle tags from form
         if (form.getTagNames() != null && !form.getTagNames().isEmpty()) {
             sample.setTags(form.getTagNames().stream()
-                    .map(name -> new SampleTag(null, name))
-                    .collect(Collectors.toSet()));
+                .map(name -> new Tag(null, name))
+                .collect(Collectors.toSet()));
         }
         
         return sample;

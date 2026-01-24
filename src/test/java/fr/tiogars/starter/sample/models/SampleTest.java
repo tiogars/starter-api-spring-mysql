@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import fr.tiogars.starter.tag.models.Tag;
+
 class SampleTest {
 
     @Test
@@ -59,9 +61,9 @@ class SampleTest {
     void testWithTags() {
         // Arrange
         Sample sample = new Sample();
-        Set<SampleTag> tags = new HashSet<>();
-        SampleTag tag1 = new SampleTag(1L, "Tag1");
-        SampleTag tag2 = new SampleTag(2L, "Tag2");
+        Set<Tag> tags = new HashSet<>();
+        Tag tag1 = new Tag(1L, "Tag1");
+        Tag tag2 = new Tag(2L, "Tag2");
         tags.add(tag1);
         tags.add(tag2);
 
@@ -111,7 +113,7 @@ class SampleTest {
     void testWithEmptyTags() {
         // Arrange
         Sample sample = new Sample();
-        Set<SampleTag> emptyTags = new HashSet<>();
+        Set<Tag> emptyTags = new HashSet<>();
 
         // Act
         sample.setTags(emptyTags);

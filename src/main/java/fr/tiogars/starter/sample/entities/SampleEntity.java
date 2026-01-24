@@ -92,7 +92,7 @@ public class SampleEntity extends AbstractEntity {
      */
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "sample_sample_tag", joinColumns = @JoinColumn(name = "sample_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private Set<SampleTagEntity> tags = new HashSet<>();
+    private Set<fr.tiogars.starter.tag.entities.TagEntity> tags = new HashSet<>();
 
     public SampleEntity() {
     }
@@ -153,19 +153,19 @@ public class SampleEntity extends AbstractEntity {
         this.updatedAt = updatedAt;
     }
         
-    public Set<SampleTagEntity> getTags() {
+    public Set<fr.tiogars.starter.tag.entities.TagEntity> getTags() {
         return tags;
     }
 
-    public void setTags(Set<SampleTagEntity> tags) {
+    public void setTags(Set<fr.tiogars.starter.tag.entities.TagEntity> tags) {
         this.tags = tags;
     }
 
-    public void addTag(SampleTagEntity tag) {
+    public void addTag(fr.tiogars.starter.tag.entities.TagEntity tag) {
         this.tags.add(tag);
     }
 
-    public void removeTag(SampleTagEntity tag) {
+    public void removeTag(fr.tiogars.starter.tag.entities.TagEntity tag) {
         this.tags.remove(tag);
     }
 

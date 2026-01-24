@@ -1,4 +1,4 @@
-package fr.tiogars.starter.sample.controller;
+package fr.tiogars.starter.tag.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.tiogars.starter.tag.models.Tag;
 import fr.tiogars.starter.tag.services.TagService;
 
-@WebMvcTest(LegacyTagController.class)
+@WebMvcTest(TagController.class)
 class TagControllerTest {
 
     @Autowired
@@ -52,14 +52,14 @@ class TagControllerTest {
     }
 
     @Test
-    void testGetAllTags_ReturnsListOfTags() throws Exception {
+    void shouldReturnAllTags() throws Exception {
         // Arrange
         Tag tag2 = new Tag(2L, "Tag2", "Description 2");
         List<Tag> tags = Arrays.asList(tag, tag2);
         when(tagService.findAll()).thenReturn(tags);
 
         // Act & Assert
-        mockMvc.perform(get("/sample-tag"))
+        mockMvc.perform(get("/tags"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -71,12 +71,12 @@ class TagControllerTest {
     }
 
     @Test
-    void testGetAllTags_ReturnsEmptyList() throws Exception {
+    void shouldReturnEmptyListWhenNoTags() throws Exception {
         // Arrange
         when(tagService.findAll()).thenReturn(Arrays.asList());
 
         // Act & Assert
-        mockMvc.perform(get("/sample-tag"))
+        mockMvc.perform(get("/tags"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isArray())
@@ -86,12 +86,12 @@ class TagControllerTest {
     }
 
     @Test
-    void testGetTagById_ReturnsTagWhenExists() throws Exception {
+    void shouldReturnTagByIdWhenExists() throws Exception {
         // Arrange
         when(tagService.findById(1L)).thenReturn(Optional.of(tag));
 
         // Act & Assert
-        mockMvc.perform(get("/sample-tag/1"))
+        mockMvc.perform(get("/tags/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
@@ -102,19 +102,19 @@ class TagControllerTest {
     }
 
     @Test
-    void testGetTagById_ReturnsNotFoundWhenDoesNotExist() throws Exception {
+    void shouldReturn404WhenTagNotFound() throws Exception {
         // Arrange
         when(tagService.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        mockMvc.perform(get("/sample-tag/999"))
+        mockMvc.perform(get("/tags/999"))
                 .andExpect(status().isNotFound());
 
         verify(tagService, times(1)).findById(999L);
     }
 
     @Test
-    void testCreateTag_ReturnsCreatedTag() throws Exception {
+    void shouldCreateTagSuccessfully() throws Exception {
         // Arrange
         Tag newTag = new Tag(null, "NewTag", "New Description");
         Tag createdTag = new Tag(3L, "NewTag", "New Description");
@@ -122,7 +122,7 @@ class TagControllerTest {
         when(tagService.create(any(Tag.class))).thenReturn(createdTag);
 
         // Act & Assert
-        mockMvc.perform(post("/sample-tag")
+        mockMvc.perform(post("/tags")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(newTag)))
                 .andExpect(status().isOk())
@@ -134,12 +134,12 @@ class TagControllerTest {
     }
 
     @Test
-    void testDeleteTag_ReturnsNoContent() throws Exception {
+    void shouldDeleteTagSuccessfully() throws Exception {
         // Arrange
         doNothing().when(tagService).deleteById(1L);
 
         // Act & Assert
-        mockMvc.perform(delete("/sample-tag/1"))
+        mockMvc.perform(delete("/tags/1"))
                 .andExpect(status().isNoContent());
 
         verify(tagService, times(1)).deleteById(1L);

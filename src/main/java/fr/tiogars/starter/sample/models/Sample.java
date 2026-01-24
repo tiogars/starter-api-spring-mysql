@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import fr.tiogars.starter.tag.models.Tag;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -72,7 +73,7 @@ public class Sample {
     /**
      * Tags associated with this sample
      */
-    private Set<SampleTag> tags = new HashSet<>();
+    private Set<Tag> tags = new HashSet<>();
 
     public Sample() {
     }
@@ -137,11 +138,11 @@ public class Sample {
         return updatedBy;
     }
 
-    public Set<SampleTag> getTags() {
+    public Set<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<SampleTag> tags) {
+    public void setTags(Set<Tag> tags) {
         this.tags = tags;
     }
 

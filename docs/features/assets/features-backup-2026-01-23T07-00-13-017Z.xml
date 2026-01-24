@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<backup version="2.0" timestamp="1769151613016">
+  <features>
+    <feature>
+      <id>0a5190e9-a81f-47dd-b5b6-6d71c14c4cda</id>
+      <title>Documentation - Powered by section in README</title>
+      <description>Review GitHub instructions to update &quot;README&quot; file to add or update a &quot;Powered by&quot; section with a mermaid mindmap of technology used order by reponsibility.</description>
+      <tags>
+        <tag>devops</tag>
+        <tag>docs</tag>
+        <tag>mermaid</tag>
+        <tag>mindmap</tag>
+      </tags>
+      <createdAt>1768735530636</createdAt>
+      <updatedAt>1768735530636</updatedAt>
+    </feature>
+    <feature>
+      <id>b963a3c7-caa7-4ed5-8f56-b47eed08e2b8</id>
+      <title>Architecture - Markdown linting</title>
+      <description>Add these tools if the context is corresponding :
+- &quot;markdownlint-cli2&quot; engine to node package scripts of the project
+- &quot;markdownlint-cli2-action&quot; to GitHub Actions</description>
+      <tags>
+        <tag>architecture</tag>
+        <tag>devops</tag>
+        <tag>docs</tag>
+        <tag>markdown</tag>
+      </tags>
+      <createdAt>1768129438211</createdAt>
+      <updatedAt>1768129438211</updatedAt>
+    </feature>
+    <feature>
+      <id>6129cb40-e0e7-40a4-9f6e-4c39da58b455</id>
+      <title>Design - theming</title>
+      <description>Propose to select a react MUI theme.
+Each theme have light and/or dark version.
+Propose 3 themes to switch between :
+- a light one
+- a dark one
+- a dark and a light one (like the current one)
+
+Then propose a page to test each of these themes by presenting :
+- a form
+- a DataGrid
+- a table
+- a card dashboard with graphics
+- a Carrousel
+- a text with 3 paragraphs</description>
+      <tags>
+        <tag>design</tag>
+        <tag>theme</tag>
+      </tags>
+      <createdAt>1768124627247</createdAt>
+      <updatedAt>1768124627247</updatedAt>
+    </feature>
+    <feature>
+      <id>bee8650d-9044-43e5-972d-de3c27d9d1a3</id>
+      <title>Architecture - Domain Driven Development</title>
+      <description>Review code to conform to Domain Driven Development.
+
+Folder structure must look like :
+- fr
+  - tiogars
+    - &lt;myapp&gt;
+      - common
+        - exception
+      - &lt;mydomain&gt;
+        - controller
+        - models
+        - entities
+        - forms
+        - repositories
+        - services</description>
+      <tags>
+        <tag>architecture</tag>
+        <tag>ddd</tag>
+        <tag>domain</tag>
+      </tags>
+      <createdAt>1767362075873</createdAt>
+      <updatedAt>1767362075873</updatedAt>
+    </feature>
+    <feature>
+      <id>7459a312-da91-4676-a5d5-3a5e62d83174</id>
+      <title>Devops - optimize build chunks size</title>
+      <description>Please check from build and fix this error :
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.</description>
+      <tags>
+        <tag>devops</tag>
+        <tag>build</tag>
+      </tags>
+      <createdAt>1767345479707</createdAt>
+      <updatedAt>1767345479707</updatedAt>
+    </feature>
+    <feature>
+      <id>5a8482f3-96cf-4550-801c-17d0e186aabd</id>
+      <title>Features - Footer</title>
+      <description>Add a footer to this website.
+
+Footer is a component composed of :
+- A copyright with the inception year
+- The website version
+- Api swagger link with icon
+- Api health state with green/red dot icon
+- GitHub repository link with an icon
+- GitHub issue link with an icon
+- Links to &quot;powered by&quot; libraries (like pnpm, mui, mui-icons, react-router, react-form) ; verify that these libraries are effectively used by this website</description>
+      <tags>
+        <tag>features</tag>
+        <tag>footer</tag>
+        <tag>github</tag>
+        <tag>issue</tag>
+        <tag>repository</tag>
+      </tags>
+      <createdAt>1767093697529</createdAt>
+      <updatedAt>1767342969454</updatedAt>
+    </feature>
+    <feature>
+      <id>a1350006-8ba9-43c7-b218-d721d5bcbe9d</id>
+      <title>Features - Vite website</title>
+      <description>Create a react vite website built with pnpm in typescript. Designed with MUI, this website displays cards to present website with : name, description, url, github repo ; so prepare an array in typescript to define these informations. This website is deployed with GitHub action to Github pages.</description>
+      <tags>
+        <tag>build</tag>
+        <tag>website</tag>
+        <tag>pnpm</tag>
+        <tag>vite</tag>
+        <tag>project</tag>
+      </tags>
+      <createdAt>1767263219000</createdAt>
+      <updatedAt>1767263219000</updatedAt>
+    </feature>
+    <feature>
+      <id>de5efd0c-28c9-4f18-b09e-e9f9f4da68cd</id>
+      <title>Features - Backup &amp; restore</title>
+      <description>Add a modal to backup or restore all data :
+- features
+- tags
+
+Modal is fired from speed dial in separate actions with tooltip &amp; icons :
+- backup
+- restore
+
+Format :
+- xml
+- json
+- csv
+
+File name must include date &amp; time :
+- Date time format : YYYY-MM-DDThh-mm-ss-sssZ
+- Exemple : features-backup-2025-12-31T17-07-03-840Z.xml
+
+Notify if last backup (saved) is more than 1 week.</description>
+      <tags>
+        <tag>backup</tag>
+        <tag>features</tag>
+      </tags>
+      <createdAt>1767035927521</createdAt>
+      <updatedAt>1767201190619</updatedAt>
+    </feature>
+    <feature>
+      <id>99f39371-8ef9-4bc0-b59c-9d86e64e1b74</id>
+      <title>Quality - Functional unit test</title>
+      <description>Code coverage is perfectible.
+Make functional unit tests.</description>
+      <tags>
+        <tag>quality</tag>
+        <tag>devops</tag>
+      </tags>
+      <createdAt>1767191987280</createdAt>
+      <updatedAt>1767191987280</updatedAt>
+    </feature>
+    <feature>
+      <id>56cc586a-6171-4a7c-b5a4-be5170639a8c</id>
+      <title>Devops - Build warnings review</title>
+      <description>Build produces warnings that you need to analyse.
+Review &amp; fix code after this analysis.</description>
+      <tags>
+        <tag>warning</tag>
+        <tag>build</tag>
+        <tag>devops</tag>
+      </tags>
+      <createdAt>1767187413421</createdAt>
+      <updatedAt>1767187413421</updatedAt>
+    </feature>
+    <feature>
+      <id>ddb90e9a-3a15-43e4-8112-20e6c67a7934</id>
+      <title>Devops - Sonarqube with GitHub action</title>
+      <description>Add a scan step in GitHub action for Sonarqube.
+
+Insert this snippet at the best location :
+
+      - uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}</description>
+      <tags>
+        <tag>devops</tag>
+        <tag>sonarqube</tag>
+        <tag>code</tag>
+        <tag>quality</tag>
+      </tags>
+      <createdAt>1767177356949</createdAt>
+      <updatedAt>1767177356949</updatedAt>
+    </feature>
+    <feature>
+      <id>08f50ddd-7001-47f6-a2b9-9c7c54ed4e80</id>
+      <title>Devops - Deploy website</title>
+      <description>Add a GitHub action with the following steps :
+- checkout
+- set tools &amp; env
+- build
+- bump version
+- tag version
+- release source version with release notes
+- deploy to GitHub pages
+- prepare next version
+
+Please optimize the order of this steps if needed.</description>
+      <tags>
+        <tag>devops</tag>
+        <tag>build</tag>
+        <tag>deploy</tag>
+        <tag>github-pages</tag>
+        <tag>release</tag>
+      </tags>
+      <createdAt>1767171819590</createdAt>
+      <updatedAt>1767171819590</updatedAt>
+    </feature>
+    <feature>
+      <id>6f749ec5-8b4b-4e2f-8037-60e666363518</id>
+      <title>Features - dashboard page</title>
+      <description>Add a dashboard home page composed of these information :
+- statistics about each managed entity data
+- fast link to create each managed entity data
+- last backup date
+- cards of top managed entity</description>
+      <tags>
+        <tag>features</tag>
+        <tag>dashboard</tag>
+      </tags>
+      <createdAt>1767094507060</createdAt>
+      <updatedAt>1767094507060</updatedAt>
+    </feature>
+    <feature>
+      <id>f02159ef-5824-4281-b69c-5c832f5a0030</id>
+      <title>Feature - Fast backup button</title>
+      <description>Add a button in the header to make a fast backup into JSON format.
+
+Add a notification to this button if new data have been added.
+
+Reuse backup system if exists.</description>
+      <tags>
+        <tag>features</tag>
+        <tag>backup</tag>
+      </tags>
+      <createdAt>1767094139337</createdAt>
+      <updatedAt>1767094139337</updatedAt>
+    </feature>
+    <feature>
+      <id>09a5c692-1297-4fc9-bf56-338a65ff4bda</id>
+      <title>Features - Header</title>
+      <description>Add a header to this website.
+
+Header is a component composed of :
+- An icon that describes the website
+- A header &quot;h1&quot; with the website name</description>
+      <tags>
+        <tag>features</tag>
+        <tag>header</tag>
+      </tags>
+      <createdAt>1767093853272</createdAt>
+      <updatedAt>1767093853272</updatedAt>
+    </feature>
+    <feature>
+      <id>99f8df00-2fdd-4bd8-9a24-5ad672f283ba</id>
+      <title>Features - Link management</title>
+      <description>Add links management to this website.
+
+Attributes for a link :
+- Display name
+- Description
+- Icon
+- Href
+- Target
+- Environment (Production, Test, Development)</description>
+      <tags>
+        <tag>features</tag>
+        <tag>link</tag>
+      </tags>
+      <createdAt>1767092618502</createdAt>
+      <updatedAt>1767092618502</updatedAt>
+    </feature>
+    <feature>
+      <id>85d1b17f-4247-4f03-b765-6f7b02ceffca</id>
+      <title>Architecture - Components</title>
+      <description>Organize each component with this folder structure :
+- MyComponent (base folder)
+  - index.tsx (Component itself)
+  - MyComponent.types.ts (props interface, enum, etc...)
+
+As recommended, define component as functions instead of classes : https://react.dev/reference/react/Component#component.
+
+Use arrow syntax to declare this component :
+const MyComponent = (props: MyComponentProps) =&gt; {
+  return (&lt;&gt;MyComponent return&lt;/&gt;);
+}</description>
+      <tags>
+        <tag>architecture</tag>
+        <tag>component</tag>
+        <tag>react</tag>
+      </tags>
+      <createdAt>1767086384063</createdAt>
+      <updatedAt>1767086384063</updatedAt>
+    </feature>
+    <feature>
+      <id>e08c97db-e7bd-4a28-a15c-4ad0ec6c086d</id>
+      <title>Features - Apps management</title>
+      <description>Add application management to this website.
+An app is composed of :
+- name
+- repositories</description>
+      <tags>
+        <tag>features</tag>
+        <tag>project</tag>
+      </tags>
+      <createdAt>1767085612247</createdAt>
+      <updatedAt>1767085612247</updatedAt>
+    </feature>
+    <feature>
+      <id>c701dfe1-9af2-4c29-9b67-e012bfd598a4</id>
+      <title>PWA - Share link</title>
+      <description>Declare webapp as PWA to use share api by declaring a manifest to receive a title and link from play store.</description>
+      <tags>
+        <tag>pwa</tag>
+        <tag>share</tag>
+      </tags>
+      <createdAt>1767042271015</createdAt>
+      <updatedAt>1767042271015</updatedAt>
+    </feature>
+    <feature>
+      <id>ed0ed021-e6be-40c7-9f04-daad3d88d535</id>
+      <title>Documentation - javadoc</title>
+      <description>Document with javadoc.
+
+- attributes
+- constructor
+- getters
+- setters
+- methods</description>
+      <tags>
+        <tag>docs</tag>
+        <tag>javadoc</tag>
+      </tags>
+      <createdAt>1767037599201</createdAt>
+      <updatedAt>1767037599201</updatedAt>
+    </feature>
+    <feature>
+      <id>b3e3b738-dd8f-4405-956c-22707ade0a87</id>
+      <title>Documentation - mkdocs</title>
+      <description>Review and document features in a Mkdocs &quot;docs&quot; folder in markdown</description>
+      <tags>
+        <tag>docs</tag>
+        <tag>mkdocs</tag>
+      </tags>
+      <createdAt>1767037254528</createdAt>
+      <updatedAt>1767037254528</updatedAt>
+    </feature>
+    <feature>
+      <id>e5252e76-4269-44fe-b3b5-df316ed4cbed</id>
+      <title>Github pages &amp; DNS</title>
+      <description>CNAME is set and point successfully to GitHub pages.
+
+Review vite setup to use this domain name.</description>
+      <tags>
+        <tag>github-pages</tag>
+        <tag>dns</tag>
+      </tags>
+      <createdAt>1767036464315</createdAt>
+      <updatedAt>1767036464315</updatedAt>
+    </feature>
+    <feature>
+      <id>bf411de9-8e6d-41c2-a929-babb3b3d0e13</id>
+      <title>Devops - dependabot</title>
+      <description>Add dependabot for node and github actions</description>
+      <tags>
+        <tag>devops </tag>
+        <tag>dependabot</tag>
+        <tag>github</tag>
+      </tags>
+      <createdAt>1767035716871</createdAt>
+      <updatedAt>1767035716871</updatedAt>
+    </feature>
+    <feature>
+      <id>3c26b8b0-93a3-49c2-a557-9711670886c4</id>
+      <title>Navigation - react-router</title>
+      <description>Use react-router library to improve navigation.
+
+- Last version
+- use best navigation for this website</description>
+      <tags>
+        <tag>react </tag>
+        <tag>navigation </tag>
+      </tags>
+      <createdAt>1766995390741</createdAt>
+      <updatedAt>1766995390741</updatedAt>
+    </feature>
+    <feature>
+      <id>79857e49-bc45-45ae-8320-583f508e0cd7</id>
+      <title>Pnpm</title>
+      <description>Use last version of pnpm</description>
+      <tags>
+        <tag>pnpm</tag>
+        <tag>react </tag>
+      </tags>
+      <createdAt>1766966017010</createdAt>
+      <updatedAt>1766966131228</updatedAt>
+    </feature>
+    <feature>
+      <id>9319d070-15e2-4ba6-bb61-b713219e676d</id>
+      <title>React hook form</title>
+      <description>Use last version of react hook form</description>
+      <tags>
+        <tag>form</tag>
+        <tag>react </tag>
+      </tags>
+      <createdAt>1766966087805</createdAt>
+      <updatedAt>1766966119864</updatedAt>
+    </feature>
+  </features>
+  <tags>
+    <tag>
+      <id></id>
+      <name></name>
+      <color></color>
+    </tag>
+    <tag>
+      <id>014c76f7-d8d1-4963-8268-2c4cb2078b9f</id>
+      <name>navigation </name>
+      <color>#ffeb3b</color>
+    </tag>
+    <tag>
+      <id>0a150ed1-7c09-47ae-a505-9d38890df58f</id>
+      <name>link</name>
+      <color>#8bc34a</color>
+    </tag>
+    <tag>
+      <id>113fbbfc-8d61-461b-9677-f130ae9e958e</id>
+      <name>theme</name>
+      <color>#4caf50</color>
+    </tag>
+    <tag>
+      <id>15223149-8821-4a7b-8cd9-1a02fa1f6dc3</id>
+      <name>domain</name>
+      <color>#ffeb3b</color>
+    </tag>
+    <tag>
+      <id>15372324-7e94-473f-a263-f072d57ea0ae</id>
+      <name>project</name>
+      <color>#00bcd4</color>
+    </tag>
+    <tag>
+      <id>1c726bc0-ee97-4604-835f-5c29d6b0b963</id>
+      <name>pwa</name>
+      <color>#8bc34a</color>
+    </tag>
+    <tag>
+      <id>1d1179ce-067b-427d-b148-66f587282da6</id>
+      <name>mkdocs</name>
+      <color>#00bcd4</color>
+    </tag>
+    <tag>
+      <id>1e305ec6-f5e5-4aea-bd47-07db59ec80eb</id>
+      <name>features</name>
+      <color>#673ab7</color>
+    </tag>
+    <tag>
+      <id>212e3d33-8e23-4b9d-9303-b892103186d2</id>
+      <name>website</name>
+      <color>#cddc39</color>
+    </tag>
+    <tag>
+      <id>2f6d76f3-8fa9-456b-aab2-24d78a090140</id>
+      <name>pnpm</name>
+      <color>#cddc39</color>
+    </tag>
+    <tag>
+      <id>2ff8a5e5-dc9a-421d-95c6-0424cefd5ac0</id>
+      <name>devops</name>
+      <color>#673ab7</color>
+    </tag>
+    <tag>
+      <id>37c66c9f-035d-48fe-a36e-f90be95a9bb3</id>
+      <name>devops</name>
+      <color>#673ab7</color>
+    </tag>
+    <tag>
+      <id>38014279-52e1-4fee-8bf8-578645c0a68a</id>
+      <name>build</name>
+      <color>#ff9800</color>
+    </tag>
+    <tag>
+      <id>3fdf5875-0bef-438c-b424-a40eccbb8f0a</id>
+      <name>react</name>
+      <color>#ff5722</color>
+    </tag>
+    <tag>
+      <id>46630ef5-e328-4b5c-b66f-9a9f284aa63f</id>
+      <name>dashboard</name>
+      <color>#3f51b5</color>
+    </tag>
+    <tag>
+      <id>4c4e0184-a59f-4d85-a98a-f1d80cf4a91f</id>
+      <name>release</name>
+      <color>#00bcd4</color>
+    </tag>
+    <tag>
+      <id>56ad0a86-c511-43d2-8c45-444bc6cabc4c</id>
+      <name>component</name>
+      <color>#673ab7</color>
+    </tag>
+    <tag>
+      <id>57b02790-c809-474e-ba85-b5a117cfc534</id>
+      <name>vite</name>
+      <color>#3f51b5</color>
+    </tag>
+    <tag>
+      <id>5a9a10b9-d3ef-459b-86a1-defedfa5d63f</id>
+      <name>architecture</name>
+      <color>#ffc107</color>
+    </tag>
+    <tag>
+      <id>5cf39db2-c8fc-423d-888e-d3d0c2a4f25f</id>
+      <name>ddd</name>
+      <color>#3f51b5</color>
+    </tag>
+    <tag>
+      <id>5f90aa48-3321-4a48-b3e4-5aa6695bdd80</id>
+      <name>dns</name>
+      <color>#4caf50</color>
+    </tag>
+    <tag>
+      <id>61194e8a-29a4-4fc8-a586-99050bd536db</id>
+      <name>github-pages</name>
+      <color>#8bc34a</color>
+    </tag>
+    <tag>
+      <id>641e0d74-ceda-4124-b2bc-9c73299508c2</id>
+      <name>dependabot</name>
+      <color>#ff9800</color>
+    </tag>
+    <tag>
+      <id>6af4f2e2-5740-4e4b-8f41-6eee6ef839a2</id>
+      <name>warning</name>
+      <color>#ffeb3b</color>
+    </tag>
+    <tag>
+      <id>6ed19c4d-0894-48dd-b2b5-899a80495e48</id>
+      <name>javadoc</name>
+      <color>#03a9f4</color>
+    </tag>
+    <tag>
+      <id>74291234-0b7c-4a23-bb01-86a0c4a6fe92</id>
+      <name>issue</name>
+      <color>#4caf50</color>
+    </tag>
+    <tag>
+      <id>8433949a-ce94-49bf-bdff-500734f2a5b7</id>
+      <name>deploy</name>
+      <color>#4caf50</color>
+    </tag>
+    <tag>
+      <id>899471e3-da01-4bcc-a26c-2fce33537637</id>
+      <name>mindmap</name>
+      <color>#8bc34a</color>
+    </tag>
+    <tag>
+      <id>8b509295-295d-439f-8f75-b9c9b1fe5b7e</id>
+      <name>github</name>
+      <color>#ffc107</color>
+    </tag>
+    <tag>
+      <id>8f90aaef-2248-4636-9011-512fd290c0fc</id>
+      <name>share</name>
+      <color>#ff5722</color>
+    </tag>
+    <tag>
+      <id>938e942b-ad03-48a9-9976-aeb0da25e70c</id>
+      <name>quality</name>
+      <color>#ff5722</color>
+    </tag>
+    <tag>
+      <id>940aad15-89b8-4fa4-bc6d-c6d9f6b1c60c</id>
+      <name>markdown</name>
+      <color>#ff5722</color>
+    </tag>
+    <tag>
+      <id>9d712eb6-9fda-4a58-af73-00e72b0e5fea</id>
+      <name>react </name>
+      <color>#ff5722</color>
+    </tag>
+    <tag>
+      <id>9f748339-e10c-4d1e-b610-9bed45f5ebc8</id>
+      <name>design</name>
+      <color>#9c27b0</color>
+    </tag>
+    <tag>
+      <id>a914d3e3-75ea-4c34-ab03-0215dd1bacd4</id>
+      <name>backup</name>
+      <color>#ff9800</color>
+    </tag>
+    <tag>
+      <id>a987b980-162c-4b27-b5f7-d69fcdff0c7f</id>
+      <name>repository</name>
+      <color>#8bc34a</color>
+    </tag>
+    <tag>
+      <id>ba275b17-04d3-447c-a718-d42a4256839d</id>
+      <name>header</name>
+      <color>#673ab7</color>
+    </tag>
+    <tag>
+      <id>bb60a5f2-2c02-436f-a771-b3ec13625638</id>
+      <name>footer</name>
+      <color>#2196f3</color>
+    </tag>
+    <tag>
+      <id>c8329b24-b760-48e4-af54-ff2182a3d2a6</id>
+      <name>sonarqube</name>
+      <color>#8bc34a</color>
+    </tag>
+    <tag>
+      <id>e2047f45-3e1b-45b7-a2e7-7a3157269465</id>
+      <name>devops </name>
+      <color>#673ab7</color>
+    </tag>
+    <tag>
+      <id>e93ee117-06f3-4d7c-967a-c8cb8e426b4b</id>
+      <name>form</name>
+      <color>#3f51b5</color>
+    </tag>
+    <tag>
+      <id>efcced22-d7f7-40b4-b7ee-b90d58c7f12f</id>
+      <name>docs</name>
+      <color>#cddc39</color>
+    </tag>
+    <tag>
+      <id>f3475ec1-e154-4fd2-b9bb-aa0817dd10f9</id>
+      <name>code</name>
+      <color>#ffc107</color>
+    </tag>
+    <tag>
+      <id>f4f42a30-0096-4710-96ff-e4779f8b3445</id>
+      <name>mermaid</name>
+      <color>#4caf50</color>
+    </tag>
+  </tags>
+  <repositories>
+    <repository>
+      <id>e2bc5f26-c72f-48de-b6ae-7776f42f39c1</id>
+      <name>android.tiogars.fr</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/android.tiogars.fr</url>
+      <createdAt>1767042751967</createdAt>
+      <updatedAt>1767042751967</updatedAt>
+    </repository>
+    <repository>
+      <id>8ac01b6f-ca78-420c-8d40-c6dc76f94007</id>
+      <name>bricks.tiogars.fr</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/bricks.tiogars.fr</url>
+      <createdAt>1767095170096</createdAt>
+      <updatedAt>1767095170096</updatedAt>
+    </repository>
+    <repository>
+      <id>24520cd8-01e7-424e-8c6f-07abcdafced0</id>
+      <name>features.tiogars.fr</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/features.tiogars.fr</url>
+      <createdAt>1766967713676</createdAt>
+      <updatedAt>1766967713676</updatedAt>
+    </repository>
+    <repository>
+      <id>e83a9aab-b111-4e84-af65-44e474962097</id>
+      <name>neyrac-sequences-finder</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/neyrac-sequences-finder</url>
+      <createdAt>1767112999967</createdAt>
+      <updatedAt>1767112999967</updatedAt>
+    </repository>
+    <repository>
+      <id>077d9f63-c8fa-4c20-aeb9-c60e320966ee</id>
+      <name>neyrac-sequences-finder-api</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/neyrac-sequences-finder-api</url>
+      <createdAt>1767113015020</createdAt>
+      <updatedAt>1767113015020</updatedAt>
+    </repository>
+    <repository>
+      <id>ebb34949-ba28-46a1-9231-4cb68a2137bd</id>
+      <name>neyrac-sequences-finder-api-spring</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/neyrac-sequences-finder-api-spring</url>
+      <createdAt>1767112898973</createdAt>
+      <updatedAt>1767112898973</updatedAt>
+    </repository>
+    <repository>
+      <id>a72a3da1-c082-48ae-be4e-bd8019995a50</id>
+      <name>neyrac-sequences-finder-docs</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/neyrac-sequences-finder-docs</url>
+      <createdAt>1767112984664</createdAt>
+      <updatedAt>1767112984664</updatedAt>
+    </repository>
+    <repository>
+      <id>e902f7e3-ac31-427f-ba51-072c73feb361</id>
+      <name>neyrac-sequences-finder-electron</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/neyrac-sequences-finder-electron</url>
+      <createdAt>1767113025641</createdAt>
+      <updatedAt>1767113025641</updatedAt>
+    </repository>
+    <repository>
+      <id>afcc979b-72bf-457d-a00f-00a53e414f43</id>
+      <name>neyrac-sequences-finder-react</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/neyrac-sequences-finder-react</url>
+      <createdAt>1767112955903</createdAt>
+      <updatedAt>1767112955903</updatedAt>
+    </repository>
+    <repository>
+      <id>d8431abd-cc99-4391-a534-00bd493eb1c6</id>
+      <name>starter</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/starter</url>
+      <createdAt>1767113376177</createdAt>
+      <updatedAt>1767113376177</updatedAt>
+    </repository>
+    <repository>
+      <id>8d48790d-41cb-46cc-b56a-b2d58aa51a6c</id>
+      <name>starter-api-spring-mysql</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/starter-api-spring-mysql</url>
+      <createdAt>1767113296597</createdAt>
+      <updatedAt>1767113296597</updatedAt>
+    </repository>
+    <repository>
+      <id>e60c9041-08d7-4e46-aaf9-9d041c294df3</id>
+      <name>starter-react-vite</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/starter-react-vite</url>
+      <createdAt>1767113395625</createdAt>
+      <updatedAt>1767113395625</updatedAt>
+    </repository>
+    <repository>
+      <id>a63949ad-f2ca-4d40-b4f7-e666e9172737</id>
+      <name>starter-tailscale</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/starter-tailscale</url>
+      <createdAt>1767113408997</createdAt>
+      <updatedAt>1767113408997</updatedAt>
+    </repository>
+    <repository>
+      <id>168586fb-4751-41a1-b438-34f1fc804699</id>
+      <name>starter-tiolaptop</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/starter-tiolaptop</url>
+      <createdAt>1767113420874</createdAt>
+      <updatedAt>1767113420874</updatedAt>
+    </repository>
+    <repository>
+      <id>864a73cd-a7a2-477c-acf5-7d0c801a0b48</id>
+      <name>www.tiogars.fr</name>
+      <owner>tiogars</owner>
+      <url>https://github.com/tiogars/www.tiogars.fr</url>
+      <createdAt>1767263256023</createdAt>
+      <updatedAt>1767263256023</updatedAt>
+    </repository>
+  </repositories>
+  <apps>
+    <app>
+      <id>ffd1125c-06c4-4ba7-ad6f-2a795d2d708c</id>
+      <name>Android apps</name>
+      <repositoryIds>
+        <repositoryId>e2bc5f26-c72f-48de-b6ae-7776f42f39c1</repositoryId>
+      </repositoryIds>
+      <links>
+        <link>
+          <id>link-1767094799448-nvwe2a8jf</id>
+          <displayName>Website</displayName>
+          <description>android.tiogars.fr website</description>
+          <icon>Launch</icon>
+          <href>https://android.tiogars.fr</href>
+          <target>_blank</target>
+          <environment>Production</environment>
+        </link>
+      </links>
+      <createdAt>1767094802340</createdAt>
+      <updatedAt>1767094802340</updatedAt>
+    </app>
+    <app>
+      <id>dc9494a3-4ded-4688-aa0f-5c52d53ff9e3</id>
+      <name>Bricks</name>
+      <repositoryIds>
+        <repositoryId>8ac01b6f-ca78-420c-8d40-c6dc76f94007</repositoryId>
+      </repositoryIds>
+      <links>
+        <link>
+          <id>link-1767095255088-z5f20k284</id>
+          <displayName>Website</displayName>
+          <description>bricks.tiogars.fr website</description>
+          <icon>Launch</icon>
+          <href>https://bricks.tiogars.fr</href>
+          <target>_blank</target>
+          <environment>Production</environment>
+        </link>
+      </links>
+      <createdAt>1767095257340</createdAt>
+      <updatedAt>1767095257340</updatedAt>
+    </app>
+    <app>
+      <id>b45d5e44-54b3-4582-888f-25f511755e4f</id>
+      <name>Features</name>
+      <repositoryIds>
+        <repositoryId>24520cd8-01e7-424e-8c6f-07abcdafced0</repositoryId>
+      </repositoryIds>
+      <links>
+        <link>
+          <id>link-1767094654374-p1pcu39yo</id>
+          <displayName>Website</displayName>
+          <description>features.tiogars.fr website</description>
+          <icon>Launch</icon>
+          <href>https://features.tiogars.fr</href>
+          <target>_blank</target>
+          <environment>Production</environment>
+        </link>
+      </links>
+      <createdAt>1767088732737</createdAt>
+      <updatedAt>1767094656071</updatedAt>
+    </app>
+    <app>
+      <id>aa26fee4-e990-472a-894e-b2603f4bd2ee</id>
+      <name>Neyrac</name>
+      <repositoryIds>
+        <repositoryId>e83a9aab-b111-4e84-af65-44e474962097</repositoryId>
+        <repositoryId>077d9f63-c8fa-4c20-aeb9-c60e320966ee</repositoryId>
+        <repositoryId>ebb34949-ba28-46a1-9231-4cb68a2137bd</repositoryId>
+        <repositoryId>a72a3da1-c082-48ae-be4e-bd8019995a50</repositoryId>
+        <repositoryId>e902f7e3-ac31-427f-ba51-072c73feb361</repositoryId>
+        <repositoryId>afcc979b-72bf-457d-a00f-00a53e414f43</repositoryId>
+      </repositoryIds>
+      <createdAt>1767113112173</createdAt>
+      <updatedAt>1767113112173</updatedAt>
+    </app>
+    <app>
+      <id>bab62ca6-9e9b-4b88-8cfc-38f794e2e0b9</id>
+      <name>Starter</name>
+      <repositoryIds>
+        <repositoryId>8d48790d-41cb-46cc-b56a-b2d58aa51a6c</repositoryId>
+        <repositoryId>d8431abd-cc99-4391-a534-00bd493eb1c6</repositoryId>
+        <repositoryId>e60c9041-08d7-4e46-aaf9-9d041c294df3</repositoryId>
+        <repositoryId>a63949ad-f2ca-4d40-b4f7-e666e9172737</repositoryId>
+        <repositoryId>168586fb-4751-41a1-b438-34f1fc804699</repositoryId>
+      </repositoryIds>
+      <createdAt>1767113453140</createdAt>
+      <updatedAt>1767113453140</updatedAt>
+    </app>
+  </apps>
+</backup>

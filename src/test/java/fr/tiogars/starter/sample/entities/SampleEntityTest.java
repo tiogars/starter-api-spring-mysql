@@ -8,6 +8,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import fr.tiogars.starter.tag.entities.TagEntity;
+
 class SampleEntityTest {
 
     @Test
@@ -59,7 +61,7 @@ class SampleEntityTest {
     void testAddTag() {
         // Arrange
         SampleEntity entity = new SampleEntity();
-        SampleTagEntity tag = new SampleTagEntity();
+        TagEntity tag = new TagEntity();
         tag.setId(1L);
         tag.setName("TestTag");
 
@@ -75,7 +77,7 @@ class SampleEntityTest {
     void testRemoveTag() {
         // Arrange
         SampleEntity entity = new SampleEntity();
-        SampleTagEntity tag = new SampleTagEntity();
+        TagEntity tag = new TagEntity();
         tag.setId(1L);
         tag.setName("TestTag");
         entity.addTag(tag);
@@ -91,11 +93,11 @@ class SampleEntityTest {
     void testWithMultipleTags() {
         // Arrange
         SampleEntity entity = new SampleEntity();
-        SampleTagEntity tag1 = new SampleTagEntity();
+        TagEntity tag1 = new TagEntity();
         tag1.setId(1L);
         tag1.setName("Tag1");
         
-        SampleTagEntity tag2 = new SampleTagEntity();
+        TagEntity tag2 = new TagEntity();
         tag2.setId(2L);
         tag2.setName("Tag2");
 
@@ -113,8 +115,8 @@ class SampleEntityTest {
     void testSetTags() {
         // Arrange
         SampleEntity entity = new SampleEntity();
-        Set<SampleTagEntity> tags = new HashSet<>();
-        SampleTagEntity tag1 = new SampleTagEntity();
+        Set<TagEntity> tags = new HashSet<>();
+        TagEntity tag1 = new TagEntity();
         tag1.setId(1L);
         tag1.setName("Tag1");
         tags.add(tag1);
