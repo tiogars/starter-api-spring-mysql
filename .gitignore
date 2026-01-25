@@ -46,3 +46,4 @@ settings.xml
 .env
 .env.local
 .env.*.local
+sonar.cmd
