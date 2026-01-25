@@ -1,6 +1,7 @@
 # Implementation Documentation
 
-This section contains technical implementation details, completion reports, and architectural documentation for the starter-api-spring-mysql project.
+This section contains technical implementation details, completion reports, and architectural documentation for the
+starter-api-spring-mysql project.
 
 ## Overview
 
@@ -22,6 +23,12 @@ Documentation related to how features are implemented, project milestones, and t
   - Configuration for preventing Mockito self-attachment warnings
   - Maven Surefire plugin setup
   - Future JDK compatibility
+
+- **[MarkdownLint Integration](MARKDOWNLINT_INTEGRATION.md)** - MarkdownLint setup and usage
+  - Configuration and rules
+  - How to use MarkdownLint
+  - Best practices for writing Markdown
+  - Troubleshooting guide
 
 ## Technology Stack
 
