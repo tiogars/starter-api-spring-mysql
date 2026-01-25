@@ -79,9 +79,99 @@ mvn verify sonar:sonar -Dsonar.projectKey=your-project-key -Dsonar.host.url=your
 ### Common Testing Patterns in This Project
 
 - **Controller Tests**: Use `MockMvc` to test REST endpoints
+  - Test successful responses (200, 201)
+  - Test error responses (404, 400, etc.)
+  - Test with valid and invalid input data
+  - Test edge cases (empty lists, null values)
 - **Service Tests**: Mock repository dependencies
+  - Test all conditional branches (if/else, switch cases)
+  - Test error handling and exception paths
+  - Test null checks and empty collection handling
+  - Test business logic with different input combinations
 - **Model Tests**: Test entity validation and business logic
 - **Exception Tests**: Verify proper error handling and responses
+
+### Branch Coverage Best Practices
+
+To achieve and maintain 80% branch coverage:
+
+1. **Test All Conditional Paths**
+   ```java
+   // If you have code like:
+   if (value != null) {
+       // path A
+   } else {
+       // path B
+   }
+   
+   // Write tests for both paths:
+   @Test void testWithNullValue() { }  // Tests path B
+   @Test void testWithNonNullValue() { }  // Tests path A
+   ```
+
+2. **Test Switch Cases**
+   - Create a test for each case statement
+   - Include a test for the default case
+
+3. **Test Exception Handling**
+   - Test the happy path (no exceptions)
+   - Test when each type of exception is thrown
+   - Verify recovery logic works correctly
+
+4. **Test Loop Conditions**
+   - Test with empty collections
+   - Test with single-item collections
+   - Test with multiple items
+
+5. **Test Boolean Logic**
+   - For `value && otherValue`, test: (true, true), (true, false), (false, true), (false, false)
+   - For `value || otherValue`, test: (true, *), (false, true), (false, false)
+
+### Examples of Branch Coverage Tests
+
+**Example 1: Testing Operator Branches**
+```java
+// Service code with multiple operators
+public Result process(String operator, int value) {
+    switch (operator) {
+        case "equals": return checkEquals(value);
+        case "greater": return checkGreater(value);
+        case "less": return checkLess(value);
+        default: throw new IllegalArgumentException();
+    }
+}
+
+// Tests covering all branches
+@Test void testProcessWithEquals() { }
+@Test void testProcessWithGreater() { }
+@Test void testProcessWithLess() { }
+@Test void testProcessWithInvalidOperator() { }
+```
+
+**Example 2: Testing Error Combinations**
+```java
+// Import service with multiple error types
+public Report importItems(List<Item> items) {
+    int created = 0, duplicates = 0, errors = 0;
+    for (Item item : items) {
+        if (exists(item)) {
+            duplicates++;
+        } else if (!validate(item)) {
+            errors++;
+        } else {
+            created++;
+        }
+    }
+    return new Report(created, duplicates, errors);
+}
+
+// Tests covering different combinations
+@Test void testImportAllNew() { }
+@Test void testImportAllDuplicates() { }
+@Test void testImportAllErrors() { }
+@Test void testImportMixedResults() { }
+@Test void testImportEmptyList() { }
+```
 
 ### Coverage Exemptions
 
@@ -97,7 +187,7 @@ If you need to exclude code from coverage, document the reason and use JaCoCo ex
 
 - **Framework**: Spring Boot 4.0.1 with Java 21
 - **Testing**: JUnit 5, Spring Boot Test, Mockito
-- **Coverage Tool**: JaCoCo 0.8.12
+- **Coverage Tool**: JaCoCo 0.8.14
 - **Code Analysis**: SonarQube integrated in CI/CD
 - **Build Command**: `mvn verify` (includes tests and coverage check)
 - **CI/CD**: GitHub Actions enforces coverage and quality gates
