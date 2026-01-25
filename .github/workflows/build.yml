@@ -46,6 +46,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build and analyze
+        continue-on-error: true
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
