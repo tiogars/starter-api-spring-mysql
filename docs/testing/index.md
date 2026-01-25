@@ -11,6 +11,7 @@ The project enforces **80% minimum code coverage** for line, branch, and instruc
 - **[Test Coverage Guide](TEST_COVERAGE_GUIDE.md)** - Comprehensive guide on achieving and maintaining test coverage
 - **[Test Organization](TEST_ORGANIZATION.md)** - How tests are structured and organized in the project
 - **[Testing Index](TESTING_INDEX.md)** - Index of all testing-related resources
+- **[Maven Site Reports](MAVEN_SITE_REPORTS.md)** - Guide to generating and using Maven site reports including JaCoCo
 
 ## Coverage Reports
 
