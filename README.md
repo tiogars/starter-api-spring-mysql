@@ -47,6 +47,14 @@ Triggers:
 * Tags matching `v*.*.*`
 * Manual dispatch
 
+## 📚 Documentation
+
+For detailed documentation, see the [Documentation Index](docs/README.md):
+
+* [Testing Documentation](docs/testing/index.md) - Testing guides, coverage reports, and best practices
+* [API Documentation](docs/api/index.md) - REST API endpoints and usage
+* [Implementation Documentation](docs/implementation/index.md) - Technical details and architecture
+
 ## 🔗 Useful Links
 
 * [Spring Boot Docs](https://docs.spring.io/spring-boot/docs/current/reference/html/)

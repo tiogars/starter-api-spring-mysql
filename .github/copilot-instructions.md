@@ -192,6 +192,35 @@ If you need to exclude code from coverage, document the reason and use JaCoCo ex
 - **Build Command**: `mvn verify` (includes tests and coverage check)
 - **CI/CD**: GitHub Actions enforces coverage and quality gates
 
+## Documentation Organization
+
+### Markdown File Management
+
+When generating or creating Markdown documentation files:
+
+1. **Organize by Theme**: Place generated Markdown files in the `docs/` folder, organized into thematic subdirectories:
+   - `docs/testing/` - Testing guides, coverage reports, test organization
+   - `docs/api/` - API documentation, endpoint guides, usage examples
+   - `docs/implementation/` - Implementation details, completion reports, technical documentation
+   - `docs/features/` - Feature documentation and user guides
+
+2. **Create Index Files**: Each thematic folder should have an `index.md` file that:
+   - Provides an overview of the theme
+   - Lists and links to all documents in that folder
+   - Follows a consistent structure across themes
+
+3. **Update Main Index**: Keep the root `docs/README.md` (or create one if it doesn't exist) updated with:
+   - Links to all thematic `index.md` files
+   - Brief description of each theme
+   - Quick navigation to commonly accessed documents
+
+4. **File Naming Conventions**:
+   - Use clear, descriptive names with underscores or hyphens
+   - Use UPPERCASE for generated reports (e.g., `TESTING_SUMMARY.md`)
+   - Use lowercase for user guides (e.g., `getting-started.md`)
+
+5. **Keep Root Clean**: Only essential files like `README.md` should remain at the repository root. Move all other documentation to the appropriate `docs/` subdirectory.
+
 ## Additional Resources
 
 - [JaCoCo Documentation](https://www.jacoco.org/jacoco/trunk/doc/)
