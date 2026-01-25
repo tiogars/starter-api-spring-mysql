@@ -50,7 +50,7 @@ jobs:
         env:
           GITHUB_ACTOR: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: mvn clean site
+        run: mvn clean verify site
 
       - name: Build mkdocs
         run: mkdocs build
