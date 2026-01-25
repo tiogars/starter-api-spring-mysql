@@ -1,0 +1,77 @@
+site_name: Starter API Spring MySQL
+site_description: Documentation for the Starter API Spring MySQL project
+site_author: Tiogars
+site_url: https://tiogars.github.io/starter-api-spring-mysql
+
+repo_name: tiogars/starter-api-spring-mysql
+repo_url: https://github.com/tiogars/starter-api-spring-mysql
+
+theme:
+  name: material
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Testing:
+    - Overview: testing/index.md
+    - Test Coverage Guide: testing/TEST_COVERAGE_GUIDE.md
+    - Testing Summary: testing/TESTING_SUMMARY.md
+    - Testing Index: testing/TESTING_INDEX.md
+    - Test Organization: testing/TEST_ORGANIZATION.md
+    - Branch Coverage Summary: testing/BRANCH_COVERAGE_SUMMARY.md
+    - Coverage Improvement Summary: testing/COVERAGE_IMPROVEMENT_SUMMARY.md
+  - API Documentation:
+    - Overview: api/index.md
+    - Search API: api/SEARCH_API.md
+    - Export API: api/EXPORT_API.md
+  - Implementation:
+    - Overview: implementation/index.md
+    - Implementation Details: implementation/IMPLEMENTATION_DETAILS.md
+    - Completion Report: implementation/COMPLETION_REPORT.md
+    - Mockito Agent Configuration: implementation/MOCKITO_AGENT_CONFIGURATION.md
+  - Features:
+    - Overview: features/index.md
+
+plugins:
+  - search
