@@ -91,7 +91,7 @@ npx markdownlint-cli "docs/**/*.md"
 Here are the most important rules enforced by MarkdownLint:
 
 | Rule  | Description                                     | Example                              |
-|-------|------------------------------------------------ |--------------------------------------|
+|-------|-------------------------------------------------|--------------------------------------|
 | MD001 | Heading levels should only increment by one     | Don't skip from `#` to `###`         |
 | MD012 | No multiple consecutive blank lines             | Max one blank line between content   |
 | MD013 | Line length limit (120 chars)                   | Break long lines or use references   |
@@ -124,10 +124,10 @@ Good - language specified:
 npm install
 ```
 
-Bad - no language specified:
+Bad - no language specified (will trigger MD040 error):
 
-```text
-npm install
+```plaintext
+This code block has no language identifier
 ```
 
 ### Line Length
