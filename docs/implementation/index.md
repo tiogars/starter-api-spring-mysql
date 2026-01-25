@@ -18,6 +18,11 @@ Documentation related to how features are implemented, project milestones, and t
   - Known issues and limitations
   - Future enhancements
 
+- **[Mockito Agent Configuration](MOCKITO_AGENT_CONFIGURATION.md)** - Mockito Java agent setup
+  - Configuration for preventing Mockito self-attachment warnings
+  - Maven Surefire plugin setup
+  - Future JDK compatibility
+
 ## Technology Stack
 
 - **Framework**: Spring Boot 4.0.1
