@@ -41,17 +41,21 @@ The Maven Project Info Reports plugin provides the following reports:
 
 ### Generate All Reports
 
-To generate the complete Maven site with all reports:
+To generate the complete Maven site with all reports including JaCoCo coverage:
 
 ```bash
-mvn clean site
+mvn clean verify site
 ```
 
 This command will:
 1. Clean the previous build (`clean`)
-2. Run tests to collect coverage data
-3. Generate all configured reports
-4. Create the site in `target/site/`
+2. Run tests to collect coverage data (`verify` includes `test`)
+3. Verify coverage meets 80% thresholds
+4. Generate all configured reports
+5. Create the site in `target/site/`
+
+**Important**: You must run `verify` (or at least `test`) before `site` to ensure JaCoCo has execution
+data to generate the coverage report. Running `mvn clean site` alone will not include coverage data.
 
 ### Generate Only JaCoCo Report
 
@@ -241,9 +245,9 @@ Uncovered lines are highlighted in red, partially covered in yellow.
 
 3. **Before Pull Requests**:
    ```bash
-   mvn clean site
+   mvn clean verify site
    ```
-   Generate full site to review all reports
+   Generate full site to review all reports (including JaCoCo coverage)
 
 ### Coverage Improvement Workflow
 
@@ -294,10 +298,24 @@ mvn clean site
 
 ### JaCoCo Report Not in Site
 
-**Check**:
-1. Verify `<reporting>` section in `pom.xml` includes JaCoCo plugin
-2. Run `mvn clean site` (not just `mvn site`)
-3. Check `target/site/project-reports.html` for JaCoCo link
+**Problem**: When running `mvn site`, the JaCoCo report is missing or shows no coverage data.
+
+**Root Cause**: The `site` goal doesn't automatically run tests. JaCoCo needs execution data
+(generated during test runs) to create the coverage report.
+
+**Solution**:
+1. Run tests before generating the site:
+   ```bash
+   mvn clean verify site
+   ```
+2. The `verify` phase runs tests and generates JaCoCo execution data
+3. Then `site` will use this data to create the coverage report
+4. Check `target/site/project-reports.html` for JaCoCo link
+
+**Quick Check**:
+- Verify `<reporting>` section in `pom.xml` includes JaCoCo plugin
+- Ensure `target/jacoco.exec` file exists after running tests
+- Run `mvn clean verify site` (not just `mvn site`)
 
 ## Additional Resources
 
