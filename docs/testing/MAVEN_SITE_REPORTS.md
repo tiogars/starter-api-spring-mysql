@@ -2,7 +2,8 @@
 
 ## Overview
 
-This project uses Maven Site Plugin to generate comprehensive project documentation and reports. The site includes multiple reports that provide insights into the project's health, dependencies, test coverage, and more.
+This project uses Maven Site Plugin to generate comprehensive project documentation and reports. The site
+includes multiple reports that provide insights into the project's health, dependencies, test coverage, and more.
 
 ## Available Reports
 
@@ -19,6 +20,7 @@ The JaCoCo (Java Code Coverage) report provides detailed code coverage metrics i
 - **Complexity Coverage**: Cyclomatic complexity metrics
 
 **Coverage Thresholds (Enforced)**:
+
 - Line Coverage: ≥80%
 - Branch Coverage: ≥80%
 - Instruction Coverage: ≥80%
@@ -48,6 +50,7 @@ mvn clean verify site
 ```
 
 This command will:
+
 1. Clean the previous build (`clean`)
 2. Run tests to collect coverage data (`verify` includes `test`)
 3. Verify coverage meets 80% thresholds
@@ -76,6 +79,7 @@ mvn clean verify
 ```
 
 This will:
+
 1. Run all tests
 2. Generate coverage reports
 3. Check that coverage meets 80% thresholds
@@ -86,6 +90,7 @@ This will:
 After generating the site:
 
 1. **Open in Browser**:
+
    ```bash
    # On Linux/Mac
    open target/site/index.html
@@ -110,6 +115,7 @@ The project includes a dedicated workflow (`.github/workflows/maven-site.yml`) t
 4. Deploys to GitHub Pages
 
 **Trigger Events**:
+
 - Push to `main` branch
 - Pull requests to `main` branch
 - Manual workflow dispatch
@@ -129,6 +135,7 @@ After deployment, reports are available at:
 The Maven site and JaCoCo reporting are configured in `pom.xml`:
 
 **Build Plugins** (for coverage collection):
+
 ```xml
 <plugin>
     <groupId>org.jacoco</groupId>
@@ -159,6 +166,7 @@ The Maven site and JaCoCo reporting are configured in `pom.xml`:
 ```
 
 **Reporting Plugins** (for site generation):
+
 ```xml
 <reporting>
     <plugins>
@@ -219,6 +227,7 @@ The JaCoCo report provides several coverage metrics:
 ### Drilling Down
 
 The JaCoCo report is interactive:
+
 1. Start at package level
 2. Click package to see classes
 3. Click class to see methods
@@ -231,22 +240,28 @@ Uncovered lines are highlighted in red, partially covered in yellow.
 ### Regular Coverage Checks
 
 1. **Before Committing**:
+
    ```bash
    mvn clean verify
    ```
+
    Ensures your changes meet coverage thresholds
 
 2. **After Adding Features**:
+
    ```bash
    mvn clean test
    open target/site/jacoco/index.html
    ```
+
    Review coverage to identify untested code
 
 3. **Before Pull Requests**:
+
    ```bash
    mvn clean verify site
    ```
+
    Generate full site to review all reports (including JaCoCo coverage)
 
 ### Coverage Improvement Workflow
@@ -261,6 +276,7 @@ Uncovered lines are highlighted in red, partially covered in yellow.
 ### Exclusions
 
 Some code may not require coverage:
+
 - Configuration classes with no business logic
 - Data transfer objects (DTOs) with only getters/setters
 - Main application class
@@ -273,11 +289,13 @@ However, this project maintains strict 80% thresholds, so exclusions should be r
 ### Build Fails: Coverage Below Threshold
 
 **Error**:
-```
+
+```text
 [ERROR] Rule violated for bundle starter: instructions covered ratio is 0.75, but expected minimum is 0.80
 ```
 
 **Solution**:
+
 1. Run `mvn clean test`
 2. Open `target/site/jacoco/index.html`
 3. Identify uncovered code
@@ -290,6 +308,7 @@ However, this project maintains strict 80% thresholds, so exclusions should be r
 
 **Solution**:
 Ensure GitHub packages authentication is configured:
+
 ```bash
 export GITHUB_ACTOR=<your-github-username>
 export GITHUB_TOKEN=<your-github-token>
@@ -304,15 +323,19 @@ mvn clean site
 (generated during test runs) to create the coverage report.
 
 **Solution**:
+
 1. Run tests before generating the site:
+
    ```bash
    mvn clean verify site
    ```
+
 2. The `verify` phase runs tests and generates JaCoCo execution data
 3. Then `site` will use this data to create the coverage report
 4. Check `target/site/project-reports.html` for JaCoCo link
 
 **Quick Check**:
+
 - Verify `<reporting>` section in `pom.xml` includes JaCoCo plugin
 - Ensure `target/jacoco.exec` file exists after running tests
 - Run `mvn clean verify site` (not just `mvn site`)
@@ -327,7 +350,8 @@ mvn clean site
 
 ## Summary
 
-Maven site reports, particularly JaCoCo coverage reports, are essential tools for maintaining code quality. By regularly reviewing these reports and maintaining the 80% coverage thresholds, we ensure:
+Maven site reports, particularly JaCoCo coverage reports, are essential tools for maintaining code quality.
+By regularly reviewing these reports and maintaining the 80% coverage thresholds, we ensure:
 
 - High-quality, well-tested code
 - Early detection of untested code paths
