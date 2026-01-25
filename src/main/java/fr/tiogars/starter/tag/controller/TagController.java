@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fr.tiogars.starter.tag.models.Tag;
 import fr.tiogars.starter.tag.services.TagService;
+import fr.tiogars.starter.tag.services.TagFindService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,18 +28,19 @@ import jakarta.validation.Valid;
 @io.swagger.v3.oas.annotations.tags.Tag(name = "tag", description = "CRUD operations for Tag entities")
 public class TagController {
     private final TagService tagService;
-    public TagController(TagService tagService) { this.tagService = tagService; }
+    private final TagFindService tagFindService;
+    public TagController(TagService tagService, TagFindService tagFindService) { this.tagService = tagService; this.tagFindService = tagFindService; }
 
     @GetMapping
     @Operation(summary = "Get all tags")
     @ApiResponse(responseCode = "200", description = "OK",
         content = @Content(mediaType = "application/json", schema = @Schema(implementation = Tag.class)))
-    public ResponseEntity<List<Tag>> getAllTags() { return ResponseEntity.ok(tagService.findAll()); }
+    public ResponseEntity<List<Tag>> getAllTags() { return ResponseEntity.ok(tagFindService.findAll()); }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get tag by id")
     public ResponseEntity<Tag> getTagById(@PathVariable Long id) {
-        return tagService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return tagFindService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

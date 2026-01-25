@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import fr.tiogars.starter.feature.forms.FeatureCreateForm;
 import fr.tiogars.starter.feature.models.Feature;
 import fr.tiogars.starter.feature.services.FeatureCrudService;
+import fr.tiogars.starter.feature.services.FeatureFindService;
 import fr.tiogars.starter.feature.services.FeatureCreateService;
 import fr.tiogars.starter.feature.services.FeatureImportService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,23 +31,25 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "feature", description = "CRUD operations for Features and XML import")
 public class FeatureController {
     private final FeatureCrudService featureCrudService;
+    private final FeatureFindService featureFindService;
     private final FeatureImportService featureImportService;
     private final FeatureCreateService featureCreateService;
 
-    public FeatureController(FeatureCrudService featureCrudService, FeatureImportService featureImportService, FeatureCreateService featureCreateService) {
+    public FeatureController(FeatureCrudService featureCrudService, FeatureImportService featureImportService, FeatureCreateService featureCreateService, FeatureFindService featureFindService) {
         this.featureCrudService = featureCrudService;
         this.featureImportService = featureImportService;
         this.featureCreateService = featureCreateService;
+        this.featureFindService = featureFindService;
     }
 
     @GetMapping
     @Operation(summary = "Get all features")
-    public ResponseEntity<List<Feature>> getAll() { return ResponseEntity.ok(featureCrudService.findAll()); }
+    public ResponseEntity<List<Feature>> getAll() { return ResponseEntity.ok(featureFindService.findAll()); }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get feature by id")
     public ResponseEntity<Feature> getById(@PathVariable Long id) {
-        return featureCrudService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return featureFindService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping

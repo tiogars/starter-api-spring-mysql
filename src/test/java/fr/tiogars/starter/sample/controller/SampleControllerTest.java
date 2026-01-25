@@ -41,6 +41,7 @@ import fr.tiogars.starter.sample.services.SampleImportService;
 import fr.tiogars.starter.sample.services.SampleInitService;
 import fr.tiogars.starter.sample.services.SampleSearchService;
 import fr.tiogars.starter.sample.services.SampleUpdateService;
+import fr.tiogars.starter.sample.services.SampleFindService;
 
 @WebMvcTest(SampleController.class)
 class SampleControllerTest {
@@ -71,12 +72,15 @@ class SampleControllerTest {
     @Autowired
     private SampleSearchService sampleSearchService;
 
+    @Autowired
+    private SampleFindService sampleFindService;
+
     private Sample sample;
     private Date testDate;
 
     @BeforeEach
     void setUp() {
-        reset(sampleCreateService, sampleCrudService, sampleUpdateService, sampleImportService, sampleExportService, sampleInitService, sampleSearchService);
+        reset(sampleCreateService, sampleCrudService, sampleUpdateService, sampleImportService, sampleExportService, sampleInitService, sampleSearchService, sampleFindService);
         testDate = new Date();
         sample = new Sample();
         sample.setId(1L);
@@ -114,7 +118,7 @@ class SampleControllerTest {
     @Test
     void testGetSample_ReturnsSampleWhenExists() throws Exception {
         // Arrange
-        when(sampleCrudService.findById(1L)).thenReturn(Optional.of(sample));
+        when(sampleFindService.findById(1L)).thenReturn(Optional.of(sample));
 
         // Act & Assert
         mockMvc.perform(get("/sample/1"))
@@ -124,20 +128,20 @@ class SampleControllerTest {
                 .andExpect(jsonPath("$.name").value("TestSample"))
                 .andExpect(jsonPath("$.description").value("Test Description"));
 
-        verify(sampleCrudService, times(1)).findById(1L);
+        verify(sampleFindService, times(1)).findById(1L);
     }
 
     @Test
     void testGetSample_ReturnsNullWhenNotExists() throws Exception {
         // Arrange
-        when(sampleCrudService.findById(999L)).thenReturn(Optional.empty());
+        when(sampleFindService.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
         mockMvc.perform(get("/sample/999"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
 
-        verify(sampleCrudService, times(1)).findById(999L);
+        verify(sampleFindService, times(1)).findById(999L);
     }
 
     @Test
@@ -148,7 +152,7 @@ class SampleControllerTest {
         sample2.setName("Sample2");
         
         List<Sample> samples = Arrays.asList(sample, sample2);
-        when(sampleCrudService.findAll()).thenReturn(samples);
+        when(sampleFindService.findAll()).thenReturn(samples);
 
         // Act & Assert
         mockMvc.perform(get("/sample"))
@@ -159,13 +163,13 @@ class SampleControllerTest {
                 .andExpect(jsonPath("$[0].name").value("TestSample"))
                 .andExpect(jsonPath("$[1].name").value("Sample2"));
 
-        verify(sampleCrudService, times(1)).findAll();
+        verify(sampleFindService, times(1)).findAll();
     }
 
     @Test
     void testGetAllSamples_ReturnsEmptyList() throws Exception {
         // Arrange
-        when(sampleCrudService.findAll()).thenReturn(Arrays.asList());
+        when(sampleFindService.findAll()).thenReturn(Arrays.asList());
 
         // Act & Assert
         mockMvc.perform(get("/sample"))
@@ -174,7 +178,7 @@ class SampleControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(0));
 
-        verify(sampleCrudService, times(1)).findAll();
+        verify(sampleFindService, times(1)).findAll();
     }
 
     @Test
@@ -234,5 +238,7 @@ class SampleControllerTest {
         SampleInitService sampleInitService() { return mock(SampleInitService.class); }
         @Bean
         SampleSearchService sampleSearchService() { return mock(SampleSearchService.class); }
+        @Bean
+        SampleFindService sampleFindService() { return mock(SampleFindService.class); }
     }
 }

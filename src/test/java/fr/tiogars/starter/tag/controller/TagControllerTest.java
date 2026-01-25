@@ -31,6 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.tiogars.starter.tag.models.Tag;
 import fr.tiogars.starter.tag.services.TagService;
+import fr.tiogars.starter.tag.services.TagFindService;
 
 @WebMvcTest(TagController.class)
 class TagControllerTest {
@@ -43,11 +44,15 @@ class TagControllerTest {
     @Autowired
     private TagService tagService;
 
+    @Autowired
+    private TagFindService tagFindService;
+
     private Tag tag;
 
     @BeforeEach
     void setUp() {
         reset(tagService);
+        reset(tagFindService);
         tag = new Tag(1L, "TestTag", "Test Description");
     }
 
@@ -56,7 +61,7 @@ class TagControllerTest {
         // Arrange
         Tag tag2 = new Tag(2L, "Tag2", "Description 2");
         List<Tag> tags = Arrays.asList(tag, tag2);
-        when(tagService.findAll()).thenReturn(tags);
+        when(tagFindService.findAll()).thenReturn(tags);
 
         // Act & Assert
         mockMvc.perform(get("/tags"))
@@ -67,13 +72,13 @@ class TagControllerTest {
                 .andExpect(jsonPath("$[0].name").value("TestTag"))
                 .andExpect(jsonPath("$[1].name").value("Tag2"));
 
-        verify(tagService, times(1)).findAll();
+        verify(tagFindService, times(1)).findAll();
     }
 
     @Test
     void shouldReturnEmptyListWhenNoTags() throws Exception {
         // Arrange
-        when(tagService.findAll()).thenReturn(Arrays.asList());
+        when(tagFindService.findAll()).thenReturn(Arrays.asList());
 
         // Act & Assert
         mockMvc.perform(get("/tags"))
@@ -82,13 +87,13 @@ class TagControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(0));
 
-        verify(tagService, times(1)).findAll();
+        verify(tagFindService, times(1)).findAll();
     }
 
     @Test
     void shouldReturnTagByIdWhenExists() throws Exception {
         // Arrange
-        when(tagService.findById(1L)).thenReturn(Optional.of(tag));
+        when(tagFindService.findById(1L)).thenReturn(Optional.of(tag));
 
         // Act & Assert
         mockMvc.perform(get("/tags/1"))
@@ -98,19 +103,19 @@ class TagControllerTest {
                 .andExpect(jsonPath("$.name").value("TestTag"))
                 .andExpect(jsonPath("$.description").value("Test Description"));
 
-        verify(tagService, times(1)).findById(1L);
+        verify(tagFindService, times(1)).findById(1L);
     }
 
     @Test
     void shouldReturn404WhenTagNotFound() throws Exception {
         // Arrange
-        when(tagService.findById(999L)).thenReturn(Optional.empty());
+        when(tagFindService.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
         mockMvc.perform(get("/tags/999"))
                 .andExpect(status().isNotFound());
 
-        verify(tagService, times(1)).findById(999L);
+        verify(tagFindService, times(1)).findById(999L);
     }
 
     @Test
@@ -149,5 +154,8 @@ class TagControllerTest {
     static class MockConfig {
         @Bean
         TagService tagService() { return mock(TagService.class); }
+
+        @Bean
+        TagFindService tagFindService() { return mock(TagFindService.class); }
     }
 }

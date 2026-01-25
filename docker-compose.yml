@@ -1,18 +1,47 @@
-name: starter-api-spring-mysql
+name: starter-spring
 
 services:
+  # Spring Boot API Service
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/starterdb
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      # Memory limit for the API service
+      resources:
+        limits:
+          memory: 512M
+    depends_on:
+      - mysql
+  # MySQL Database Service
   mysql:
     image: mysql:8.0
-    container_name: mysql
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: starterdb
       MYSQL_USER: user
       MYSQL_PASSWORD: password
-    ports:
-      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 512M
     volumes:
       - mysql-data:/var/lib/mysql
 
 volumes:
   mysql-data:
+    

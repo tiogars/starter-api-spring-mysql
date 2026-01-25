@@ -10,8 +10,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,8 +27,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -36,13 +36,7 @@ import fr.tiogars.starter.feature.forms.FeatureCreateForm;
 import fr.tiogars.starter.feature.models.Feature;
 import fr.tiogars.starter.feature.services.FeatureCreateService;
 import fr.tiogars.starter.feature.services.FeatureCrudService;
-import fr.tiogars.starter.feature.services.FeatureImportService;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fr.tiogars.starter.feature.forms.FeatureCreateForm;
-import fr.tiogars.starter.feature.models.Feature;
-import fr.tiogars.starter.feature.services.FeatureCrudService;
+import fr.tiogars.starter.feature.services.FeatureFindService;
 import fr.tiogars.starter.feature.services.FeatureImportService;
 
 @WebMvcTest(FeatureController.class)
@@ -62,12 +56,15 @@ class FeatureControllerTest {
     @Autowired
     private FeatureCreateService featureCreateService;
 
+    @Autowired
+    private FeatureFindService featureFindService;
+
     private Feature feature;
     private FeatureCreateForm createForm;
 
     @BeforeEach
     void setUp() {
-        reset(featureCrudService, featureImportService, featureCreateService);
+        reset(featureCrudService, featureImportService, featureCreateService, featureFindService);
         feature = new Feature();
         feature.setId(1L);
         feature.setName("Test Feature");
@@ -85,7 +82,7 @@ class FeatureControllerTest {
         feature2.setId(2L);
         feature2.setName("Feature 2");
         List<Feature> features = Arrays.asList(feature, feature2);
-        when(featureCrudService.findAll()).thenReturn(features);
+        when(featureFindService.findAll()).thenReturn(features);
 
         // Act & Assert
         mockMvc.perform(get("/features"))
@@ -96,13 +93,13 @@ class FeatureControllerTest {
                 .andExpect(jsonPath("$[0].name").value("Test Feature"))
                 .andExpect(jsonPath("$[1].name").value("Feature 2"));
 
-        verify(featureCrudService, times(1)).findAll();
+        verify(featureFindService, times(1)).findAll();
     }
 
     @Test
     void shouldReturnFeatureByIdWhenExists() throws Exception {
         // Arrange
-        when(featureCrudService.findById(1L)).thenReturn(Optional.of(feature));
+        when(featureFindService.findById(1L)).thenReturn(Optional.of(feature));
 
         // Act & Assert
         mockMvc.perform(get("/features/1"))
@@ -112,19 +109,19 @@ class FeatureControllerTest {
                 .andExpect(jsonPath("$.name").value("Test Feature"))
                 .andExpect(jsonPath("$.description").value("Test Description"));
 
-        verify(featureCrudService, times(1)).findById(1L);
+        verify(featureFindService, times(1)).findById(1L);
     }
 
     @Test
     void shouldReturn404WhenFeatureNotFound() throws Exception {
         // Arrange
-        when(featureCrudService.findById(999L)).thenReturn(Optional.empty());
+        when(featureFindService.findById(999L)).thenReturn(Optional.empty());
 
         // Act & Assert
         mockMvc.perform(get("/features/999"))
                 .andExpect(status().isNotFound());
 
-        verify(featureCrudService, times(1)).findById(999L);
+        verify(featureFindService, times(1)).findById(999L);
     }
 
     @Test
@@ -241,5 +238,8 @@ class FeatureControllerTest {
 
         @Bean
         FeatureCreateService featureCreateService() { return mock(FeatureCreateService.class); }
+
+        @Bean
+        FeatureFindService featureFindService() { return mock(FeatureFindService.class); }
     }
 }

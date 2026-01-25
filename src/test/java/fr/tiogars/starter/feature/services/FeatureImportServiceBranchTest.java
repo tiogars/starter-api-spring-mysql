@@ -1,8 +1,6 @@
 package fr.tiogars.starter.feature.services;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import fr.tiogars.starter.feature.models.Feature;
 import fr.tiogars.starter.feature.repositories.FeatureRepository;
 
 @SpringBootTest

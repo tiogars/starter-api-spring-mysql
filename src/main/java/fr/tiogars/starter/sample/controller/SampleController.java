@@ -26,6 +26,7 @@ import fr.tiogars.starter.sample.models.SampleSearchRequest;
 import fr.tiogars.starter.sample.models.SampleSearchResponse;
 import fr.tiogars.starter.sample.services.SampleCreateService;
 import fr.tiogars.starter.sample.services.SampleCrudService;
+import fr.tiogars.starter.sample.services.SampleFindService;
 import fr.tiogars.starter.sample.services.SampleExportService;
 import fr.tiogars.starter.sample.services.SampleImportService;
 import fr.tiogars.starter.sample.services.SampleInitService;
@@ -49,6 +50,7 @@ public class SampleController {
     private SampleCreateService sampleCreateService;
 
     private SampleCrudService sampleCrudService;
+    private SampleFindService sampleFindService;
 
     private SampleUpdateService sampleUpdateService;
 
@@ -63,7 +65,7 @@ public class SampleController {
     public SampleController(SampleCreateService sampleCreateService, SampleCrudService sampleCrudService,
             SampleUpdateService sampleUpdateService, SampleImportService sampleImportService,
             SampleExportService sampleExportService, SampleInitService sampleInitService, 
-            SampleSearchService sampleSearchService) {
+            SampleSearchService sampleSearchService, SampleFindService sampleFindService) {
         this.sampleCreateService = sampleCreateService;
         this.sampleCrudService = sampleCrudService;
         this.sampleUpdateService = sampleUpdateService;
@@ -71,6 +73,7 @@ public class SampleController {
         this.sampleExportService = sampleExportService;
         this.sampleInitService = sampleInitService;
         this.sampleSearchService = sampleSearchService;
+        this.sampleFindService = sampleFindService;
     }
 
     @PostMapping("sample")
@@ -88,13 +91,12 @@ public class SampleController {
 
     @GetMapping("sample/{id}")
     public Sample getSample(@PathVariable Long id) {
-        return this.sampleCrudService.findById(id)
-                .orElse(null);
+        return this.sampleFindService.findById(id).orElse(null);
     }
 
     @GetMapping("sample")
     public List<Sample> getAllSamples() {
-        return this.sampleCrudService.findAll();
+        return this.sampleFindService.findAll();
     }
 
     @DeleteMapping("sample/{id}")
