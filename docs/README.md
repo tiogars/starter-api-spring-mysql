@@ -17,6 +17,7 @@ Comprehensive guides on testing practices, coverage requirements, and quality st
 - [Test Coverage Guide](testing/TEST_COVERAGE_GUIDE.md)
 - [Testing Summary](testing/TESTING_SUMMARY.md)
 - [Branch Coverage Summary](testing/BRANCH_COVERAGE_SUMMARY.md)
+- [Maven Site Reports](testing/MAVEN_SITE_REPORTS.md)
 
 ---
 
