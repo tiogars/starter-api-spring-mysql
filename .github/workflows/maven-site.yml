@@ -52,6 +52,8 @@ jobs:
         run: pip install mkdocs-material
 
       - name: Build Maven site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn verify site
 
       - name: Build mkdocs
