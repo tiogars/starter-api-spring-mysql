@@ -7,7 +7,7 @@ Spring Boot + MySQL Starter API with automated CI/CD.
 
 ## ✨ Features
 
-* **Spring Boot 3.5.7** with Java 21
+* **Spring Boot 4.0.2** with Java 21
 * **REST API** with OpenAPI/Swagger documentation
 * **Persistence** with Spring Data JPA and MySQL
 * **Monitoring** with Spring Boot Actuator
