@@ -1,0 +1,32 @@
+# Test profile configuration using H2 in-memory database
+spring:
+  application:
+    name: starter
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: false
+  messages:
+    basename:
+    - messages,config.i18n.messages
+server:
+  port: 0
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+springdoc:
+  show-actuator: true
