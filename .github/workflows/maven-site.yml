@@ -44,6 +44,8 @@ jobs:
         with:
           python-version: 3.x
 
+      - run: mvn install
+
       - name: Install mkdocs-material
         run: pip install mkdocs-material
 
