@@ -294,9 +294,198 @@ While MarkdownLint is not currently enforced in CI/CD, running it locally ensure
 - Compliance with Markdown best practices
 - Easier maintenance and collaboration
 
+## Architecture Guidelines - IT Architect Role
+
+When implementing new features or modifying existing code, **act as an IT Architect** to ensure:
+
+### Single Responsibility Principle (SRP)
+
+**Domain services MUST follow SRP to remain readable and maintainable.**
+
+1. **Separate Concerns**: Each service class should have ONE clear responsibility
+   - ✅ **Good**: `SampleCreateService` - handles only sample creation logic
+   - ✅ **Good**: `SampleSearchService` - handles only search/filtering logic
+   - ✅ **Good**: `SampleImportService` - handles only bulk import operations
+   - ❌ **Bad**: `SampleService` - mixing create, search, import, export, and update logic
+
+2. **Service Naming Convention**: Use descriptive names that reflect the single responsibility
+   - `{Domain}CreateService` - Creation operations
+   - `{Domain}FindService` - Read operations (findAll, findById)
+   - `{Domain}UpdateService` - Update operations
+   - `{Domain}SearchService` - Complex search/filtering operations
+   - `{Domain}ImportService` - Bulk import operations
+   - `{Domain}ExportService` - Export operations
+   - `{Domain}CrudService` - Only if truly handling all basic CRUD (use sparingly)
+
+3. **Keep Services Focused**:
+   - Each service should be easy to understand at a glance
+   - Limit service size (aim for < 300 lines per service)
+   - If a service grows too large, split it based on responsibilities
+
+### Abstract Services - Reuse and Extension
+
+**Abstract services MUST be used when adding new data domains to maintain consistency and reduce duplication.**
+
+#### Available Abstract Services
+
+This project uses external architecture packages that provide abstract services:
+
+1. **AbstractCreateService** (from `architecture-create-service` package)
+   - Provides standardized creation logic
+   - Handles form-to-model-to-entity conversion
+   - Includes validation hooks
+   - **Usage**: Extend for all domain creation services
+
+2. **AbstractFindService** (from local `common.services`)
+   - Provides read-only find operations (findAll, findById)
+   - Enforces entity-to-model mapping pattern
+   - **Usage**: Extend for all domain find services
+
+#### When Adding a New Data Domain
+
+Follow this pattern when adding a new domain (e.g., "Product", "Order"):
+
+1. **Create Find Service** extending `AbstractFindService`:
+
+   ```java
+   @Service
+   public class ProductFindService extends AbstractFindService<ProductEntity, Long, Product> {
+       public ProductFindService(ProductRepository repository) {
+           super(repository);
+       }
+       
+       @Override
+       protected Product toModel(ProductEntity entity) {
+           // Implement entity-to-model mapping
+       }
+   }
+   ```
+
+2. **Create Create Service** extending `AbstractCreateService`:
+
+   ```java
+   @Service
+   @Validated
+   public class ProductCreateService 
+           extends AbstractCreateService<ProductCreateForm, ProductEntity, Product, ProductRepository> {
+       
+       private final Validator validator;
+       
+       public ProductCreateService(ProductRepository repository, Validator validator) {
+           super(repository);
+           this.validator = validator;
+       }
+       
+       @Override
+       public ProductEntity toEntity(Product model) {
+           // Implement model-to-entity conversion
+       }
+       
+       @Override
+       public Product toModel(ProductEntity entity) {
+           // Implement entity-to-model conversion
+       }
+       
+       @Override
+       public Product toModel(ProductCreateForm form) {
+           // Implement form-to-model conversion
+       }
+       
+       @Override
+       public void validate(Product model) {
+           Set<ConstraintViolation<Product>> violations = validator.validate(model);
+           if (!violations.isEmpty()) {
+               throw new ConstraintViolationException(violations);
+           }
+       }
+   }
+   ```
+
+3. **Create Specialized Services** as needed:
+   - `ProductSearchService` - for complex filtering/pagination (see `SampleSearchService` example)
+   - `ProductImportService` - for bulk operations (see `SampleImportService` example)
+   - `ProductUpdateService` - for update-specific logic
+   - `ProductExportService` - for export functionality
+
+#### Benefits of Using Abstract Services
+
+- **Consistency**: All domains follow the same patterns
+- **Reduced Duplication**: Common CRUD logic is centralized
+- **Easier Testing**: Standard patterns make tests predictable
+- **Maintainability**: Changes to base services propagate to all domains
+- **Code Quality**: Enforces separation of concerns
+
+### Reviewing and Improving Abstract Services
+
+**If you encounter difficulties implementing abstract services:**
+
+1. **First Check**: Review existing implementations in the codebase
+   - Look at `SampleCreateService`, `FeatureCreateService` for create patterns
+   - Look at `SampleFindService`, `TagFindService` for find patterns
+   - Look at `SampleSearchService` for search patterns
+
+2. **Identify the Issue**:
+   - Is the abstract service missing a needed method?
+   - Is the generic signature too restrictive?
+   - Is there a use case not covered by the abstraction?
+
+3. **Propose Improvements**:
+   - Document the limitation in code review comments
+   - Suggest specific enhancements to abstract services
+   - Consider if the issue is domain-specific or affects all domains
+   - If it's a common need, propose updating the abstract service
+   - If it's domain-specific, implement it in the domain service
+
+4. **Do NOT Work Around Abstract Services**:
+   - ❌ Don't duplicate logic that should be in abstract services
+   - ❌ Don't bypass abstract services with custom implementations
+   - ✅ Extend and enhance abstract services when needed
+   - ✅ Follow the established patterns even for edge cases
+
+### Architecture Review Checklist
+
+Before approving any PR that adds or modifies services:
+
+- [ ] Each service has a single, clear responsibility
+- [ ] Service names accurately reflect their purpose
+- [ ] New domains extend appropriate abstract services
+- [ ] No duplication of logic available in abstract services
+- [ ] Entity-to-model and model-to-entity conversions are properly implemented
+- [ ] Validation logic is present where needed
+- [ ] Related domains (tags, apps, repositories) are properly handled
+- [ ] Service classes are reasonably sized (< 300 lines preferred)
+- [ ] Code follows existing patterns in similar services
+
+### Examples from This Codebase
+
+**Good Architecture Examples:**
+
+1. **Sample Domain** - Well-structured with SRP:
+   - `SampleFindService` - extends `AbstractFindService` for reads
+   - `SampleCreateService` - extends `AbstractCreateService` for creation
+   - `SampleUpdateService` - handles updates
+   - `SampleSearchService` - complex filtering and pagination
+   - `SampleImportService` - bulk import with duplicate checking
+   - `SampleExportService` - export functionality
+
+2. **Feature Domain** - Follows same pattern:
+   - `FeatureFindService` - extends `AbstractFindService`
+   - `FeatureCreateService` - extends `AbstractCreateService`
+   - `FeatureImportService` - bulk operations
+   - `FeatureCrudService` - consolidated CRUD (legacy, prefer split services)
+
+**Anti-patterns to Avoid:**
+
+1. **God Services**: A single `ProductService` with create, read, update, delete, search, import, export
+2. **Ignoring Abstractions**: Implementing custom CRUD logic instead of extending abstract services
+3. **Mixed Concerns**: Putting business logic and data access in the same service
+4. **Inconsistent Patterns**: Each domain using different structures
+
 ## Additional Resources
 
 - [JaCoCo Documentation](https://www.jacoco.org/jacoco/trunk/doc/)
 - [SonarQube Quality Gates](https://docs.sonarqube.org/latest/user-guide/quality-gates/)
 - [Spring Boot Testing Documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing)
 - [MarkdownLint Rules](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md)
+- [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
+- [Single Responsibility Principle](https://en.wikipedia.org/wiki/Single-responsibility_principle)
