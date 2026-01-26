@@ -135,7 +135,7 @@
 			<artifactId>byte-buddy-agent</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<!-- H2 in-memory database for tests - provides MySQL-compatible database without external dependencies -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
