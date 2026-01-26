@@ -421,7 +421,7 @@ Follow this pattern when adding a new domain (e.g., "Product", "Order"):
 
 1. **First Check**: Review existing implementations in the codebase
    - Look at `SampleCreateService`, `FeatureCreateService` for create patterns
-   - Look at `SampleFindService` (in `fr.tiogars.starter.sample.services`) for find patterns
+   - Look at `SampleFindService`, `TagFindService` for find patterns
    - Look at `SampleSearchService` for search patterns
 
 2. **Identify the Issue**:
