@@ -75,14 +75,32 @@ Create or update your Maven `settings.xml` file:
 
 Use the provided template:
 
+**Linux/Mac:**
+
 ```bash
 cp settings.xml.example ~/.m2/settings.xml
 ```
 
-Then edit `~/.m2/settings.xml` and replace:
+**Windows (PowerShell):**
 
-- `VOTRE_USERNAME_GITHUB` with your GitHub username
-- `VOTRE_PERSONAL_ACCESS_TOKEN` with the PAT you created
+```powershell
+Copy-Item settings.xml.example $env:USERPROFILE\.m2\settings.xml
+```
+
+**Windows (Command Prompt):**
+
+```cmd
+copy settings.xml.example %USERPROFILE%\.m2\settings.xml
+```
+
+Then edit the `settings.xml` file in your `.m2` directory and replace the placeholder values with your credentials.
+
+**Placeholders to replace:**
+
+- `VOTRE_USERNAME_GITHUB` → your GitHub username
+- `VOTRE_PERSONAL_ACCESS_TOKEN` → the PAT you created
+
+> **Note:** The template file uses French placeholders ("VOTRE" means "YOUR" in French). Replace them with your actual values.
 
 **Example:**
 
