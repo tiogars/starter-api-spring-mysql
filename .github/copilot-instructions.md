@@ -336,7 +336,7 @@ This project uses external architecture packages that provide abstract services:
    - Includes validation hooks
    - **Usage**: Extend for all domain creation services
 
-2. **AbstractFindService** (from local `common.services`)
+2. **AbstractFindService** (from `fr.tiogars.starter.common.services`)
    - Provides read-only find operations (findAll, findById)
    - Enforces entity-to-model mapping pattern
    - **Usage**: Extend for all domain find services
@@ -421,7 +421,7 @@ Follow this pattern when adding a new domain (e.g., "Product", "Order"):
 
 1. **First Check**: Review existing implementations in the codebase
    - Look at `SampleCreateService`, `FeatureCreateService` for create patterns
-   - Look at `SampleFindService`, `TagFindService` for find patterns
+   - Look at `SampleFindService` (in `fr.tiogars.starter.sample.services`) for find patterns
    - Look at `SampleSearchService` for search patterns
 
 2. **Identify the Issue**:
@@ -472,7 +472,6 @@ Before approving any PR that adds or modifies services:
    - `FeatureFindService` - extends `AbstractFindService`
    - `FeatureCreateService` - extends `AbstractCreateService`
    - `FeatureImportService` - bulk operations
-   - `FeatureCrudService` - consolidated CRUD (legacy, prefer split services)
 
 **Anti-patterns to Avoid:**
 
