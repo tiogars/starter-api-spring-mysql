@@ -5,15 +5,18 @@ Welcome to the starter-api-spring-mysql documentation. This directory contains a
 ## Documentation Sections
 
 ### 📋 [Testing Documentation](testing/index.md)
+
 Comprehensive guides on testing practices, coverage requirements, and quality standards.
 
 **Key Topics:**
+
 - Test coverage guide and best practices
 - Test organization and structure
 - Coverage reports and metrics
 - Branch coverage strategies
 
 **Quick Access:**
+
 - [Test Coverage Guide](testing/TEST_COVERAGE_GUIDE.md)
 - [Testing Summary](testing/TESTING_SUMMARY.md)
 - [Branch Coverage Summary](testing/BRANCH_COVERAGE_SUMMARY.md)
@@ -22,34 +25,57 @@ Comprehensive guides on testing practices, coverage requirements, and quality st
 ---
 
 ### 🔌 [API Documentation](api/index.md)
+
 Documentation for all REST API endpoints and usage examples.
 
 **Available APIs:**
+
 - Search API - Query and filter samples
 - Export API - Export data in various formats
 
 **Quick Access:**
+
 - [Search API](api/SEARCH_API.md)
 - [Export API](api/EXPORT_API.md)
 
 ---
 
 ### 🔧 [Implementation Documentation](implementation/index.md)
+
 Technical implementation details, architecture decisions, and project completion reports.
 
 **Key Topics:**
+
 - Implementation details and architecture
 - Completion reports and milestones
 - Technical patterns and decisions
 
 **Quick Access:**
+
 - [Implementation Details](implementation/IMPLEMENTATION_DETAILS.md)
 - [Completion Report](implementation/COMPLETION_REPORT.md)
 
 ---
 
 ### ✨ [Features Documentation](features/index.md)
+
 User-facing feature documentation and guides.
+
+---
+
+### ⚙️ [Setup Documentation](setup/index.md)
+
+Project setup and configuration guides.
+
+**Key Topics:**
+
+- GitHub Packages authentication for Maven dependencies
+- Local development environment setup
+- CI/CD workflow configuration
+
+**Quick Access:**
+
+- [GitHub Packages Setup](setup/GITHUB_PACKAGES_SETUP.md)
 
 ---
 
@@ -64,6 +90,7 @@ User-facing feature documentation and guides.
 ## Contributing
 
 When adding new documentation:
+
 1. Place files in the appropriate thematic folder
 2. Update the relevant `index.md` file
 3. Update this main README if adding a new section
