@@ -48,7 +48,7 @@ jobs:
         run: pip install mkdocs-material
 
       - name: Build Maven site
-        run: mvn clean verify site
+        run: mvn verify site
 
       - name: Build mkdocs
         run: mkdocs build
