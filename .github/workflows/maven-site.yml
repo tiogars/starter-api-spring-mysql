@@ -36,7 +36,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
           server-id: github
-          #server-username: ${{ github.actor }}
+          server-username: ${{ github.actor }}
           server-password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
