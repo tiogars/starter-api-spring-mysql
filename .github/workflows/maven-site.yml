@@ -46,7 +46,7 @@ jobs:
 
       - run: mvn -X install
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install mkdocs-material
         run: pip install mkdocs-material
