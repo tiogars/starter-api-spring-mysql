@@ -343,7 +343,8 @@ This project uses external architecture packages that provide abstract services:
 
 #### When Adding a New Data Domain
 
-Follow this pattern when adding a new domain (e.g., "Product", "Order"):
+Follow this pattern when adding a new domain (e.g., "Product", "Order").
+**Note**: The examples below use "Product" as a placeholder - adapt to your actual domain name.
 
 1. **Create Find Service** extending `AbstractFindService`:
 
@@ -475,7 +476,7 @@ Before approving any PR that adds or modifies services:
 
 **Anti-patterns to Avoid:**
 
-1. **God Services**: A single `ProductService` with create, read, update, delete, search, import, export
+1. **God Services**: A single service (e.g., `XyzService`) with create, read, update, delete, search, import, export
 2. **Ignoring Abstractions**: Implementing custom CRUD logic instead of extending abstract services
 3. **Mixed Concerns**: Putting business logic and data access in the same service
 4. **Inconsistent Patterns**: Each domain using different structures
