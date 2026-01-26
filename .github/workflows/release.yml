@@ -34,7 +34,10 @@ jobs:
       - name: Change Maven version
         run: mvn versions:set -DnextSnapshot=false -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
 
-      - run: mvn clean install
+      - name: Build and install
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: mvn clean install
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
