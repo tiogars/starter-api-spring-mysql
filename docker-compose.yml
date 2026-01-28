@@ -3,7 +3,14 @@ name: starter-spring
 services:
   # Spring Boot API Service
   api:
-    image: ghcr.io/tiogars/starter-api-spring-mysql:latest
+    depends_on:
+      mysql:
+        condition: service_healthy
+    deploy:
+      # Memory limit for the API service
+      resources:
+        limits:
+          memory: 512M
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/starterdb
       SPRING_DATASOURCE_USERNAME: user
@@ -13,14 +20,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    deploy:
-      # Memory limit for the API service
-      resources:
-        limits:
-          memory: 512M
-    depends_on:
-      mysql:
-        condition: service_healthy
+    image: ghcr.io/tiogars/starter-api-spring-mysql:latest
+    # ports:
+    #   - "8080:8080"
   # MySQL Database Service
   mysql:
     hostname: mysql
