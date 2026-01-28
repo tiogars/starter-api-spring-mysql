@@ -38,7 +38,7 @@ jobs:
         id: get_tag_version_before_release
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION_BEFORE_RELEASE=$VERSION" >> $GITHUB_ENV
+          echo "VERSION_BEFORE_RELEASE=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Display current version
         run: echo "Current version is ${{ steps.get_tag_version_before_release.outputs.VERSION_BEFORE_RELEASE }}"
@@ -49,7 +49,7 @@ jobs:
         id: get_tag_version_after_release
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION_AFTER_RELEASE=$VERSION" >> $GITHUB_ENV
+          echo "VERSION_AFTER_RELEASE=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Display next version
         run: echo "Next version is ${{ steps.get_tag_version_after_release.outputs.VERSION_AFTER_RELEASE }}"
