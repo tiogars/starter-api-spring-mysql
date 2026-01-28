@@ -40,7 +40,7 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-          - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
+      - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
 
       - name: Get tag version after release
         id: get_tag_version_after_release
