@@ -42,6 +42,15 @@ jobs:
       # Release
       - run: mvn versions:set -DremoveSnapshot=true
 
+      - name: Get tag version before release
+        id: get_tag_version_release
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION_RELEASE=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Display current version
+        run: echo "Current version is ${{ steps.get_tag_version_release.outputs.VERSION_RELEASE }}"
+      
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn clean install
@@ -57,7 +66,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.get_tag_version_before_release.outputs.VERSION }}
+            ghcr.io/${{ github.repository }}:${{ steps.get_tag_version_release.outputs.VERSION_RELEASE }}
             ghcr.io/${{ github.repository }}:latest
 
       # Next snapshot version
