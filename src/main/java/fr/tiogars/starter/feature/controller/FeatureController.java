@@ -1,6 +1,5 @@
 package fr.tiogars.starter.feature.controller;
 
-import java.util.List;
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.http.MediaType;
@@ -12,15 +11,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import fr.tiogars.starter.common.services.dto.FindResponse;
 import fr.tiogars.starter.feature.forms.FeatureCreateForm;
 import fr.tiogars.starter.feature.models.Feature;
+import fr.tiogars.starter.feature.services.FeatureCreateService;
 import fr.tiogars.starter.feature.services.FeatureCrudService;
 import fr.tiogars.starter.feature.services.FeatureFindService;
-import fr.tiogars.starter.feature.services.FeatureCreateService;
 import fr.tiogars.starter.feature.services.FeatureImportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,14 +42,22 @@ public class FeatureController {
         this.featureFindService = featureFindService;
     }
 
+
     @GetMapping
     @Operation(summary = "Get all features")
-    public ResponseEntity<List<Feature>> getAll() { return ResponseEntity.ok(featureFindService.findAll()); }
+    public ResponseEntity<FindResponse<Feature>> getAll() {
+        return ResponseEntity.ok(featureFindService.findAll());
+    }
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Get feature by id")
     public ResponseEntity<Feature> getById(@PathVariable Long id) {
-        return featureFindService.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        Feature response = featureFindService.findById(id);
+        if (response == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

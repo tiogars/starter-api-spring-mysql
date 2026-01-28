@@ -1,11 +1,10 @@
 package fr.tiogars.starter.feature.services;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.Optional;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,27 +39,6 @@ class FeatureCrudServiceTest {
         lenient().when(featureCreateService.toEntity(any(Feature.class))).thenReturn(entity);
     }
 
-    @Test
-    void findAll_mapsEntitiesToModels() {
-        when(featureRepository.findAll()).thenReturn(List.of(entity));
-        List<Feature> all = featureCrudService.findAll();
-        assertEquals(1, all.size());
-        assertEquals("f1", all.get(0).getName());
-    }
-
-    @Test
-    void findById_returnsEmptyWhenNotFound() {
-        when(featureRepository.findById(99L)).thenReturn(Optional.empty());
-        assertTrue(featureCrudService.findById(99L).isEmpty());
-    }
-
-    @Test
-    void findById_mapsEntityToModel() {
-        when(featureRepository.findById(1L)).thenReturn(Optional.of(entity));
-        Optional<Feature> res = featureCrudService.findById(1L);
-        assertTrue(res.isPresent());
-        assertEquals("f1", res.get().getName());
-    }
 
     @Test
     void create_savesEntityAndReturnsModel() {

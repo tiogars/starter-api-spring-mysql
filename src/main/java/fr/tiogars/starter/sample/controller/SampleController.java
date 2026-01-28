@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 
 import fr.tiogars.starter.common.exception.ErrorResponse;
+import fr.tiogars.starter.common.services.dto.FindResponse;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
 import fr.tiogars.starter.sample.forms.SampleExportForm;
 import fr.tiogars.starter.sample.forms.SampleImportForm;
@@ -90,13 +91,17 @@ public class SampleController {
     }
 
     @GetMapping("sample/{id}")
-    public Sample getSample(@PathVariable Long id) {
-        return this.sampleFindService.findById(id).orElse(null);
+    public ResponseEntity<Sample> getSample(@PathVariable Long id) {
+        Sample sample = this.sampleFindService.findById(id);
+        if (sample == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(sample);
     }
 
     @GetMapping("sample")
-    public List<Sample> getAllSamples() {
-        return this.sampleFindService.findAll();
+    public ResponseEntity<FindResponse<Sample>> getAllSamples() {
+        return ResponseEntity.ok(this.sampleFindService.findAll());
     }
 
     @DeleteMapping("sample/{id}")

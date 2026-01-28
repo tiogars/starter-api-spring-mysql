@@ -16,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.tiogars.starter.common.services.dto.FindResponse;
 import fr.tiogars.starter.tag.models.Tag;
-import fr.tiogars.starter.tag.services.TagService;
 import fr.tiogars.starter.tag.services.TagFindService;
+import fr.tiogars.starter.tag.services.TagService;
 
 @WebMvcTest(TagController.class)
 class TagControllerTest {
@@ -60,17 +60,18 @@ class TagControllerTest {
     void shouldReturnAllTags() throws Exception {
         // Arrange
         Tag tag2 = new Tag(2L, "Tag2", "Description 2");
-        List<Tag> tags = Arrays.asList(tag, tag2);
+        FindResponse<Tag> tags = new FindResponse<>(Arrays.asList(tag, tag2));
         when(tagFindService.findAll()).thenReturn(tags);
 
         // Act & Assert
         mockMvc.perform(get("/tags"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("TestTag"))
-                .andExpect(jsonPath("$[1].name").value("Tag2"));
+                .andExpect(jsonPath("$.count").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].name").value("TestTag"))
+                .andExpect(jsonPath("$.data[1].name").value("Tag2"));
 
         verify(tagFindService, times(1)).findAll();
     }
@@ -78,14 +79,16 @@ class TagControllerTest {
     @Test
     void shouldReturnEmptyListWhenNoTags() throws Exception {
         // Arrange
-        when(tagFindService.findAll()).thenReturn(Arrays.asList());
+        FindResponse<Tag> tags = new FindResponse<>(List.of());
+        when(tagFindService.findAll()).thenReturn(tags);
 
         // Act & Assert
         mockMvc.perform(get("/tags"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(0));
+                .andExpect(jsonPath("$.count").value(0))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(0));
 
         verify(tagFindService, times(1)).findAll();
     }
@@ -93,15 +96,19 @@ class TagControllerTest {
     @Test
     void shouldReturnTagByIdWhenExists() throws Exception {
         // Arrange
-        when(tagFindService.findById(1L)).thenReturn(Optional.of(tag));
+            Tag response = new Tag();
+            response.setId(1L);
+            response.setName("TestTag");
+            response.setDescription("Test Description");
+            when(tagFindService.findById(1L)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/tags/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("TestTag"))
-                .andExpect(jsonPath("$.description").value("Test Description"));
+                .andExpect(jsonPath("$.count").value(1))
+                .andExpect(jsonPath("$.data[0].id").value(1))
+                .andExpect(jsonPath("$.data[0].name").value("TestTag"));
 
         verify(tagFindService, times(1)).findById(1L);
     }
@@ -109,7 +116,8 @@ class TagControllerTest {
     @Test
     void shouldReturn404WhenTagNotFound() throws Exception {
         // Arrange
-        when(tagFindService.findById(999L)).thenReturn(Optional.empty());
+            Tag response = new Tag();
+            when(tagFindService.findById(999L)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/tags/999"))

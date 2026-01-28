@@ -2,7 +2,8 @@
 
 ## Service Layer
 
-- All service methods that expose data for controllers **must return a response wrapper object** (e.g., `FindResponse<T>`) instead of raw lists or optionals.
+- All service methods that expose data for controllers **must return a response wrapper object** (e.g., `FindResponse<T>`)
+  instead of raw lists or optionals.
 - The response wrapper should include:
   - The data list (or single item as a list)
   - A count field (number of items)

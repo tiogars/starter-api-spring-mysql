@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import fr.tiogars.starter.common.services.dto.FindResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,7 +80,8 @@ class SampleControllerTest {
 
     @BeforeEach
     void setUp() {
-        reset(sampleCreateService, sampleCrudService, sampleUpdateService, sampleImportService, sampleExportService, sampleInitService, sampleSearchService, sampleFindService);
+        reset(sampleCreateService, sampleCrudService, sampleUpdateService, sampleImportService, sampleExportService,
+                sampleInitService, sampleSearchService, sampleFindService);
         testDate = new Date();
         sample = new Sample();
         sample.setId(1L);
@@ -118,7 +119,11 @@ class SampleControllerTest {
     @Test
     void testGetSample_ReturnsSampleWhenExists() throws Exception {
         // Arrange
-        when(sampleFindService.findById(1L)).thenReturn(Optional.of(sample));
+        Sample response = new Sample();
+        response.setId(1L);
+        response.setName("TestSample");
+        response.setDescription("Test Description");
+        when(sampleFindService.findById(1L)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/sample/1"))
@@ -132,14 +137,14 @@ class SampleControllerTest {
     }
 
     @Test
-    void testGetSample_ReturnsNullWhenNotExists() throws Exception {
+    void testGetSample_Returns404WhenNotExists() throws Exception {
         // Arrange
-        when(sampleFindService.findById(999L)).thenReturn(Optional.empty());
+        Sample response = new Sample();
+        when(sampleFindService.findById(999L)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/sample/999"))
-                .andExpect(status().isOk())
-                .andExpect(content().string(""));
+                .andExpect(status().isNotFound());
 
         verify(sampleFindService, times(1)).findById(999L);
     }
@@ -150,18 +155,19 @@ class SampleControllerTest {
         Sample sample2 = new Sample();
         sample2.setId(2L);
         sample2.setName("Sample2");
-        
         List<Sample> samples = Arrays.asList(sample, sample2);
-        when(sampleFindService.findAll()).thenReturn(samples);
+        FindResponse<Sample> response = new FindResponse<>(samples);
+        when(sampleFindService.findAll()).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/sample"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("TestSample"))
-                .andExpect(jsonPath("$[1].name").value("Sample2"));
+                .andExpect(jsonPath("$.count").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(2))
+                .andExpect(jsonPath("$.data[0].name").value("TestSample"))
+                .andExpect(jsonPath("$.data[1].name").value("Sample2"));
 
         verify(sampleFindService, times(1)).findAll();
     }
@@ -169,14 +175,16 @@ class SampleControllerTest {
     @Test
     void testGetAllSamples_ReturnsEmptyList() throws Exception {
         // Arrange
-        when(sampleFindService.findAll()).thenReturn(Arrays.asList());
+        FindResponse<Sample> response = new FindResponse<>(List.of());
+        when(sampleFindService.findAll()).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/sample"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(0));
+                .andExpect(jsonPath("$.count").value(0))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data.length()").value(0));
 
         verify(sampleFindService, times(1)).findAll();
     }
@@ -225,20 +233,43 @@ class SampleControllerTest {
     @TestConfiguration
     static class MockConfig {
         @Bean
-        SampleCreateService sampleCreateService() { return mock(SampleCreateService.class); }
+        SampleCreateService sampleCreateService() {
+            return mock(SampleCreateService.class);
+        }
+
         @Bean
-        SampleCrudService sampleCrudService() { return mock(SampleCrudService.class); }
+        SampleCrudService sampleCrudService() {
+            return mock(SampleCrudService.class);
+        }
+
         @Bean
-        SampleUpdateService sampleUpdateService() { return mock(SampleUpdateService.class); }
+        SampleUpdateService sampleUpdateService() {
+            return mock(SampleUpdateService.class);
+        }
+
         @Bean
-        SampleImportService sampleImportService() { return mock(SampleImportService.class); }
+        SampleImportService sampleImportService() {
+            return mock(SampleImportService.class);
+        }
+
         @Bean
-        SampleExportService sampleExportService() { return mock(SampleExportService.class); }
+        SampleExportService sampleExportService() {
+            return mock(SampleExportService.class);
+        }
+
         @Bean
-        SampleInitService sampleInitService() { return mock(SampleInitService.class); }
+        SampleInitService sampleInitService() {
+            return mock(SampleInitService.class);
+        }
+
         @Bean
-        SampleSearchService sampleSearchService() { return mock(SampleSearchService.class); }
+        SampleSearchService sampleSearchService() {
+            return mock(SampleSearchService.class);
+        }
+
         @Bean
-        SampleFindService sampleFindService() { return mock(SampleFindService.class); }
+        SampleFindService sampleFindService() {
+            return mock(SampleFindService.class);
+        }
     }
 }

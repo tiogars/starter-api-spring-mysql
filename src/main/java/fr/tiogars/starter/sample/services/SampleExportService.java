@@ -67,12 +67,12 @@ public class SampleExportService {
      */
     public ResponseEntity<byte[]> exportSamples(SampleExportForm form) {
         try {
-            logger.info("Starting export in format: " + form.getFormat());
+            logger.info("Starting export in format: {}", form.getFormat());
             
             // Fetch samples based on search criteria
             List<Sample> samples = fetchSamples(form.getSearchRequest());
             
-            logger.info("Exporting " + samples.size() + " samples");
+            logger.info("Exporting {} samples", samples.size());
             
             // Generate filename with datetime prefix
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -102,7 +102,7 @@ public class SampleExportService {
             headers.setContentDispositionFormData("attachment", filename);
             headers.setContentLength(finalContent.length);
             
-            logger.info("Export completed successfully: " + filename);
+            logger.info("Export completed successfully: {}", filename);
             
             return new ResponseEntity<>(finalContent, headers, HttpStatus.OK);
             

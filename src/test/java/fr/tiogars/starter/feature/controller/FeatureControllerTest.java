@@ -17,8 +17,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.tiogars.starter.common.services.dto.FindResponse;
 import fr.tiogars.starter.feature.forms.FeatureCreateForm;
 import fr.tiogars.starter.feature.models.Feature;
 import fr.tiogars.starter.feature.services.FeatureCreateService;
@@ -81,17 +80,17 @@ class FeatureControllerTest {
         Feature feature2 = new Feature();
         feature2.setId(2L);
         feature2.setName("Feature 2");
-        List<Feature> features = Arrays.asList(feature, feature2);
+        FindResponse<Feature> features = new FindResponse<>(Arrays.asList(feature, feature2));
         when(featureFindService.findAll()).thenReturn(features);
 
         // Act & Assert
         mockMvc.perform(get("/features"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].name").value("Test Feature"))
-                .andExpect(jsonPath("$[1].name").value("Feature 2"));
+                .andExpect(jsonPath("$.count").value(2))
+                .andExpect(jsonPath("$.data").isArray())
+                .andExpect(jsonPath("$.data[0].name").value("Test Feature"))
+                .andExpect(jsonPath("$.data[1].name").value("Feature 2"));
 
         verify(featureFindService, times(1)).findAll();
     }
@@ -99,7 +98,11 @@ class FeatureControllerTest {
     @Test
     void shouldReturnFeatureByIdWhenExists() throws Exception {
         // Arrange
-        when(featureFindService.findById(1L)).thenReturn(Optional.of(feature));
+        Feature response = new Feature();
+        response.setId(1L);
+        response.setName("Test Feature");
+        response.setDescription("Test Description");
+        when(featureFindService.findById(1L)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/features/1"))
@@ -115,7 +118,8 @@ class FeatureControllerTest {
     @Test
     void shouldReturn404WhenFeatureNotFound() throws Exception {
         // Arrange
-        when(featureFindService.findById(999L)).thenReturn(Optional.empty());
+        Feature response = null;
+        when(featureFindService.findById(999L)).thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/features/999"))

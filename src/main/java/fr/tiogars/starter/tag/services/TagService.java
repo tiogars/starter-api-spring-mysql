@@ -2,7 +2,6 @@ package fr.tiogars.starter.tag.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
