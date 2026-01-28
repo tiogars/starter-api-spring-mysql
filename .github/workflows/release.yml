@@ -32,7 +32,7 @@ jobs:
           server-password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Change Maven version
-        run: mvn versions:set -DnextSnapshot=false -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
+        run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
 
       - name: Build and install
         env:
