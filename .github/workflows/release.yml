@@ -1,6 +1,12 @@
 name: Release
 
 on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
     inputs:
       nextSnapshotIndexToIncrement:
@@ -28,10 +34,16 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
+      - name: Get tag version before release
+        id: get_tag_version_before_release
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Get tag version
-        id: get_tag_version
+          - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
+
+      - name: Get tag version after release
+        id: get_tag_version_after_release
         run: |
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
@@ -51,5 +63,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:${{ steps.get_tag_version.outputs.VERSION }}
+            ghcr.io/${{ github.repository }}:${{ steps.get_tag_version_before_release.outputs.VERSION }}
             ghcr.io/${{ github.repository }}:latest
