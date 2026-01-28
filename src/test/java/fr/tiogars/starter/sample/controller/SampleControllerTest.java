@@ -139,7 +139,7 @@ class SampleControllerTest {
     @Test
     void testGetSample_Returns404WhenNotExists() throws Exception {
         // Arrange
-        Sample response = new Sample();
+        Sample response = null;
         when(sampleFindService.findById(999L)).thenReturn(response);
 
         // Act & Assert

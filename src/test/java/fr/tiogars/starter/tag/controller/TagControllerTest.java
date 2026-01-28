@@ -106,9 +106,9 @@ class TagControllerTest {
         mockMvc.perform(get("/tags/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.count").value(1))
-                .andExpect(jsonPath("$.data[0].id").value(1))
-                .andExpect(jsonPath("$.data[0].name").value("TestTag"));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value("TestTag"))
+                .andExpect(jsonPath("$.description").value("Test Description"));
 
         verify(tagFindService, times(1)).findById(1L);
     }
@@ -116,7 +116,7 @@ class TagControllerTest {
     @Test
     void shouldReturn404WhenTagNotFound() throws Exception {
         // Arrange
-            Tag response = new Tag();
+            Tag response = null;
             when(tagFindService.findById(999L)).thenReturn(response);
 
         // Act & Assert
