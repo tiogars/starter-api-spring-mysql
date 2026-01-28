@@ -19,7 +19,8 @@ services:
         limits:
           memory: 512M
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
   # MySQL Database Service
   mysql:
     hostname: mysql
