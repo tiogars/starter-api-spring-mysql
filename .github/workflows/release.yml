@@ -30,6 +30,12 @@ jobs:
 
       - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
 
+      - name: Get tag version
+        id: get_tag_version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn clean install
@@ -45,5 +51,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}:
+            ghcr.io/${{ github.repository }}:${{ steps.get_tag_version.outputs.VERSION }}
             ghcr.io/${{ github.repository }}:latest
