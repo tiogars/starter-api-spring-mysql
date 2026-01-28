@@ -11,7 +11,8 @@ on:
 
 permissions:
   contents: read
-  packages: read
+  
+  packages: write
   pages: write
   id-token: write
 
@@ -34,33 +35,25 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin' # Alternative distribution options are available.
-          server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.x
 
-      - name: Clean install
-        env:
+      - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn clean install
 
-      - name: Install mkdocs-material
-        run: pip install mkdocs-material
+      - run: pip install mkdocs-material
 
-      - name: Build Maven site
-        env:
+      - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn verify site
 
-      - name: Build mkdocs
-        run: mkdocs build
+      - run: mkdocs build
 
-      - name: Prepare deployment directory
-        run: |
+      - run: |
           mkdir -p _site
           # Copy mkdocs build to root
           cp -r site/* _site/
@@ -68,8 +61,7 @@ jobs:
           mkdir -p _site/maven
           cp -r target/site/* _site/maven/
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v3
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
