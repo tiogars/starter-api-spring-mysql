@@ -20,6 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Setup
       - uses: actions/checkout@v6
 
       - uses: actions/setup-java@v5
@@ -28,6 +29,7 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      # Current version
       - name: Get tag version before release
         id: get_tag_version_before_release
         run: |
@@ -37,16 +39,8 @@ jobs:
       - name: Display current version
         run: echo "Current version is ${{ steps.get_tag_version_before_release.outputs.VERSION_BEFORE_RELEASE }}"
 
-      - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
-
-      - name: Get tag version after release
-        id: get_tag_version_after_release
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION_AFTER_RELEASE=$VERSION" >> $GITHUB_OUTPUT
-
-      - name: Display next version
-        run: echo "Next version is ${{ steps.get_tag_version_after_release.outputs.VERSION_AFTER_RELEASE }}"
+      # Release
+      - run: mvn versions:set -DremoveSnapshot=true
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,3 +59,19 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ steps.get_tag_version_before_release.outputs.VERSION }}
             ghcr.io/${{ github.repository }}:latest
+
+      # Next snapshot version
+      - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
+
+      - name: Get tag version after release
+        id: get_tag_version_after_release
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION_AFTER_RELEASE=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Display next version
+        run: echo "Next version is ${{ steps.get_tag_version_after_release.outputs.VERSION_AFTER_RELEASE }}"
+
+      # Commit version changes
+      - name: Commit version changes
+        run: mvn versions:commit
