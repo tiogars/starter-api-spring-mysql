@@ -11,43 +11,36 @@ on:
         required: false
         default: '3'
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    permissions:
-      contents: write
-      packages: write
-
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v
 
       - uses: actions/setup-java@v5
         with:
           java-version: '21'
           distribution: 'temurin'
           cache: 'maven'
-          server-id: github
-          server-username: ${{ github.actor }}
-          server-password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Change Maven version
-        run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
+      - run: mvn versions:set -DnextSnapshot=true -DnextSnapshotIndexToIncrement=${{ github.event.inputs.nextSnapshotIndexToIncrement }}
 
-      - name: Build and install
-        env:
+      - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: mvn clean install
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
+      - uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+      - uses: docker/build-push-action@v5
         with:
           context: .
           push: true
