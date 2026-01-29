@@ -12,9 +12,9 @@ services:
         limits:
           memory: 512M
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/starterdb
-      SPRING_DATASOURCE_USERNAME: user
-      SPRING_DATASOURCE_PASSWORD: password
+      - SPRING_CLOUD_CONFIG_URI=${SPRING_CLOUD_CONFIG_URI}
+      - SPRING_CLOUD_CONFIG_USERNAME=${SPRING_CLOUD_CONFIG_USERNAME}
+      - SPRING_CLOUD_CONFIG_PASSWORD=${SPRING_CLOUD_CONFIG_PASSWORD}
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 10s
@@ -28,10 +28,10 @@ services:
     hostname: mysql
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: starterdb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
