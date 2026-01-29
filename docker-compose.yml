@@ -21,6 +21,8 @@ services:
       timeout: 5s
       retries: 5
     image: ghcr.io/tiogars/starter-api-spring-mysql:latest
+    networks:
+      - starter_api_network
     # ports:
     #   - "8080:8080"
   # MySQL Database Service
@@ -41,8 +43,14 @@ services:
       resources:
         limits:
           memory: 512M
+    networks:
+      - starter_api_network
     volumes:
       - mysql-data:/var/lib/mysql
+
+networks:
+  starter_api_network:
+    driver: bridge
 
 volumes:
   mysql-data:
