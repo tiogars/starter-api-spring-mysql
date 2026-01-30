@@ -67,48 +67,61 @@ public class SampleExportService {
      */
     public ResponseEntity<byte[]> exportSamples(SampleExportForm form) {
         try {
-            logger.info("Starting export in format: {}", form.getFormat());
-            
+            String format = (form != null && form.getFormat() != null) ? form.getFormat() : "unknown";
+            logger.info("Starting export in format: {}", format);
+
             // Fetch samples based on search criteria
-            List<Sample> samples = fetchSamples(form.getSearchRequest());
-            
+            List<Sample> samples = fetchSamples(form != null ? form.getSearchRequest() : null);
+
             logger.info("Exporting {} samples", samples.size());
-            
+
             // Generate filename with datetime prefix
             String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String baseFilename = timestamp + "_samples." + form.getFormat();
-            
+            String baseFilename = timestamp + "_samples." + format;
+
             // Generate file content
-            byte[] fileContent = generateFileContent(samples, form.getFormat());
-            
+            byte[] fileContent = generateFileContent(samples, format);
+
             // Apply ZIP compression if requested
             byte[] finalContent;
             String filename;
             String contentType;
-            
-            if (form.isZip()) {
+
+            boolean zip = form != null && form.isZip();
+            if (zip) {
                 finalContent = zipContent(fileContent, baseFilename);
                 filename = timestamp + "_samples.zip";
                 contentType = "application/zip";
             } else {
                 finalContent = fileContent;
                 filename = baseFilename;
-                contentType = getContentType(form.getFormat());
+                contentType = getContentType(format);
             }
-            
+
             // Build response headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.parseMediaType(contentType));
             headers.setContentDispositionFormData("attachment", filename);
             headers.setContentLength(finalContent.length);
-            
+
             logger.info("Export completed successfully: {}", filename);
-            
+
             return new ResponseEntity<>(finalContent, headers, HttpStatus.OK);
-            
+
         } catch (Exception e) {
-            logger.error("Export failed: " + e.getMessage(), e);
-            throw new RuntimeException("Failed to export samples: " + e.getMessage(), e);
+            String format = (form != null && form.getFormat() != null) ? form.getFormat() : "unknown";
+            String errorMsg = String.format("Export failed for format: %s. Exception: %s", format, e.getMessage() != null ? e.getMessage() : e.toString());
+            logger.error(errorMsg, e);
+            throw new SampleExportException(errorMsg, e);
+        }
+    }
+
+    /**
+     * Custom exception for sample export errors.
+     */
+    public static class SampleExportException extends RuntimeException {
+        public SampleExportException(String message, Throwable cause) {
+            super(message, cause);
         }
     }
 
@@ -143,17 +156,22 @@ public class SampleExportService {
      * Generate file content based on format.
      */
     private byte[] generateFileContent(List<Sample> samples, String format) throws IOException {
-        switch (format.toLowerCase()) {
-            case "xlsx":
-                return generateXlsx(samples);
-            case "csv":
-                return generateCsv(samples);
-            case "xml":
-                return generateXml(samples);
-            case "json":
-                return generateJson(samples);
-            default:
-                throw new IllegalArgumentException("Unsupported format: " + format);
+        try {
+            switch (format.toLowerCase()) {
+                case "xlsx":
+                    return generateXlsx(samples);
+                case "csv":
+                    return generateCsv(samples);
+                case "xml":
+                    return generateXml(samples);
+                case "json":
+                    return generateJson(samples);
+                default:
+                    throw new IllegalArgumentException("Unsupported format: " + format);
+            }
+        } catch (IOException e) {
+            logger.error("Failed to generate file content for format: {}", format, e);
+            throw new SampleExportException("Failed to generate file content for format: " + format, e);
         }
     }
 
@@ -240,21 +258,31 @@ public class SampleExportService {
      * Generate XML file content.
      */
     private byte[] generateXml(List<Sample> samples) throws IOException {
-        XmlMapper xmlMapper = new XmlMapper();
-        xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        
-        // Wrap samples in a root element
-        SamplesWrapper wrapper = new SamplesWrapper(samples);
-        return xmlMapper.writeValueAsBytes(wrapper);
+        try {
+            XmlMapper xmlMapper = new XmlMapper();
+            xmlMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+            // Wrap samples in a root element
+            SamplesWrapper wrapper = new SamplesWrapper(samples);
+            return xmlMapper.writeValueAsBytes(wrapper);
+        } catch (Exception e) {
+            logger.error("Failed to generate XML content", e);
+            throw new SampleExportException("Failed to generate XML content", e);
+        }
     }
 
     /**
      * Generate JSON file content.
      */
     private byte[] generateJson(List<Sample> samples) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-        return objectMapper.writeValueAsBytes(samples);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+            return objectMapper.writeValueAsBytes(samples);
+        } catch (Exception e) {
+            logger.error("Failed to generate JSON content", e);
+            throw new SampleExportException("Failed to generate JSON content", e);
+        }
     }
 
     /**
@@ -263,14 +291,17 @@ public class SampleExportService {
     private byte[] zipContent(byte[] content, String filename) throws IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
              ZipOutputStream zipOut = new ZipOutputStream(out)) {
-            
+
             ZipEntry zipEntry = new ZipEntry(filename);
             zipOut.putNextEntry(zipEntry);
             zipOut.write(content);
             zipOut.closeEntry();
             zipOut.finish();
-            
+
             return out.toByteArray();
+        } catch (IOException e) {
+            logger.error("Failed to zip content for filename: {}", filename, e);
+            throw new SampleExportException("Failed to zip content for filename: " + filename, e);
         }
     }
 
