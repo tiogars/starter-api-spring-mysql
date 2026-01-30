@@ -15,6 +15,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,8 +42,8 @@ class SampleSearchServiceTest {
     @InjectMocks
     private SampleSearchService sampleSearchService;
 
-    private SampleEntity sampleEntity1;
-    private SampleEntity sampleEntity2;
+    private static SampleEntity sampleEntity1;
+    private static SampleEntity sampleEntity2;
     private Date testDate;
 
     @BeforeEach
@@ -69,6 +71,7 @@ class SampleSearchServiceTest {
         sampleEntity2.setUpdatedBy("user2");
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithoutFiltersOrSorting_ReturnsAllSamples() {
         // Arrange
@@ -93,6 +96,7 @@ class SampleSearchServiceTest {
         verify(sampleRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithPagination_ReturnsCorrectPage() {
         // Arrange
@@ -115,6 +119,7 @@ class SampleSearchServiceTest {
         assertEquals("Sample 2", response.getRows().get(0).getName());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithSorting_AppliesSortCorrectly() {
         // Arrange
@@ -138,6 +143,7 @@ class SampleSearchServiceTest {
         verify(sampleRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithStringFilter_AppliesFilterCorrectly() {
         // Arrange
@@ -166,6 +172,7 @@ class SampleSearchServiceTest {
         verify(sampleRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithBooleanFilter_AppliesFilterCorrectly() {
         // Arrange
@@ -195,6 +202,7 @@ class SampleSearchServiceTest {
         assertTrue(response.getRows().get(0).isActive());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithNumericFilter_AppliesFilterCorrectly() {
         // Arrange
@@ -224,6 +232,7 @@ class SampleSearchServiceTest {
         assertEquals(1L, response.getRows().get(0).getId());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithMultipleFiltersAndLogicOperator_AppliesFiltersCorrectly() {
         // Arrange
@@ -259,6 +268,7 @@ class SampleSearchServiceTest {
         verify(sampleRepository, times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithEmptyResults_ReturnsEmptyResponse() {
         // Arrange
@@ -277,6 +287,7 @@ class SampleSearchServiceTest {
         assertEquals(0, response.getRows().size());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_WithDescendingSorting_AppliesSortCorrectly() {
         // Arrange
@@ -302,265 +313,77 @@ class SampleSearchServiceTest {
 
     // ============ BRANCH COVERAGE TESTS FOR FILTER OPERATORS ============
 
-    @Test
-    void testSearch_NumericFilterNotEquals_CoversNotEqualsBranch() {
-        // Covers the != operator branch for numeric fields
+    @SuppressWarnings("unchecked")
+    @ParameterizedTest
+    @MethodSource("numericFilterProvider")
+    void testSearch_NumericFilterOperator_CoversBranches(String operator, Object value, List<SampleEntity> expectedEntities) {
         SampleSearchRequest request = new SampleSearchRequest();
-        
+
         FilterItem filterItem = new FilterItem();
         filterItem.setField("id");
-        filterItem.setOperator("!=");
-        filterItem.setValue(2);
-        
+        filterItem.setOperator(operator);
+        filterItem.setValue(value);
+
         FilterModel filterModel = new FilterModel();
         filterModel.setItems(Arrays.asList(filterItem));
         request.setFilterModel(filterModel);
         request.setPage(0);
         request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 1);
-        
+
+        Page<SampleEntity> page = new PageImpl<>(expectedEntities, Pageable.ofSize(10), expectedEntities.size());
         when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         SampleSearchResponse response = sampleSearchService.search(request);
         assertNotNull(response);
-        assertEquals(1, response.getRowCount());
+        assertEquals(expectedEntities.size(), response.getRowCount());
     }
 
-    @Test
-    void testSearch_NumericFilterGreaterThan_CoversGreaterThanBranch() {
-        // Covers the > operator branch for numeric fields
+    static List<org.junit.jupiter.params.provider.Arguments> numericFilterProvider() {
+        return Arrays.asList(
+            org.junit.jupiter.params.provider.Arguments.of("!=", 2, Arrays.asList(sampleEntity1)),
+            org.junit.jupiter.params.provider.Arguments.of(">", 1, Arrays.asList(sampleEntity2)),
+            org.junit.jupiter.params.provider.Arguments.of(">=", 2, Arrays.asList(sampleEntity2)),
+            org.junit.jupiter.params.provider.Arguments.of("<", 2, Arrays.asList(sampleEntity1)),
+            org.junit.jupiter.params.provider.Arguments.of("<=", 1, Arrays.asList(sampleEntity1))
+        );
+    }
+
+    @SuppressWarnings("unchecked")
+    @ParameterizedTest
+    @MethodSource("stringFilterProvider")
+    void testSearch_StringFilterOperator_CoversBranches(String field, String operator, Object value, List<SampleEntity> expectedEntities) {
         SampleSearchRequest request = new SampleSearchRequest();
-        
+
         FilterItem filterItem = new FilterItem();
-        filterItem.setField("id");
-        filterItem.setOperator(">");
-        filterItem.setValue(1);
-        
+        filterItem.setField(field);
+        filterItem.setOperator(operator);
+        filterItem.setValue(value);
+
         FilterModel filterModel = new FilterModel();
         filterModel.setItems(Arrays.asList(filterItem));
         request.setFilterModel(filterModel);
         request.setPage(0);
         request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 1);
-        
+
+        Page<SampleEntity> page = new PageImpl<>(expectedEntities, Pageable.ofSize(10), expectedEntities.size());
         when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         SampleSearchResponse response = sampleSearchService.search(request);
         assertNotNull(response);
-        assertEquals(1, response.getRowCount());
+        assertEquals(expectedEntities.size(), response.getRowCount());
     }
 
-    @Test
-    void testSearch_NumericFilterGreaterThanOrEqual_CoversGreaterThanOrEqualBranch() {
-        // Covers the >= operator branch for numeric fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("id");
-        filterItem.setOperator(">=");
-        filterItem.setValue(2);
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 1);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(1, response.getRowCount());
+    static List<org.junit.jupiter.params.provider.Arguments> stringFilterProvider() {
+        return Arrays.asList(
+            org.junit.jupiter.params.provider.Arguments.of("name", "equals", "Sample 1", Arrays.asList(sampleEntity1)),
+            org.junit.jupiter.params.provider.Arguments.of("name", "startsWith", "Sample", Arrays.asList(sampleEntity1, sampleEntity2)),
+            org.junit.jupiter.params.provider.Arguments.of("description", "endsWith", "2", Arrays.asList(sampleEntity2)),
+            org.junit.jupiter.params.provider.Arguments.of("name", "isEmpty", "", Arrays.asList()),
+            org.junit.jupiter.params.provider.Arguments.of("name", "isNotEmpty", "", Arrays.asList(sampleEntity1, sampleEntity2))
+        );
     }
 
-    @Test
-    void testSearch_NumericFilterLessThan_CoversLessThanBranch() {
-        // Covers the < operator branch for numeric fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("id");
-        filterItem.setOperator("<");
-        filterItem.setValue(2);
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 1);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(1, response.getRowCount());
-    }
-
-    @Test
-    void testSearch_NumericFilterLessThanOrEqual_CoversLessThanOrEqualBranch() {
-        // Covers the <= operator branch for numeric fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("id");
-        filterItem.setOperator("<=");
-        filterItem.setValue(1);
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 1);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(1, response.getRowCount());
-    }
-
-    @Test
-    void testSearch_StringFilterEquals_CoversStringEqualsBranch() {
-        // Covers the equals operator for string fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("name");
-        filterItem.setOperator("equals");
-        filterItem.setValue("Sample 1");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 1);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(1, response.getRowCount());
-    }
-
-    @Test
-    void testSearch_StringFilterStartsWith_CoversStartsWithBranch() {
-        // Covers the startsWith operator for string fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("name");
-        filterItem.setOperator("startsWith");
-        filterItem.setValue("Sample");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1, sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 2);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(2, response.getRowCount());
-    }
-
-    @Test
-    void testSearch_StringFilterEndsWith_CoversEndsWithBranch() {
-        // Covers the endsWith operator for string fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("description");
-        filterItem.setOperator("endsWith");
-        filterItem.setValue("2");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 1);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(1, response.getRowCount());
-    }
-
-    @Test
-    void testSearch_StringFilterIsEmpty_CoversIsEmptyBranch() {
-        // Covers the isEmpty operator for string fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("name");
-        filterItem.setOperator("isEmpty");
-        filterItem.setValue("");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        Page<SampleEntity> page = new PageImpl<>(Arrays.asList(), Pageable.ofSize(10), 0);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(0, response.getRowCount());
-    }
-
-    @Test
-    void testSearch_StringFilterIsNotEmpty_CoversIsNotEmptyBranch() {
-        // Covers the isNotEmpty operator for string fields
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("name");
-        filterItem.setOperator("isNotEmpty");
-        filterItem.setValue("");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1, sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 2);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(2, response.getRowCount());
-    }
-
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_DateFilterEquals_CoversDateEqualsBranch() {
         // Covers the = operator for date fields
@@ -587,6 +410,7 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_DateFilterAfter_CoversDateAfterBranch() {
         // Covers the after operator for date fields
@@ -614,6 +438,7 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_DateFilterBefore_CoversDateBeforeBranch() {
         // Covers the before operator for date fields
@@ -641,6 +466,7 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_FilterWithOrLogicOperator_CoversOrLogicBranch() {
         // Covers the OR logic operator branch
@@ -673,25 +499,22 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
-    @Test
-    void testSearch_FilterWithNullField_SkipsInvalidFilter() {
-        // Covers null field handling branch
+    @SuppressWarnings("unchecked")
+    @ParameterizedTest
+    @MethodSource("invalidFilterProvider")
+    void testSearch_InvalidOrUnknownOrNullFilter_SkipsFilterBranch(FilterItem filterItem) {
+        // Covers null field, unknown field, invalid numeric, and invalid date conversion branches
         SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField(null);
-        filterItem.setOperator("equals");
-        filterItem.setValue("value");
-        
+
         FilterModel filterModel = new FilterModel();
         filterModel.setItems(Arrays.asList(filterItem));
         request.setFilterModel(filterModel);
         request.setPage(0);
         request.setPageSize(10);
-        
+
         List<SampleEntity> entities = Arrays.asList(sampleEntity1, sampleEntity2);
         Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 2);
-        
+
         when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
         SampleSearchResponse response = sampleSearchService.search(request);
@@ -699,84 +522,36 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
-    @Test
-    void testSearch_UnknownField_SkipsFilterBranch() {
-        // Covers unknown field handling branch
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("unknownField");
-        filterItem.setOperator("equals");
-        filterItem.setValue("value");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1, sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 2);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
+    static List<org.junit.jupiter.params.provider.Arguments> invalidFilterProvider() {
+        FilterItem nullField = new FilterItem();
+        nullField.setField(null);
+        nullField.setOperator("equals");
+        nullField.setValue("value");
 
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(2, response.getRowCount());
+        FilterItem unknownField = new FilterItem();
+        unknownField.setField("unknownField");
+        unknownField.setOperator("equals");
+        unknownField.setValue("value");
+
+        FilterItem invalidNumeric = new FilterItem();
+        invalidNumeric.setField("id");
+        invalidNumeric.setOperator("=");
+        invalidNumeric.setValue("notanumber");
+
+        FilterItem invalidDate = new FilterItem();
+        invalidDate.setField("createdAt");
+        invalidDate.setOperator("=");
+        invalidDate.setValue("notadate");
+
+        return Arrays.asList(
+            org.junit.jupiter.params.provider.Arguments.of(nullField),
+            org.junit.jupiter.params.provider.Arguments.of(unknownField),
+            org.junit.jupiter.params.provider.Arguments.of(invalidNumeric),
+            org.junit.jupiter.params.provider.Arguments.of(invalidDate)
+        );
     }
 
-    @Test
-    void testSearch_InvalidNumericValue_SkipsFilter() {
-        // Covers invalid numeric conversion branch
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("id");
-        filterItem.setOperator("=");
-        filterItem.setValue("notanumber");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1, sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 2);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(2, response.getRowCount());
-    }
-
-    @Test
-    void testSearch_InvalidDateValue_SkipsFilter() {
-        // Covers invalid date conversion branch
-        SampleSearchRequest request = new SampleSearchRequest();
-        
-        FilterItem filterItem = new FilterItem();
-        filterItem.setField("createdAt");
-        filterItem.setOperator("=");
-        filterItem.setValue("notadate");
-        
-        FilterModel filterModel = new FilterModel();
-        filterModel.setItems(Arrays.asList(filterItem));
-        request.setFilterModel(filterModel);
-        request.setPage(0);
-        request.setPageSize(10);
-        
-        List<SampleEntity> entities = Arrays.asList(sampleEntity1, sampleEntity2);
-        Page<SampleEntity> page = new PageImpl<>(entities, Pageable.ofSize(10), 2);
-        
-        when(sampleRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
-
-        SampleSearchResponse response = sampleSearchService.search(request);
-        assertNotNull(response);
-        assertEquals(2, response.getRowCount());
-    }
-
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_EmptyFilterList_AppliesToAllRecords() {
         // Covers empty filter list branch
@@ -798,6 +573,7 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_NullFilterModel_AppliesDefaultFilter() {
         // Covers null filter model branch
@@ -816,6 +592,7 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_NullSortModel_AppliesDefaultSort() {
         // Covers null sort model branch
@@ -834,6 +611,7 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_MultipleSortItems_AppliesMultipleSorts() {
         // Covers multiple sort items branch
@@ -861,6 +639,7 @@ class SampleSearchServiceTest {
         assertEquals(2, response.getRowCount());
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testSearch_BooleanFilterFalse_CoversActiveFalseBranch() {
         // Covers boolean filter with false value

@@ -36,7 +36,7 @@ public class TagController {
 
     @GetMapping
     @Operation(summary = "Get all tags")
-    @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Tag.class)))
+    @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(implementation = FindResponse.class)))
     public ResponseEntity<FindResponse<Tag>> getAllTags() {
         return ResponseEntity.ok(tagFindService.findAll());
     }
