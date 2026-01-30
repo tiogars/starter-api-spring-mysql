@@ -355,11 +355,16 @@ class SampleExportServiceTest {
             .thenReturn(new org.springframework.data.domain.PageImpl<>(sampleEntities));
 
         // Act & Assert
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+        SampleExportService.SampleExportException exception = assertThrows(SampleExportService.SampleExportException.class, () -> {
             sampleExportService.exportSamples(form);
         });
 
-        assertTrue(exception.getMessage().contains("Failed to export samples"));
+        String msg = exception.getMessage();
+        Throwable cause = exception.getCause();
+        boolean matches = (msg != null && msg.contains("Failed to generate file content for format"))
+            || (msg != null && msg.contains("Unsupported format"))
+            || (cause != null && cause.getMessage() != null && cause.getMessage().contains("Unsupported format"));
+        assertTrue(matches, "Exception message should mention unsupported format. Actual: " + msg);
     }
 
     @Test

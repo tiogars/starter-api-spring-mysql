@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.tiogars.starter.repository.models.Repository;
-import fr.tiogars.starter.repository.services.RepositoryService;
+import fr.tiogars.starter.repository.services.RepositoryCrudService;
 
 import static org.mockito.Mockito.mock;
 
@@ -42,13 +42,13 @@ class RepositoryControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    private RepositoryService repositoryService;
+    private RepositoryCrudService repositoryCrudService;
 
     private Repository repository;
 
     @BeforeEach
     void setUp() {
-        reset(repositoryService);
+        reset(repositoryCrudService);
         repository = new Repository();
         repository.setId(1L);
         repository.setName("TestRepository");
@@ -62,7 +62,7 @@ class RepositoryControllerTest {
         createRepository.setName("NewRepository");
         createRepository.setUrl("https://github.com/new/repo");
 
-        when(repositoryService.create(any(Repository.class))).thenReturn(repository);
+        when(repositoryCrudService.create(any())).thenReturn(repository);
 
         // When & Then
         mockMvc.perform(post("/repositories")
@@ -73,13 +73,13 @@ class RepositoryControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.name").value("TestRepository"));
 
-        verify(repositoryService, times(1)).create(any(Repository.class));
+        verify(repositoryCrudService, times(1)).create(any());
     }
 
     @Test
     void shouldReturnRepositoryWhenIdExists() throws Exception {
         // Given
-        when(repositoryService.findById(1L)).thenReturn(Optional.of(repository));
+        when(repositoryCrudService.findById(1L)).thenReturn(Optional.of(repository));
 
         // When & Then
         mockMvc.perform(get("/repositories/1"))
@@ -89,19 +89,19 @@ class RepositoryControllerTest {
                 .andExpect(jsonPath("$.name").value("TestRepository"))
                 .andExpect(jsonPath("$.url").value("https://github.com/test/repo"));
 
-        verify(repositoryService, times(1)).findById(1L);
+        verify(repositoryCrudService, times(1)).findById(1L);
     }
 
     @Test
     void shouldReturn404WhenRepositoryNotFound() throws Exception {
         // Given
-        when(repositoryService.findById(999L)).thenReturn(Optional.empty());
+        when(repositoryCrudService.findById(999L)).thenReturn(Optional.empty());
 
         // When & Then
         mockMvc.perform(get("/repositories/999"))
                 .andExpect(status().isNotFound());
 
-        verify(repositoryService, times(1)).findById(999L);
+        verify(repositoryCrudService, times(1)).findById(999L);
     }
 
     @Test
@@ -112,7 +112,7 @@ class RepositoryControllerTest {
         repository2.setName("Repository2");
         
         List<Repository> repositories = Arrays.asList(repository, repository2);
-        when(repositoryService.findAll()).thenReturn(repositories);
+        when(repositoryCrudService.findAll()).thenReturn(repositories);
 
         // When & Then
         mockMvc.perform(get("/repositories"))
@@ -123,13 +123,13 @@ class RepositoryControllerTest {
                 .andExpect(jsonPath("$[0].name").value("TestRepository"))
                 .andExpect(jsonPath("$[1].name").value("Repository2"));
 
-        verify(repositoryService, times(1)).findAll();
+        verify(repositoryCrudService, times(1)).findAll();
     }
 
     @Test
     void shouldReturnEmptyList() throws Exception {
         // Given
-        when(repositoryService.findAll()).thenReturn(Arrays.asList());
+        when(repositoryCrudService.findAll()).thenReturn(Arrays.asList());
 
         // When & Then
         mockMvc.perform(get("/repositories"))
@@ -138,26 +138,26 @@ class RepositoryControllerTest {
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$.length()").value(0));
 
-        verify(repositoryService, times(1)).findAll();
+        verify(repositoryCrudService, times(1)).findAll();
     }
 
     @Test
     void shouldDeleteRepositorySuccessfully() throws Exception {
         // Given
-        doNothing().when(repositoryService).deleteById(1L);
+        doNothing().when(repositoryCrudService).delete(1L);
 
         // When & Then
         mockMvc.perform(delete("/repositories/1"))
                 .andExpect(status().isNoContent());
 
-        verify(repositoryService, times(1)).deleteById(1L);
+        verify(repositoryCrudService, times(1)).delete(1L);
     }
 
     @TestConfiguration
     static class MockConfig {
         @Bean
-        public RepositoryService repositoryService() {
-            return mock(RepositoryService.class);
+        public RepositoryCrudService repositoryCrudService() {
+            return mock(RepositoryCrudService.class);
         }
     }
 }

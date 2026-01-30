@@ -15,12 +15,21 @@ public class Repository {
     @Size(max = 512, message = "URL must not exceed 512 characters")
     private String url;
 
+    @Size(max = 1024, message = "Description must not exceed 1024 characters")
+    private String description;
+
     public Repository() {}
     public Repository(Long id, String name) { this.id = id; this.name = name; }
     public Repository(Long id, String name, String url) { 
         this.id = id; 
         this.name = name; 
         this.url = url; 
+    }
+    public Repository(Long id, String name, String url, String description) {
+        this.id = id;
+        this.name = name;
+        this.url = url;
+        this.description = description;
     }
 
     public Long getId() { return id; }
@@ -29,4 +38,6 @@ public class Repository {
     public void setName(String name) { this.name = name; }
     public String getUrl() { return url; }
     public void setUrl(String url) { this.url = url; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 }
