@@ -33,7 +33,7 @@ import fr.tiogars.starter.app.services.AppService;
 
 import static org.mockito.Mockito.mock;
 
-@WebMvcTest(AppController.class)
+@WebMvcTest({AppQueryController.class, AppMutationController.class})
 class AppControllerTest {
 
     @Autowired
