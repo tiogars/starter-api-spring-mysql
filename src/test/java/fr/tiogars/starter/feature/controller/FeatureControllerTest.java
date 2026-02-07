@@ -38,7 +38,7 @@ import fr.tiogars.starter.feature.services.FeatureCrudService;
 import fr.tiogars.starter.feature.services.FeatureFindService;
 import fr.tiogars.starter.feature.services.FeatureImportService;
 
-@WebMvcTest(FeatureController.class)
+@WebMvcTest({FeatureQueryController.class, FeatureMutationController.class, FeatureImportController.class})
 class FeatureControllerTest {
 
     @Autowired
