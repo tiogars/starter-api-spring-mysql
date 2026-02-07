@@ -33,7 +33,7 @@ import fr.tiogars.starter.repository.services.RepositoryCrudService;
 
 import static org.mockito.Mockito.mock;
 
-@WebMvcTest(RepositoryController.class)
+@WebMvcTest({RepositoryQueryController.class, RepositoryMutationController.class})
 class RepositoryControllerTest {
 
     @Autowired
