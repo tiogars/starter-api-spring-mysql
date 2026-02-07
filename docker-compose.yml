@@ -1,6 +1,7 @@
 name: starter-spring
 
 services:
+
   # Spring Boot API Service
   api:
     depends_on:
@@ -18,10 +19,11 @@ services:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://api:8080/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
+    hostname: api
     image: ghcr.io/tiogars/starter-api-spring-mysql:latest
     networks:
       - starter_api_network
