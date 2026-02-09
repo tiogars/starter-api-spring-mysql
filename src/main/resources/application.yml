@@ -7,6 +7,7 @@ spring:
   cloud:
     config:
       name: ${SPRING_APPLICATION_NAME:starter_api}
+      uri: ${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
       username: ${SPRING_CLOUD_CONFIG_USERNAME}
       password: ${SPRING_CLOUD_CONFIG_PASSWORD}
   config:
