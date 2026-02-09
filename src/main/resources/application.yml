@@ -6,9 +6,9 @@ spring:
     active: ${SPRING_PROFILES_ACTIVE:dev}
   cloud:
     config:
-      name: ${SPRING_APPLICATION_NAME:starter_api}
+      # name: ${SPRING_APPLICATION_NAME:starter_api}
       uri: ${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
       username: ${SPRING_CLOUD_CONFIG_USERNAME}
       password: ${SPRING_CLOUD_CONFIG_PASSWORD}
-  config:
-    import: optional:configserver:${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
+  # config:
+    # import: optional:configserver:${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
