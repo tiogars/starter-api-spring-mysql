@@ -28,6 +28,19 @@ Guide for deploying the application using Docker Compose, including Dokploy depl
 - Health checks and monitoring
 - Persistent data management
 
+### [Database Connection Resilience](CONNECTION_RESILIENCE.md)
+
+Technical guide explaining how the application handles database connection failures and ensures reliable startup.
+
+**Topics covered:**
+
+- HikariCP connection pool configuration
+- MySQL JDBC retry parameters
+- Docker health check integration
+- Testing connection resilience
+- Environment-specific tuning
+- Troubleshooting connection issues
+
 ---
 
 ## Quick Start

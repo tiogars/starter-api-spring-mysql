@@ -120,7 +120,74 @@ curl -f http://localhost:8080/actuator/health
 
 The API container will wait for the database to be healthy before starting, ensuring proper startup order.
 
+## Connection Resilience
+
+### Connection Pool Configuration
+
+The application uses HikariCP connection pool with the following settings configured in `application.yml`:
+
+- **Connection Timeout**: 60 seconds - Maximum time to wait for a connection from the pool
+- **Maximum Pool Size**: 10 connections
+- **Minimum Idle**: 2 connections - Minimum number of idle connections maintained
+- **Idle Timeout**: 5 minutes - Maximum time a connection can remain idle
+- **Max Lifetime**: 10 minutes - Maximum lifetime of a connection in the pool
+- **Connection Test Query**: `SELECT 1` - Validates connections before use
+
+### Connection Retry Parameters
+
+The MySQL JDBC URL includes retry parameters to handle transient connection failures:
+
+- `autoReconnect=true` - Automatically reconnect on connection loss
+- `failOverReadOnly=false` - Don't switch to read-only mode on failover
+- `maxReconnects=10` - Maximum number of reconnection attempts
+- `initialTimeout=30` - Initial timeout (in seconds) for reconnection attempts
+
+These settings help the application gracefully handle:
+
+- MySQL container starting slower than expected
+- Temporary network issues
+- Database restarts or maintenance windows
+
 ## Troubleshooting
+
+### Communications Link Failure (SQLState: 08S01)
+
+**Symptom**: API container logs show `HHH000247: ErrorCode: 0, SQLState: 08S01 - Communications link failure`
+
+**Common Causes**:
+
+1. **MySQL not fully initialized**: Even though the health check passes, MySQL may still be initializing databases
+2. **Network timing issues**: The API tries to connect before MySQL is ready to accept connections
+3. **Missing environment variables**: Required MySQL connection parameters not set
+
+**Solutions**:
+
+1. **Wait and retry**: The connection pool will automatically retry with the configured parameters
+2. **Check MySQL logs**:
+
+   ```bash
+   docker compose logs starterdb
+   ```
+
+   Look for messages indicating MySQL is fully initialized
+
+3. **Verify environment variables**:
+
+   ```bash
+   docker compose config
+   ```
+
+   Ensure all `MYSQL_*` variables are set correctly
+
+4. **Increase health check intervals**: If MySQL is consistently slow to start, adjust in `docker-compose.yml`:
+
+   ```yaml
+   starterdb:
+     healthcheck:
+       interval: 15s  # Increase from 10s
+       timeout: 10s   # Increase from 5s
+       retries: 10    # Increase from 5
+   ```
 
 ### API Cannot Connect to Database
 
@@ -133,6 +200,7 @@ The API container will wait for the database to be healthy before starting, ensu
    - `MYSQL_USER` / `MYSQL_PASSWORD` (database container)
    - `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD` (API container)
 3. Database container is healthy before API starts
+4. Connection URL includes all required parameters (see `.env.example`)
 
 ### Spring Cloud Config Not Available
 
