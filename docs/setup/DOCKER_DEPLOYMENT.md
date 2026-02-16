@@ -65,22 +65,22 @@ If these are not set, the application will use the direct datasource configurati
 
 2. Start the services:
 
-```bash
-docker compose up -d
-```
+   ```bash
+   docker compose up -d
+   ```
 
-1. Check the status:
+3. Check the status:
 
-```bash
-docker compose ps
-```
+   ```bash
+   docker compose ps
+   ```
 
-1. View logs:
+4. View logs:
 
-```bash
-docker compose logs -f api
-docker compose logs -f starterdb
-```
+   ```bash
+   docker compose logs -f api
+   docker compose logs -f starterdb
+   ```
 
 ### Using Dokploy
 
@@ -115,7 +115,7 @@ mysqladmin ping -h localhost
 The API container includes a health check that runs every 10 seconds:
 
 ```bash
-curl -f http://api:8080/actuator/health
+curl -f http://localhost:8080/actuator/health
 ```
 
 The API container will wait for the database to be healthy before starting, ensuring proper startup order.
