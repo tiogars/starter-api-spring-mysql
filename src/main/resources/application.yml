@@ -15,14 +15,15 @@ spring:
     import: optional:configserver:${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
   datasource:
     hikari:
-      connection-timeout: 60000
+      # Connection pool settings for database resilience
+      connection-timeout: 60000  # 60 seconds to establish connection (handles slow MySQL startup)
       maximum-pool-size: 10
       minimum-idle: 2
       idle-timeout: 300000
       max-lifetime: 600000
       connection-test-query: SELECT 1
   jpa:
-    open-in-view: false
+    open-in-view: false  # Prevent lazy loading issues in web layer
     properties:
       hibernate:
         jdbc:

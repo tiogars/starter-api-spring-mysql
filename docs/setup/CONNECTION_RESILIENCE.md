@@ -73,7 +73,8 @@ jdbc:mysql://starterdb:3306/database?
 - `autoReconnect=true`: Automatically attempt to reconnect on connection loss
 - `failOverReadOnly=false`: Don't switch to read-only mode during reconnection
 - `maxReconnects=10`: Retry up to 10 times before failing
-- `initialTimeout=30`: Wait 30 seconds between reconnection attempts
+- `initialTimeout=30`: Initial timeout (in seconds) before first reconnection attempt (may increase
+  exponentially on subsequent attempts)
 
 ### 3. Docker Compose Health Checks
 
@@ -164,13 +165,17 @@ Example production configuration in `.env`:
 ```bash
 SPRING_DATASOURCE_URL=jdbc:mysql://starterdb:3306/starterdb?\
 createDatabaseIfNotExist=true&\
-useSSL=true&\
+useSSL=false&\
 allowPublicKeyRetrieval=true&\
 autoReconnect=true&\
 failOverReadOnly=false&\
 maxReconnects=20&\
 initialTimeout=60
 ```
+
+**Note**: For production environments with SSL requirements, set `useSSL=true` and configure MySQL with
+SSL certificates. See [MySQL SSL Configuration](https://dev.mysql.com/doc/refman/8.0/en/using-encrypted-connections.html)
+for details.
 
 And in `application.yml` (or via environment variables):
 
