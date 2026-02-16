@@ -5,7 +5,7 @@ services:
   # Spring Boot API Service
   api:
     depends_on:
-      mysql:
+      starterdb:
         condition: service_healthy
     deploy:
       # Memory limit for the API service
@@ -30,8 +30,8 @@ services:
     # ports:
     #   - "8080:8080"
   # MySQL Database Service
-  mysql:
-    hostname: mysql
+  starterdb:
+    hostname: starterdb
     image: mysql:8.0
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
