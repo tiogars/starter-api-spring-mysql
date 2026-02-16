@@ -107,7 +107,7 @@ Dokploy uses Docker Compose under the hood. To deploy with Dokploy:
 The MySQL container includes a health check that runs every 10 seconds:
 
 ```bash
-mysqladmin ping -h starterdb
+mysqladmin ping -h localhost
 ```
 
 ### API Health Check
