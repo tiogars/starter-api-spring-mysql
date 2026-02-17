@@ -9,16 +9,28 @@ The application provides RESTful APIs for sample data management, including sear
 ## Available APIs
 
 ### Search API
+
 - **[Search API Documentation](SEARCH_API.md)** - Complete guide to the search API endpoints
   - Search samples by various criteria
   - Filter and sort capabilities
   - Pagination support
 
 ### Export API
+
 - **[Export API Documentation](EXPORT_API.md)** - Complete guide to the export API endpoints
   - Export data in various formats
   - Bulk export capabilities
   - Download functionality
+
+## API Documentation Tools
+
+### Swagger UI (OpenAPI)
+
+- **[Swagger UI Configuration](SWAGGER_UI_CONFIGURATION.md)** - Complete guide to Swagger UI setup
+  - Access Swagger UI at `/swagger-ui/index.html`
+  - Interactive API documentation
+  - Configuration and customization options
+  - Troubleshooting guide
 
 ## API Standards
 
