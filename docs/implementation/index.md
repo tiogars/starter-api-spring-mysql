@@ -30,9 +30,15 @@ Documentation related to how features are implemented, project milestones, and t
   - Best practices for writing Markdown
   - Troubleshooting guide
 
+- **[Spring Boot 4 Migration](SPRING_BOOT_4_MIGRATION.md)** - Spring Boot 4 migration notes
+  - Package structure changes
+  - Test autoconfiguration annotation updates
+  - Migration checklist
+  - Breaking changes and fixes
+
 ## Technology Stack
 
-- **Framework**: Spring Boot 4.0.1
+- **Framework**: Spring Boot 4.0.2
 - **Java Version**: 21
 - **Database**: MySQL
 - **Build Tool**: Maven
