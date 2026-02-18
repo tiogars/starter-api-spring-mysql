@@ -39,8 +39,10 @@ services:
     image: ghcr.io/tiogars/starter-api-spring-mysql:latest
     #networks:
     #  - starter_api_network
-    expose:
+    ports:
       - 8080
+    pull_policy: always
+
   # MySQL Database Service
   starterdb:
     hostname: starterdb
