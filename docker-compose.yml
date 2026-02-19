@@ -11,7 +11,11 @@ services:
       # Memory limit for the API service
       resources:
         limits:
+          cpus: "2.0"
           memory: 512M
+        reservations:
+          cpus: "1.0"
+          memory: 256M
     environment:
       SPRING_CLOUD_CONFIG_URI: ${SPRING_CLOUD_CONFIG_URI}
       SPRING_CLOUD_CONFIG_USERNAME: ${SPRING_CLOUD_CONFIG_USERNAME}
@@ -31,15 +35,22 @@ services:
       SPRINGDOC_SWAGGER_UI_ENABLED: ${SPRINGDOC_SWAGGER_UI_ENABLED:-true}
       SPRINGDOC_SHOW_ACTUATOR: ${SPRINGDOC_SHOW_ACTUATOR:-true}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9462/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://api:9462/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
     hostname: api
     image: ghcr.io/tiogars/starter-api-spring-mysql:latest
-    #networks:
-    #  - starter_api_network
+    labels:
+      - flame.type=application
+      - flame.name=starter-api-spring-mysql
+      - flame.url=https://starter-api.tiogars.fr/swagger-ui/index.html
+      - flame.icon=docker
+    networks:
+      - starter_api_network
     ports:
+      - "9462:9462"
+    expose:
       - 9462
     pull_policy: always
 
@@ -60,13 +71,19 @@ services:
     deploy:
       resources:
         limits:
+          cpus: '0.5'
           memory: 512M
-    #networks:
-    #  - starter_api_network
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    networks:
+      - starter_api_network
     volumes:
       - mysql-data:/var/lib/mysql
 
-networks: {}
+networks:
+  starter_api_network:
+    driver: bridge
 
 volumes:
   mysql-data:
