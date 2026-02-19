@@ -26,7 +26,7 @@ RUN chown -R spring:spring /app
 USER spring:spring
 
 # Exposer le port de l'application
-EXPOSE 8080
+EXPOSE 9462
 
 # Healthcheck pour Docker
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
