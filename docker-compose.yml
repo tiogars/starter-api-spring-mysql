@@ -40,7 +40,7 @@ services:
     #networks:
     #  - starter_api_network
     ports:
-      - 8080
+      - 9462
     pull_policy: always
 
   # MySQL Database Service
