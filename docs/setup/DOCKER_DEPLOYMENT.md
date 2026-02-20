@@ -45,17 +45,47 @@ The API container connects to the MySQL database using these environment variabl
 
 **Important**: The database hostname must be `starterdb` to match the service name in docker-compose.yml.
 
-### Optional: Spring Cloud Config
+### Optional: Spring Cloud Config Server
 
-If you want to use Spring Cloud Config Server, you can set these optional variables:
+The application can optionally use **Spring Cloud Config Server** for centralized configuration
+management. This is useful for managing configurations across multiple environments (dev, staging,
+production) without modifying the application code.
+
+#### Configuration Variables
+
+If you want to use Spring Cloud Config Server, set these optional variables:
 
 ```bash
 SPRING_CLOUD_CONFIG_URI=http://config-server:8888
-SPRING_CLOUD_CONFIG_USERNAME=your-username
-SPRING_CLOUD_CONFIG_PASSWORD=your-password
+SPRING_CLOUD_CONFIG_LABEL=main                  # Git branch (optional, defaults to main)
+SPRING_CLOUD_CONFIG_USERNAME=your-username      # If config server requires authentication
+SPRING_CLOUD_CONFIG_PASSWORD=your-password      # If config server requires authentication
 ```
 
-If these are not set, the application will use the direct datasource configuration from environment variables.
+#### Key Points
+
+- **Optional**: If these variables are not set, the application uses direct datasource configuration
+  from the remaining environment variables
+- **Fallback**: Config server connection failures don't prevent application startup (see
+  [Troubleshooting](#spring-cloud-config-not-available) section)
+- **Priority**: Environment variables override config server properties
+- **Configuration files**: Store files in your config server repository named:
+  - `starter_api.yml` (default config for all profiles)
+  - `starter_api-dev.yml`, `starter_api-staging.yml`, `starter_api-prod.yml` (profile-specific)
+
+#### Full Configuration Guide
+
+For detailed setup instructions, environment-specific configurations, and troubleshooting, see:
+
+**[Spring Cloud Config Server Integration Guide](SPRING_CLOUD_CONFIG.md)**
+
+This guide covers:
+- Setting up a config server with Git backend
+- Docker Compose integration with config server
+- Creating environment-specific configurations
+- Dynamic configuration updates without restart
+- Security best practices and authentication setup
+- Troubleshooting and diagnostics
 
 ## Deployment
 
@@ -204,13 +234,48 @@ These settings help the application gracefully handle:
 
 ### Spring Cloud Config Not Available
 
-**Symptom**: Application tries to connect to Spring Cloud Config Server but fails
+**Symptom**: Application logs show warnings about config server unavailable:
 
-**Solution**: Spring Cloud Config is optional. If you're not using it:
+```
+WARN o.s.c.c.c.ConfigServicePropertySourceLocator : No environment found for
+application 'starter_api' with profiles [dev]
+```
 
-- Leave `SPRING_CLOUD_CONFIG_URI`, `SPRING_CLOUD_CONFIG_USERNAME`, and
-  `SPRING_CLOUD_CONFIG_PASSWORD` unset or empty
-- Ensure direct datasource configuration is provided via environment variables
+Or connection timeout/refused errors:
+
+```
+ERROR ... Connection refused / Connection timeout when accessing config server
+```
+
+**Why it happens**:
+
+1. Config server is not running or unreachable
+2. `SPRING_CLOUD_CONFIG_URI` points to wrong address
+3. Authentication credentials are incorrect
+4. Network connectivity issues between containers
+
+**Solution**:
+
+**If you're not using a config server** (recommended for simple deployments):
+
+- Leave `SPRING_CLOUD_CONFIG_URI` empty or unset
+- Leave `SPRING_CLOUD_CONFIG_USERNAME` and `SPRING_CLOUD_CONFIG_PASSWORD` unset
+- Ensure direct datasource configuration is provided via environment variables:
+  - `SPRING_DATASOURCE_URL`
+  - `SPRING_DATASOURCE_USERNAME`
+  - `SPRING_DATASOURCE_PASSWORD`
+
+**If you want to use a config server**:
+
+- Ensure the config server is running and accessible
+- Verify `SPRING_CLOUD_CONFIG_URI` is correct (e.g., `http://config-server:8888` for Docker Compose)
+- Check authentication credentials match the config server setup
+- See [Spring Cloud Config Server Integration Guide](SPRING_CLOUD_CONFIG.md) for detailed
+  configuration and troubleshooting
+
+**Note**: The application uses `optional:configserver:` configuration, meaning startup won't fail
+if the config server is unavailable. The application will fall back to environment variables and
+local properties files.
 
 ### Port Conflicts
 

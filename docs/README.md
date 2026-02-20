@@ -2,6 +2,17 @@
 
 Welcome to the starter-api-spring-mysql documentation. This directory contains all project documentation organized by theme.
 
+## 📌 Quick Start & Reference
+
+**New to the documentation?** Start here:
+
+- **⭐ [Spring Cloud Config Quick Reference](setup/SPRING_CLOUD_CONFIG_QUICK_REFERENCE.md)** - Quick overview and decision guide
+- **📄 [Adaptation Complete](ADAPTATION_COMPLETE.md)** - Executive summary of all documentation updates
+- **📋 [Documentation Adaptation Summary](DOCUMENTATION_ADAPTATION_SUMMARY.md)** - Detailed breakdown of changes
+- **✅ [Files Changed](FILES_CHANGED.md)** - Complete checklist and statistics
+
+---
+
 ## Documentation Sections
 
 ### 📋 [Testing Documentation](testing/index.md)
@@ -65,17 +76,22 @@ User-facing feature documentation and guides.
 
 ### ⚙️ [Setup Documentation](setup/index.md)
 
-Project setup and configuration guides.
+Project setup and configuration guides, including Docker deployment and centralized configuration management.
 
 **Key Topics:**
 
 - GitHub Packages authentication for Maven dependencies
 - Local development environment setup
-- CI/CD workflow configuration
+- Docker Compose deployment with MySQL
+- Spring Cloud Config Server for centralized configuration
+- Database connection resilience and troubleshooting
 
 **Quick Access:**
 
+- [Spring Cloud Config Server Integration](setup/SPRING_CLOUD_CONFIG.md)
+- [Docker Deployment Guide](setup/DOCKER_DEPLOYMENT.md)
 - [GitHub Packages Setup](setup/GITHUB_PACKAGES_SETUP.md)
+- [Database Connection Resilience](setup/CONNECTION_RESILIENCE.md)
 
 ---
 
