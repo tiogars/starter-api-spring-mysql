@@ -26,6 +26,11 @@ public class SecurityConfig {
      *      "https://www.baeldung.com/java-spring-security-permit-swagger-ui">Baeldung
      *      - Spring Security Permit Swagger UI</a>
      * 
+     * @see <a href=
+     *      "https://github.com/tiogars/starter-api-spring-mysql/commit/4719ce20dced73d54954ed65d545a54bba104807">Commit
+     *      - Add security configuration to permit access to Swagger UI and API
+     *      documentation</a>
+     * 
      * @param http L'objet HttpSecurity utilisé pour configurer les règles de
      *             sécurité
      * @return La chaîne de filtres de sécurité configurée
