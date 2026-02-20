@@ -54,9 +54,12 @@ public class SecurityConfig {
                 .anyRequest().authenticated())
                 // Utilise l'authentification HTTP Basic et le formulaire de login par défaut de
                 // Spring Security
-                .httpBasic(Customizer.withDefaults())
+                // .httpBasic(Customizer.withDefaults())
                 // Active le formulaire de login par défaut de Spring Security
-                .formLogin(Customizer.withDefaults());
+                // .formLogin(Customizer.withDefaults())
+                // Use Oath2 login with default configuration (redirect to Keycloak for
+                // authentication)
+                .oauth2Login(Customizer.withDefaults());
 
         return http.build();
     }

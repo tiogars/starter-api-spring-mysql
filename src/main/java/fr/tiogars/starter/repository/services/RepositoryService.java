@@ -1,12 +1,10 @@
 package fr.tiogars.starter.repository.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import fr.tiogars.starter.repository.entities.RepositoryEntity;
-import fr.tiogars.starter.repository.models.Repository;
 import fr.tiogars.starter.repository.repositories.RepositoryRepository;
 
 @Service

@@ -1,6 +1,8 @@
 package fr.tiogars.starter;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,16 +24,27 @@ public class OpenApiConfig {
     @Value("${keycloak.realm}")
     String realm;
 
+    private final ObjectProvider<BuildProperties> buildPropertiesProvider;
+
     private static final String OAUTH_SCHEME_NAME = "oauth2";
+
+    public OpenApiConfig(ObjectProvider<BuildProperties> buildPropertiesProvider) {
+        this.buildPropertiesProvider = buildPropertiesProvider;
+    }
 
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI().components(new Components()
                 .addSecuritySchemes(OAUTH_SCHEME_NAME, createOAuthScheme()))
                 .addSecurityItem(new SecurityRequirement().addList(OAUTH_SCHEME_NAME))
-                .info(new Info().title("Todos Management Service")
-                        .description("A service providing todos.")
-                        .version("1.0"));
+                .info(new Info().title("Starter API")
+                        .description("Starter API for Spring Boot projects with MySQL and Keycloak.")
+                        .version(resolveVersion()));
+    }
+
+    private String resolveVersion() {
+        BuildProperties buildProperties = buildPropertiesProvider.getIfAvailable();
+        return buildProperties != null ? buildProperties.getVersion() : "unknown";
     }
 
     private SecurityScheme createOAuthScheme() {
@@ -49,7 +62,9 @@ public class OpenApiConfig {
         return new OAuthFlow()
                 .authorizationUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/auth")
                 .tokenUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/token")
-                .scopes(new Scopes().addString("read_access", "read data")
-                        .addString("write_access", "modify data"));
+        // Adding scopes is optional and depends on your specific requirements
+        // .scopes(new Scopes().addString("read_access", "read data")
+        // .addString("write_access", "modify data"))
+        ;
     }
 }
