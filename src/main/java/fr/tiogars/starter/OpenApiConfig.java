@@ -11,17 +11,16 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
-import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class OpenApiConfig {
 
-    @Value("${keycloak.auth-server-url}")
+    @Value("${keycloak.auth-server-url:}")
     String authServerUrl;
 
-    @Value("${keycloak.realm}")
+    @Value("${keycloak.realm:}")
     String realm;
 
     private final ObjectProvider<BuildProperties> buildPropertiesProvider;
@@ -34,12 +33,24 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        return new OpenAPI().components(new Components()
-                .addSecuritySchemes(OAUTH_SCHEME_NAME, createOAuthScheme()))
-                .addSecurityItem(new SecurityRequirement().addList(OAUTH_SCHEME_NAME))
+        OpenAPI openAPI = new OpenAPI()
                 .info(new Info().title("Starter API")
                         .description("Starter API for Spring Boot projects with MySQL and Keycloak.")
                         .version(resolveVersion()));
+        
+        // Only add OAuth2 security scheme if Keycloak is properly configured
+        if (isKeycloakConfigured()) {
+            openAPI.components(new Components()
+                    .addSecuritySchemes(OAUTH_SCHEME_NAME, createOAuthScheme()))
+                    .addSecurityItem(new SecurityRequirement().addList(OAUTH_SCHEME_NAME));
+        }
+        
+        return openAPI;
+    }
+    
+    private boolean isKeycloakConfigured() {
+        return authServerUrl != null && !authServerUrl.isEmpty() 
+                && realm != null && !realm.isEmpty();
     }
 
     private String resolveVersion() {
@@ -59,6 +70,9 @@ public class OpenApiConfig {
     }
 
     private OAuthFlow createAuthorizationCodeFlow() {
+        if (!isKeycloakConfigured()) {
+            return new OAuthFlow();
+        }
         return new OAuthFlow()
                 .authorizationUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/auth")
                 .tokenUrl(authServerUrl + "/realms/" + realm + "/protocol/openid-connect/token")
