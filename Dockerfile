@@ -30,7 +30,7 @@ EXPOSE 9462
 
 # Healthcheck pour Docker
 HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:9462/actuator/health || exit 1
 
 # Point d'entrée de l'application avec optimisations JVM
 ENTRYPOINT ["java", \

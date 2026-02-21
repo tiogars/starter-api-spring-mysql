@@ -20,19 +20,8 @@ services:
       SPRING_CLOUD_CONFIG_URI: ${SPRING_CLOUD_CONFIG_URI}
       SPRING_CLOUD_CONFIG_USERNAME: ${SPRING_CLOUD_CONFIG_USERNAME}
       SPRING_CLOUD_CONFIG_PASSWORD: ${SPRING_CLOUD_CONFIG_PASSWORD}
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
-      SPRING_APPLICATION_NAME: ${SPRING_APPLICATION_NAME}
-      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:mysql://starterdb:3306/${MYSQL_DATABASE}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=10&initialTimeout=30}
-      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-${MYSQL_USER}}
-      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-${MYSQL_PASSWORD}}
-      SPRING_DATASOURCE_DRIVER_CLASS_NAME: ${SPRING_DATASOURCE_DRIVER_CLASS_NAME:-com.mysql.cj.jdbc.Driver}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
-      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL:-false}
-      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: ${SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL:-true}
-      SPRINGDOC_API_DOCS_PATH: ${SPRINGDOC_API_DOCS_PATH:-/api-docs}
-      SPRINGDOC_SWAGGER_UI_PATH: ${SPRINGDOC_SWAGGER_UI_PATH:-/swagger-ui.html}
-      SPRINGDOC_SWAGGER_UI_ENABLED: ${SPRINGDOC_SWAGGER_UI_ENABLED:-true}
-      SPRINGDOC_SHOW_ACTUATOR: ${SPRINGDOC_SHOW_ACTUATOR:-true}
+      SPRING_PROFILES_ACTIVE: production
+      SPRING_APPLICATION_NAME: starter_api
     healthcheck:
       test: ["CMD", "curl", "-f", "http://api:9462/actuator/health"]
       interval: 10s
@@ -58,10 +47,10 @@ services:
     hostname: starterdb
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: starterdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
