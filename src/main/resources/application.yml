@@ -13,3 +13,11 @@ spring:
       password: ${SPRING_CLOUD_CONFIG_PASSWORD}
   config:
     import: optional:configserver:${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
+
+springdoc:
+  api-docs:
+    path: ${SPRINGDOC_API_DOCS_PATH:/api-docs}
+  swagger-ui:
+    path: ${SPRINGDOC_SWAGGER_UI_PATH:/swagger-ui.html}
+    enabled: ${SPRINGDOC_SWAGGER_UI_ENABLED:true}
+  show-actuator: ${SPRINGDOC_SHOW_ACTUATOR:true}

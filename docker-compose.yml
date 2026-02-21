@@ -22,6 +22,10 @@ services:
       SPRING_CLOUD_CONFIG_PASSWORD: ${SPRING_CLOUD_CONFIG_PASSWORD}
       SPRING_PROFILES_ACTIVE: production
       SPRING_APPLICATION_NAME: starter_api
+      SPRINGDOC_SWAGGER_UI_ENABLED: "true"
+      SPRINGDOC_API_DOCS_PATH: /api-docs
+      SPRINGDOC_SWAGGER_UI_PATH: /swagger-ui.html
+      SPRINGDOC_SHOW_ACTUATOR: "true"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://api:9462/actuator/health"]
       interval: 10s
@@ -38,8 +42,8 @@ services:
       - starter_api_network
     ports:
       - "9462:9462"
-    expose:
-      - 9462
+    # expose:
+    #   - 9462
     pull_policy: always
 
   # MySQL Database Service
