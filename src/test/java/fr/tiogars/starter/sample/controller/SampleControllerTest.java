@@ -26,15 +26,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.client.registration.ClientRegistration;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.tiogars.starter.config.TestSecurityConfig;
 import fr.tiogars.starter.sample.forms.SampleCreateForm;
 import fr.tiogars.starter.sample.forms.SampleUpdateForm;
 import fr.tiogars.starter.sample.models.Sample;
@@ -47,7 +45,12 @@ import fr.tiogars.starter.sample.services.SampleSearchService;
 import fr.tiogars.starter.sample.services.SampleUpdateService;
 import fr.tiogars.starter.sample.services.SampleFindService;
 
-@WebMvcTest(SampleController.class)
+@WebMvcTest(controllers = SampleController.class, 
+    excludeAutoConfiguration = {
+        org.springframework.boot.security.oauth2.client.autoconfigure.servlet.OAuth2ClientWebSecurityAutoConfiguration.class,
+        org.springframework.boot.security.oauth2.server.resource.autoconfigure.servlet.OAuth2ResourceServerAutoConfiguration.class
+    })
+@Import(TestSecurityConfig.class)
 class SampleControllerTest {
 
     @Autowired

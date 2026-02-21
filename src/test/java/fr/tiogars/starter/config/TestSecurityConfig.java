@@ -36,4 +36,3 @@ public class TestSecurityConfig {
         return new InMemoryClientRegistrationRepository(clientRegistration);
     }
 }
-
