@@ -27,7 +27,7 @@ services:
       SPRINGDOC_SWAGGER_UI_PATH: /swagger-ui.html
       SPRINGDOC_SHOW_ACTUATOR: "true"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://api:9462/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:9462/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 5
