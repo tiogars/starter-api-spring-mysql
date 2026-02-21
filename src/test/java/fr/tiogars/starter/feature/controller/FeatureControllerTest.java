@@ -24,11 +24,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import fr.tiogars.starter.config.TestSecurityConfig;
 
 import fr.tiogars.starter.common.services.dto.FindResponse;
 import fr.tiogars.starter.feature.forms.FeatureCreateForm;
@@ -245,5 +254,25 @@ class FeatureControllerTest {
 
         @Bean
         FeatureFindService featureFindService() { return mock(FeatureFindService.class); }
+
+        @Primary
+        @Bean
+        ClientRegistrationRepository clientRegistrationRepository() {
+            ClientRegistration registration = ClientRegistration
+                .withRegistrationId("test")
+                .clientId("test-client-id")
+                .clientSecret("test-client-secret")
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .redirectUri("http://localhost:8080/login/oauth2/code/test")
+                .scope("read", "write")
+                .authorizationUri("http://localhost:9000/oauth/authorize")
+                .tokenUri("http://localhost:9000/oauth/token")
+                .userInfoUri("http://localhost:9000/user")
+                .userNameAttributeName("sub")
+                .clientName("Test Provider")
+                .build();
+            return new InMemoryClientRegistrationRepository(registration);
+        }
     }
 }

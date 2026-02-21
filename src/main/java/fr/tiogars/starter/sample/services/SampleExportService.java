@@ -349,6 +349,7 @@ public class SampleExportService {
             this.samples = samples;
         }
 
+        @SuppressWarnings("unused")
         public List<Sample> getSamples() {
             return samples;
         }
