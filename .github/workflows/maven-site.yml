@@ -61,7 +61,7 @@ jobs:
           mkdir -p _site/maven
           cp -r target/site/* _site/maven/
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
 
   deploy:
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
